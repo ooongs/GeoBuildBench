@@ -1,8 +1,0 @@
-
-point :  -> A
-point :  -> B
-point :  -> C
-polygon : A B C -> triangle c a b
-line : B C -> line_BC
-equality : A A -> expr0
-prove : expr0 -> result

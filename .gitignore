@@ -1,7 +1,18 @@
+# Environment variables
 .env
+
+# Python cache
 __pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Agent related files
 agent_images/
 agent_logs/
+agent_results.json
+
+# Image files
 *.png
 *.jpg
 *.jpeg
@@ -10,4 +21,23 @@ agent_logs/
 *.tiff
 *.ico
 *.webp
+
+# Data directories
 data-5/
+test_images/
+
+# Test and demo files
+test_*.py
+test_*.sh
+test_*.json
+test_*.txt
+trace_*.py
+demo_*.py
+
+# Temporary markdown files
+*_UPDATE.md
+*_SUMMARY.md
+*_IMPROVEMENTS.md
+*_GUIDE.md
+*_EXPLANATION.md
+*_COMPLETE.md
