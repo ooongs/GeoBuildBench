@@ -1,0 +1,102 @@
+# DSL Examples for Common Patterns
+
+## Example 1: Simple Triangle
+```
+point :  -> A
+point :  -> B
+point :  -> C
+polygon : A B C -> triangle c a b
+equality : A A -> expr0
+prove : expr0 -> result
+```
+
+## Example 2: Triangle with Parallel Line
+Problem: Triangle ABC with line DE parallel to BC, where D is on AB and E is on AC.
+
+```
+point :  -> A
+point :  -> B
+point :  -> C
+polygon : A B C -> triangle c a b
+line : B C -> line_BC
+point :  -> D
+point :  -> E
+line : D E -> line_DE
+equality : A A -> expr0
+prove : expr0 -> result
+```
+
+Note: The actual parallelism would need to be constructed geometrically, not asserted.
+
+## Example 3: Perpendicular Lines
+```
+point :  -> A
+point :  -> B
+line : A B -> line_AB
+point :  -> C
+orthogonal_line : C line_AB -> line_perp
+equality : A A -> expr0
+prove : expr0 -> result
+```
+
+## Example 4: Angle Bisector
+```
+point :  -> A
+point :  -> B
+point :  -> C
+angular_bisector : A B C -> bisector_line
+equality : A A -> expr0
+prove : expr0 -> result
+```
+
+## Example 5: Circle with Center and Radius
+```
+point :  -> O
+point :  -> A
+circle : O A -> circle_O
+equality : A A -> expr0
+prove : expr0 -> result
+```
+
+## Example 6: Rotation
+```
+point :  -> Center
+point :  -> P
+const int 60 -> deg
+rotate : P deg Center -> P_rotated
+segment : Center P -> seg1
+segment : Center P_rotated -> seg2
+equality : A A -> expr0
+prove : expr0 -> result
+```
+
+## Key Points:
+
+1. Always use `point :  -> Label` for random points
+2. Never redefine a label
+3. Always end with the two required lines
+4. Comments (starting with #) are allowed
+5. One object per line
+
+## What NOT to do:
+
+❌ Redefining points:
+```
+point :  -> A
+point : 100 100 -> A  # ERROR: A already defined
+```
+
+❌ Missing prove statement:
+```
+point :  -> A
+# ERROR: Missing equality and prove at end
+```
+
+❌ Trying to assert properties:
+```
+angle : A B C -> angle_ABC
+const int 90 -> deg
+equality : angle_ABC deg -> expr  # ERROR: This doesn't work!
+```
+
+

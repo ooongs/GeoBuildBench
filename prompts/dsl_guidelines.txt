@@ -1,0 +1,235 @@
+# DSL Quick Reference Guide
+
+## Basic Syntax
+
+Every DSL line follows: `command : inputs -> outputs`
+
+## Commands by Category
+
+### 1. Points
+```
+point :  -> A                    # Random point
+point : 100 150 -> P             # Fixed coordinates (x, y) - inline numeric literals!
+point : 0 0 -> Origin            # Integer coordinates
+point : 50.5 86.7 -> P           # Float coordinates (precision preserved!)
+point : mx my -> P               # From measure variables
+point : circle -> P              # Random point on circle
+point : line -> P                # Random point on line
+```
+
+**Note**: 
+- Numeric literals with decimals are stored as `float` (e.g., `50.5`)
+- Numeric literals without decimals are stored as `int` (e.g., `100`)
+- Both work seamlessly with geometric functions
+- For `Measure` type, use explicit `const Measure X -> label`
+
+### 2. Lines
+```
+line : A B -> line_AB            # Line through two points
+line_bisector : A B -> bisector  # Perpendicular bisector
+```
+
+### 3. Segments
+```
+segment : A B -> seg_AB          # Segment from A to B
+```
+
+### 4. Rays
+```
+ray : A B -> ray_AB              # Ray from A through B
+```
+
+### 5. Circles
+```
+circle : O A -> circle_O         # Center O, passes through A
+circle : O radius -> circle_O    # Center O, radius (variable)
+circle : O 50 -> circle_O        # Center O, radius 50 (inline literal)
+```
+
+### 6. Polygons
+```
+polygon : A B C -> poly1 c a b   # Triangle (poly + sides)
+polygon : A B C D -> poly1 d c b a  # Quad (poly + sides)
+```
+
+### 7. Angles
+```
+angle : A B C -> angle_ABC       # Angle at B from A to C
+const int 90 -> deg              # Angle value
+```
+
+### 8. Rotations
+```
+rotate : P deg Center -> P_rot   # Rotate P by deg around Center
+rotate : P angle Center -> P_rot # Rotate by angle object
+
+# How to write angles:
+rotate : P 90° Center -> P_rot   # 90 degrees (degree)
+rotate : P 45.5° Center -> Q     # 45.5 degrees (degree)
+rotate : P 1.5708rad Center -> Q # 1.5708 radians (radian)
+rotate : P 1.5708r Center -> Q   # short notation (r = radian)
+rotate : P 90 Center -> Q        # general number = degree (default)
+```
+
+**Angle notation rules**:
+- `90°` → degree (degree unit)
+- `1.5708rad` → radian (radian unit)
+- `1.5708r` → radian (short notation)
+- `90` → degree (default, backward compatibility)
+
+### 9. Intersections
+```
+intersect : line1 line2 -> P     # Intersection of two lines
+intersect : line circle -> P     # Line-circle (may return 2 points)
+```
+
+### 10. Perpendicular/Parallel
+```
+orthogonal_line : P line -> perp # Perpendicular through P
+```
+
+### 11. Midpoints
+```
+midpoint : A B -> M              # Midpoint of segment AB
+```
+
+### 12. Measurements & Constants
+```
+distance : A B -> dist           # Distance between points
+const int 50 -> value            # Integer constant (explicit)
+const Measure 10 -> length       # Measure constant (explicit)
+
+# OR use inline numeric literals (precision preserved):
+point : 100 200 -> P             # Integers: 100, 200
+point : 50.5 86.7 -> Q           # Floats: 50.5, 86.7 (precision preserved!)
+circle : O 30.5 -> c             # Float radius: 30.5
+
+# Inline angles with units:
+rotate : P 90° Center -> Q       # 90 degrees (° symbol)
+rotate : P 45.5° Center -> R     # 45.5 degrees (precision preserved!)
+rotate : P 1.5708rad Center -> S # 1.5708 radians (explicit radian)
+rotate : P 90 Center -> T        # 90 degrees (default = degree)
+```
+
+### 13. Arithmetic
+```
+sum : a b -> c                   # Addition
+minus : a b -> c                 # Subtraction
+product : a b -> c               # Multiplication
+ratio : a b -> c                 # Division
+```
+
+### 14. Verification (OPTIONAL)
+```
+equality : A A -> expr0          # Optional equality check
+prove : expr0 -> result          # Optional prove statement
+```
+
+**Note**: These lines are OPTIONAL and not required for basic constructions.
+
+### 15. IMPORTANT CONSTRAINTS
+
+**What DSL CAN do:**
+- ✅ Construct points, lines, circles, polygons
+- ✅ Transform objects (rotate, mirror, etc.)
+- ✅ Find intersections, midpoints
+- ✅ Create geometric objects
+
+**What DSL CANNOT do:**
+- ❌ Assert angle values: `equality : angle_A 80` (WRONG!)
+- ❌ Assert parallel: `parallel : line1 line2` (WRONG!)
+- ❌ Assert perpendicular: `perpendicular : line1 line2` (WRONG!)
+- ❌ Directly enforce constraints
+
+**How to handle constraints:**
+- If problem says "angle A = 80°", construct the geometry to naturally have that angle
+- If problem says "AB∥CD", construct parallel lines using geometric construction
+- If problem says "AB⊥CD", use `orthogonal_line` command to construct perpendicular
+
+## Common Patterns
+
+### Creating Parallel Lines:
+```
+point :  -> A
+point :  -> B
+line : A B -> line_AB
+
+point :  -> C
+point :  -> D
+line : C D -> line_CD
+# Note: lines won't be parallel unless you construct them to be
+```
+
+### Creating Perpendicular Lines:
+```
+point :  -> A
+point :  -> B
+line : A B -> line_AB
+point :  -> C
+orthogonal_line : C line_AB -> perp_line
+```
+
+### Creating a Triangle:
+```
+point :  -> A
+point :  -> B
+point :  -> C
+polygon : A B C -> triangle side_c side_a side_b
+```
+
+### Angle Bisector:
+```
+angle : A B C -> angle_ABC
+angular_bisector : A B C -> bisector
+```
+
+### Rotating a Point:
+```
+point :  -> Center
+const int 60 -> deg
+point :  -> P
+rotate : P deg Center -> P_rotated
+```
+
+## Critical Rules
+
+1. **Order matters**: Define objects before using them
+2. **Labels**: Use descriptive names (Center, line_AB, not x, y, z)
+3. **Outputs**: Polygon command outputs: polygon, then sides in reverse order
+4. **Random vs Fixed**: Use `point :  -> A` for unconstrained points
+
+## Common Errors
+
+❌ **Using undefined object**:
+```
+line : A B -> line_AB  # Error: A and B not defined
+```
+
+✅ **Correct**:
+```
+point :  -> A
+point :  -> B
+line : A B -> line_AB
+```
+
+❌ **Using undefined object**:
+```
+circle : O 50 -> c  # Error: O not defined
+```
+
+✅ **Correct**:
+```
+point :  -> O
+circle : O 50 -> c
+```
+
+❌ **Wrong output count**:
+```
+polygon : A B C -> triangle  # Error: polygon outputs 4 things
+```
+
+✅ **Correct**:
+```
+polygon : A B C -> triangle side_c side_a side_b
+```
+

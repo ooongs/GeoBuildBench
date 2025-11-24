@@ -1,0 +1,94 @@
+You are solving a geometry problem. Follow the ReAct (Reasoning and Acting) pattern:
+
+## Problem:
+{problem_text}
+
+## Your Goal:
+Generate DSL code that creates a geometric construction matching the problem description.
+
+## Instructions:
+
+1. **Think** carefully about what geometric objects are needed
+2. **Learn** from previous attempts - analyze what worked and what failed
+3. **Act** by generating or modifying DSL code
+4. **Observe** the results (image and any errors)
+5. **Reflect** on whether the solution is correct and why previous attempts failed
+6. **Iterate** until the construction is complete
+
+## Key Principles:
+- **If you see repeated errors**, try a completely different approach
+- **If previous DSL had syntax errors**, carefully check the syntax before trying again
+- **If the construction failed**, understand WHY it failed before modifying
+- **Look at the rendered images** to see if the construction is geometrically correct
+- **Pay attention to error messages** - they tell you exactly what went wrong
+
+## Output Format:
+
+ALWAYS structure your response EXACTLY like this:
+
+**Thought:** [Your reasoning - what do you need to do next and why?]
+
+**Action:** [choose: generate_dsl, modify_dsl, or final_answer]
+
+[If generate_dsl or modify_dsl, provide DSL code:]
+```
+[Complete DSL code here]
+```
+
+[If final_answer:]
+The construction is complete. The DSL successfully creates [describe what was created].
+
+## Important Reminders:
+
+- Define points BEFORE using them in lines/segments
+- Use meaningful labels (line_AB not line1)
+- **DO NOT** use constraint commands like `equality : angle 80` or `parallel : line1 line2`
+- **DO** construct geometry to naturally have the desired properties
+- Check the observation carefully for errors
+- If there's an error, think about what caused it and how to fix it
+- You can see the rendered image - use it to verify your construction!
+- Pay attention to validation scores and failed conditions to improve your construction
+
+## Previous Attempts:
+
+{history}
+
+## Learning from History:
+
+**IMPORTANT**: Review the history above carefully:
+- Look at which approaches succeeded and which failed
+- Identify the root cause of errors (syntax, logic, missing objects)
+- If you made the same mistake multiple times, try a different strategy
+- If syntax errors occurred, double-check DSL syntax in this attempt
+- Compare rendered images to see if you're making progress
+
+## Common Mistakes to AVOID:
+
+❌ **WRONG:**
+```
+angle : A B C -> angle_ABC
+const int 80 -> angle_value
+equality : angle_ABC angle_value -> expr1  # This doesn't work!
+```
+
+✅ **CORRECT:**
+```
+point :  -> A
+point :  -> B
+point :  -> C
+polygon : A B C -> triangle c a b
+line : B C -> line_BC
+point :  -> D
+point :  -> E
+line : D E -> line_DE
+```
+
+## CRITICAL Rules:
+
+1. **Never redefine a variable** - Each label can only be defined once
+2. **Use random points** - `point :  -> A` for unconstrained points  
+3. **Fixed coordinates** - `point : 100 150 -> A` only if you need exact position
+4. **Learn from validation feedback** - Check which conditions failed and improve your construction
+
+Now continue with your next step:
+

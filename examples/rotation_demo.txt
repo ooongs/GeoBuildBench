@@ -1,0 +1,25 @@
+const int 150 -> x1
+const int 150 -> y1
+point : x1 y1 -> Center
+const int 200 -> x2
+const int 150 -> y2
+point : x2 y2 -> A
+segment : Center A -> seg1
+const AngleSize 0.523599 -> angle30
+rotate : A angle30 Center -> B
+segment : Center B -> seg2
+const AngleSize 1.047198 -> angle60
+rotate : A angle60 Center -> C
+segment : Center C -> seg3
+const AngleSize 1.570796 -> angle90
+rotate : A angle90 Center -> D
+segment : Center D -> seg4
+const AngleSize 3.141593 -> angle180
+rotate : A angle180 Center -> E
+segment : Center E -> seg5
+segment : A B -> ab
+segment : B C -> bc
+segment : C D -> cd
+segment : D A -> da
+equality : Center Center -> expr0
+prove : expr0 -> result

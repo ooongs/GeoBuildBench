@@ -1,0 +1,22 @@
+const int 150 -> int1
+const int 150 -> int2
+point : int1 int2 -> Center
+const int 200 -> int3
+const int 150 -> int4
+point : int3 int4 -> P0
+const AngleSize 1.2566370614359172 -> angle5
+rotate : P0 angle5 Center -> P1
+const AngleSize 2.5132741228718345 -> angle6
+rotate : P0 angle6 Center -> P2
+const AngleSize 3.7699111843077517 -> angle7
+rotate : P0 angle7 Center -> P3
+const AngleSize 5.026548245743669 -> angle8
+rotate : P0 angle8 Center -> P4
+segment : P0 P1 -> s0
+segment : P1 P2 -> s1
+segment : P2 P3 -> s2
+segment : P3 P4 -> s3
+segment : P4 P0 -> s4
+point :  -> _temp
+are_equal : _temp _temp -> expr0
+prove : expr0 -> result

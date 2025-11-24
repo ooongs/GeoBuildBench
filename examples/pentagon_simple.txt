@@ -1,0 +1,25 @@
+const int 150 -> cx
+const int 150 -> cy
+point : cx cy -> Center
+const int 200 -> x0
+const int 150 -> y0
+point : x0 y0 -> P0
+const int 72 -> deg1
+rotate : P0 deg1 Center -> P1
+const int 144 -> deg2
+rotate : P0 deg2 Center -> P2
+const int 216 -> deg3
+rotate : P0 deg3 Center -> P3
+const int 288 -> deg4
+rotate : P0 deg4 Center -> P4
+segment : P0 P1 -> s0
+segment : P1 P2 -> s1
+segment : P2 P3 -> s2
+segment : P3 P4 -> s3
+segment : P4 P0 -> s4
+point :  -> temp
+are_equal : temp temp -> expr0
+prove : expr0 -> result
+
+
+

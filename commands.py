@@ -170,6 +170,10 @@ def circle_pm(p, m):
 def circle_ps(p, s):
     return gt.Circle(p.a, s.length)
 
+def circle_pi(p, radius):
+    """중심 p, 반지름 radius(정수)인 원 생성"""
+    return gt.Circle(p.a, float(radius))
+
 def contained_by_pc(point, by_circle):
     return gt.Boolean(by_circle.contains(point.a))
 
@@ -418,6 +422,14 @@ def orthogonal_line_ps(point, segment):
 def point_():
     return gt.Point(np.random.normal(size = 2))
 
+def point_ii(x, y):
+    """고정된 좌표 (x, y)에 점 생성"""
+    return gt.Point([float(x), float(y)])
+
+def point_mm(mx, my):
+    """Measure 객체로 좌표 지정"""
+    return gt.Point([mx.x, my.x])
+
 def point_c(circle):
     return gt.Point(circle.c + circle.r * gt.random_direction())
 
@@ -534,6 +546,11 @@ def rotate_pap(point, angle, by_point):
 
 def rotate_pAp(point, angle_size, by_point):
     return gt.Point(by_point.a + gt.rotate_vec(point.a - by_point.a, angle_size.x))
+
+def rotate_pip(point, degrees, by_point):
+    """각도(degree)를 직접 사용하여 회전"""
+    radians = np.radians(float(degrees))
+    return gt.Point(by_point.a + gt.rotate_vec(point.a - by_point.a, radians))
 
 def segment_pp(p1, p2):
     return gt.Segment(p1.a, p2.a)

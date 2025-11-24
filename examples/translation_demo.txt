@@ -1,0 +1,28 @@
+const int 50 -> x1
+const int 150 -> y1
+point : x1 y1 -> A
+const int 150 -> x2
+const int 150 -> y2
+point : x2 y2 -> B
+vector : A B -> vec1
+const int 50 -> x3
+const int 50 -> y3
+point : x3 y3 -> P1
+translate : P1 vec1 -> P2
+translate : P2 vec1 -> P3
+translate : P3 vec1 -> P4
+segment : P1 P2 -> s1
+segment : P2 P3 -> s2
+segment : P3 P4 -> s3
+segment : A B -> arrow1
+const int 200 -> x4
+const int 200 -> y4
+point : x4 y4 -> Q1
+translate : Q1 vec1 -> Q2
+segment : Q1 Q2 -> s4
+equality : A A -> expr0
+prove : expr0 -> result
+
+
+
+

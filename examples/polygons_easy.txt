@@ -1,0 +1,38 @@
+const int 100 -> cx
+const int 150 -> cy
+point : cx cy -> Center
+const int 150 -> x0
+const int 150 -> y0
+point : x0 y0 -> P0
+const int 90 -> deg90
+rotate : P0 deg90 Center -> P1
+rotate : P1 deg90 Center -> P2
+rotate : P2 deg90 Center -> P3
+segment : P0 P1 -> square1
+segment : P1 P2 -> square2
+segment : P2 P3 -> square3
+segment : P3 P0 -> square4
+const int 250 -> cx2
+const int 150 -> cy2
+point : cx2 cy2 -> Center2
+const int 300 -> x1
+const int 150 -> y1
+point : x1 y1 -> Q0
+const int 60 -> deg60
+rotate : Q0 deg60 Center2 -> Q1
+rotate : Q1 deg60 Center2 -> Q2
+rotate : Q2 deg60 Center2 -> Q3
+rotate : Q3 deg60 Center2 -> Q4
+rotate : Q4 deg60 Center2 -> Q5
+segment : Q0 Q1 -> hex1
+segment : Q1 Q2 -> hex2
+segment : Q2 Q3 -> hex3
+segment : Q3 Q4 -> hex4
+segment : Q4 Q5 -> hex5
+segment : Q5 Q0 -> hex6
+point :  -> temp
+are_equal : temp temp -> expr0
+prove : expr0 -> result
+
+
+

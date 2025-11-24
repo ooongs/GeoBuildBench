@@ -1,0 +1,13 @@
+.env
+__pycache__/
+agent_images/
+agent_logs/
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.tiff
+*.ico
+*.webp
+data-5/

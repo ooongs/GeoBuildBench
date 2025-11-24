@@ -1,0 +1,13 @@
+const int 100 -> x
+const int 100 -> y
+point : x y -> Center
+const int 50 -> radius
+circle : Center radius -> c
+point : c -> P1
+point : c -> P2
+point : c -> P3
+segment : Center P1 -> r1
+segment : Center P2 -> r2
+segment : Center P3 -> r3
+equality : Center Center -> expr0
+prove : expr0 -> result

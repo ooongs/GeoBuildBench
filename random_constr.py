@@ -1,8 +1,11 @@
 import os
+import matplotlib.pyplot as plt
+import numpy as np
 from geo_types import *
 
 type_to_shortcut = {
     int       : 'i',
+    float     : 'i',  # float는 int와 동일하게 처리 (commands에서 float()로 변환)
     Boolean   : 'b',
     Measure   : 'm',
     Point     : 'p',
@@ -33,8 +36,53 @@ class Element:
 
     def drawable(self):
         return isinstance(self.data, (Point, Line, Angle, Polygon, Circle, Vector))
-    def draw(self, cr, corners):
-        if self.drawable(): self.data.draw(cr, corners)
+    
+    def draw(self, ax, corners, show_labels=True):
+        if not self.drawable():
+            return
+        
+        # 객체 그리기
+        self.data.draw(ax, corners)
+        
+        # 레이블 표시
+        if show_labels and not self.label.startswith('_'):
+            self._draw_label(ax, corners)
+    
+    def _draw_label(self, ax, corners):
+        """객체 레이블을 그림에 표시"""
+        offset = 3  # 레이블 오프셋
+        
+        if isinstance(self.data, Point):
+            # 점 레이블: 점 위쪽에 표시
+            ax.text(self.data.a[0], self.data.a[1] + offset, self.label,
+                   fontsize=9, ha='center', va='bottom', color='blue',
+                   bbox=dict(boxstyle='round,pad=0.3', facecolor='white', 
+                            edgecolor='none', alpha=0.7))
+        
+        elif isinstance(self.data, Circle):
+            # 원 레이블: 중심 근처에 표시
+            ax.text(self.data.c[0] + offset, self.data.c[1] + offset, self.label,
+                   fontsize=8, ha='left', va='bottom', color='green',
+                   bbox=dict(boxstyle='round,pad=0.3', facecolor='white',
+                            edgecolor='none', alpha=0.7))
+        
+        elif isinstance(self.data, (Line, Segment, Ray)):
+            # 선/선분 레이블: 중간점에 표시
+            endpoints = self.data.get_endpoints(corners)
+            if endpoints is not None and len(endpoints) == 2:
+                mid_x = (endpoints[0][0] + endpoints[1][0]) / 2
+                mid_y = (endpoints[0][1] + endpoints[1][1]) / 2
+                ax.text(mid_x, mid_y + offset, self.label,
+                       fontsize=8, ha='center', va='bottom', color='red',
+                       bbox=dict(boxstyle='round,pad=0.3', facecolor='white',
+                                edgecolor='none', alpha=0.7))
+        
+        # elif isinstance(self.data, Angle):
+        #     # 각도 레이블: 꼭짓점 근처에 표시
+        #     ax.text(self.data.p[0] + offset, self.data.p[1] + offset, self.label,
+        #            fontsize=8, ha='left', va='bottom', color='purple',
+        #            bbox=dict(boxstyle='round,pad=0.3', facecolor='white',
+        #                     edgecolor='none', alpha=0.7))
     def important_points(self):
         if self.drawable(): return self.data.important_points()
         else: return []
@@ -50,10 +98,12 @@ class Element:
         else: return None
 
 class Command:
-    def __init__(self, command_name, input_elements, output_elements):
+    def __init__(self, command_name, input_elements, output_elements, line_number=None, original_line=None):
         self.name = command_name
         self.input_elements = input_elements
         self.output_elements = output_elements
+        self.line_number = line_number
+        self.original_line = original_line
 
     def apply(self):
         input_data = [x.data for x in self.input_elements]
@@ -81,10 +131,12 @@ const_type_to_str = {
 str_to_const_type = dict((s,t) for (t,s) in const_type_to_str.items())
 
 class ConstCommand:
-    def __init__(self, datatype, value, element):
+    def __init__(self, datatype, value, element, line_number=None, original_line=None):
         self.datatype = datatype
         self.value = value
         self.element = element
+        self.line_number = line_number
+        self.original_line = original_line
 
     def apply(self):
         self.element.data = self.datatype(self.value)
@@ -93,8 +145,10 @@ class ConstCommand:
         datatype_str = const_type_to_str[self.datatype]
         return "const {} {} -> {}".format(datatype_str, self.value, self.label)
 
-def parse_command(line, element_dict):
+def parse_command(line, element_dict, line_number=None):
     tokens = line.split()
+    if len(tokens) == 0:  # 빈 줄 처리
+        return None
     if tokens[0] == "const":
         assert(len(tokens) == 5)
         datatype = str_to_const_type[tokens[1]]
@@ -102,7 +156,7 @@ def parse_command(line, element_dict):
         assert(tokens[3] == "->")
         label = tokens[4]
         element = Element(label, element_dict)
-        command = ConstCommand(datatype, value, element)
+        command = ConstCommand(datatype, value, element, line_number=line_number, original_line=line.strip())
         element.command = command
         return command
     else:
@@ -112,12 +166,61 @@ def parse_command(line, element_dict):
         arrow_index = labels.index("->")
         input_labels = labels[:arrow_index]
         output_labels = labels[arrow_index+1:]
-        input_elements = [element_dict[label] for label in input_labels]
+        
+        # 숫자 리터럴을 자동으로 element로 변환
+        input_elements = []
+        for label in input_labels:
+            # 각도 표기 확인 (degree: °, radian: rad/r)
+            is_degree = label.endswith('°')
+            is_radian = label.endswith('rad') or label.endswith('r')
+            
+            # 각도 표기 제거
+            clean_label = label
+            if is_degree:
+                clean_label = label[:-1]  # ° 제거
+            elif is_radian:
+                if label.endswith('rad'):
+                    clean_label = label[:-3]  # rad 제거
+                else:
+                    clean_label = label[:-1]  # r 제거
+            
+            # 숫자인지 확인
+            try:
+                value = float(clean_label)
+                # 자동 레이블 생성 (충돌 방지)
+                auto_label = f"_auto_{len(element_dict)}"
+                while auto_label in element_dict:
+                    auto_label = f"_auto_{len(element_dict)}_{np.random.randint(10000)}"
+                
+                # 임시 element 생성
+                element = Element(auto_label, element_dict)
+                
+                # 각도 타입에 따라 처리
+                if is_radian:
+                    # radian → AngleSize 객체로 저장
+                    element.data = AngleSize(value)
+                elif is_degree:
+                    # degree → radian으로 변환하여 AngleSize 객체로 저장
+                    element.data = AngleSize(np.radians(value))
+                else:
+                    # 일반 숫자: 소수점이 있으면 float, 없으면 int
+                    if '.' in clean_label:
+                        element.data = float(value)
+                    else:
+                        element.data = int(value)
+                
+                # 더미 command 생성 (추적용)
+                element.command = None
+                input_elements.append(element)
+            except ValueError:
+                # 숫자가 아니면 기존 element 찾기
+                input_elements.append(element_dict[label])
+        
         def element_or_none(label):
             if label is None: return None
             else: return Element(label, element_dict)
         output_elements = list(map(element_or_none, output_labels))
-        command = Command(command_name, input_elements, output_elements)
+        command = Command(command_name, input_elements, output_elements, line_number=line_number, original_line=line.strip())
         for el in output_elements:
             if el is not None: el.command = command
         return command
@@ -132,21 +235,36 @@ class Construction:
         self.element_dict = dict()
         self.elements = []
 
-    def render(self, cr, elements = None): # default: render all elements
+    def render(self, ax, elements = None, show_labels=True): # default: render all elements
         if elements is None: elements = self.elements
 
+        # Clear the axes
+        ax.clear()
+        
+        # Set aspect ratio to equal and remove axes
+        ax.set_aspect('equal')
+        ax.set_xlim(self.corners[0][0], self.corners[1][0])
+        ax.set_ylim(self.corners[0][1], self.corners[1][1])
+        ax.axis('off')
+        
+        # Draw all elements
         for el in elements:
-            el.draw(cr, self.corners)
+            el.draw(ax, self.corners, show_labels=show_labels)
 
     def render_to_numpy(self, elements = None):
-        surface = cairo.ImageSurface(cairo.FORMAT_A8, self.width, self.height)
-        cr = cairo.Context(surface)
-        self.render(cr, elements)
+        import matplotlib
+        matplotlib.use('Agg')
+        fig, ax = plt.subplots(figsize=(self.corners[1][0]/100, self.corners[1][1]/100), dpi=100)
+        self.render(ax, elements)
 
-        data = surface.get_data()
-        data = np.array(data, dtype = float)/255
-        data = data.reshape([self.height, surface.get_stride()])
-        data = data[:,:self.width]
+        # Convert to numpy array
+        fig.canvas.draw()
+        data = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
+        data = data.reshape(fig.canvas.get_width_height()[::-1] + (3,))
+        plt.close(fig)
+        
+        # Convert to grayscale
+        data = np.mean(data, axis=2) / 255
         return data
 
     def load(self, filename):
@@ -154,8 +272,10 @@ class Construction:
         self.to_prove = None
         self.element_dict = dict()
         with open(filename, 'r') as f:
-            for line in f:
-                command = parse_command(line, self.element_dict)
+            for line_num, line in enumerate(f, 1):
+                command = parse_command(line, self.element_dict, line_number=line_num)
+                if command is None:  # 빈 줄이거나 주석 등
+                    continue
                 if isinstance(command, ConstCommand): command.apply()
                 elif isinstance(command, Command):
                     if command.name == "prove":
@@ -167,11 +287,18 @@ class Construction:
 
                     else: self.nc_commands.append(command)
 
-        assert(self.to_prove is not None)
+        # assert(self.to_prove is not None)
         self.elements = list(self.element_dict.values())
 
     def run_commands(self):
-        for command in self.nc_commands: command.apply()
+        for command in self.nc_commands:
+            try:
+                command.apply()
+            except Exception as e:
+                # Enhanced error message with line information
+                error_msg = f"Error at line {command.line_number}: `{command.original_line}`\n"
+                error_msg += f"Reason: {type(e).__name__}: {str(e)}"
+                raise RuntimeError(error_msg) from e
 
     def generate(self, require_theorem = True, max_attempts = 100): # max_attempts = 0 -> inf
         while True:

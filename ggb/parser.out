@@ -1,0 +1,614 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> expression
+Rule 1     expression -> expression BSYMBOL0 expression
+Rule 2     expression -> expression MINUS expression
+Rule 3     expression -> expression BSYMBOL1 expression
+Rule 4     expression -> expression BSYMBOL2 expression
+Rule 5     expression -> expression BSYMBOL3 expression
+Rule 6     expression -> MINUS expression
+Rule 7     nakedlist -> expression
+Rule 8     nakedlist -> nakedlist COMMA expression
+Rule 9     expression -> WORD LBRACKET nakedlist RBRACKET
+Rule 10    expression -> LPAREN expression RPAREN
+Rule 11    expression -> NUMBER
+Rule 12    expression -> NUMBER DEGREE
+Rule 13    expression -> DEGREE
+Rule 14    expression -> WORD
+
+Terminals, with rules where they appear
+
+BSYMBOL0             : 1
+BSYMBOL1             : 3
+BSYMBOL2             : 4
+BSYMBOL3             : 5
+COMMA                : 8
+DEGREE               : 12 13
+LBRACKET             : 9
+LPAREN               : 10
+MINUS                : 2 6
+NUMBER               : 11 12
+RBRACKET             : 9
+RPAREN               : 10
+WORD                 : 9 14
+error                : 
+
+Nonterminals, with rules where they appear
+
+expression           : 1 1 2 2 3 3 4 4 5 5 6 7 8 10 0
+nakedlist            : 8 9
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . expression
+    (1) expression -> . expression BSYMBOL0 expression
+    (2) expression -> . expression MINUS expression
+    (3) expression -> . expression BSYMBOL1 expression
+    (4) expression -> . expression BSYMBOL2 expression
+    (5) expression -> . expression BSYMBOL3 expression
+    (6) expression -> . MINUS expression
+    (9) expression -> . WORD LBRACKET nakedlist RBRACKET
+    (10) expression -> . LPAREN expression RPAREN
+    (11) expression -> . NUMBER
+    (12) expression -> . NUMBER DEGREE
+    (13) expression -> . DEGREE
+    (14) expression -> . WORD
+
+    MINUS           shift and go to state 2
+    WORD            shift and go to state 3
+    LPAREN          shift and go to state 4
+    NUMBER          shift and go to state 5
+    DEGREE          shift and go to state 6
+
+    expression                     shift and go to state 1
+
+state 1
+
+    (0) S' -> expression .
+    (1) expression -> expression . BSYMBOL0 expression
+    (2) expression -> expression . MINUS expression
+    (3) expression -> expression . BSYMBOL1 expression
+    (4) expression -> expression . BSYMBOL2 expression
+    (5) expression -> expression . BSYMBOL3 expression
+
+    BSYMBOL0        shift and go to state 7
+    MINUS           shift and go to state 8
+    BSYMBOL1        shift and go to state 9
+    BSYMBOL2        shift and go to state 10
+    BSYMBOL3        shift and go to state 11
+
+
+state 2
+
+    (6) expression -> MINUS . expression
+    (1) expression -> . expression BSYMBOL0 expression
+    (2) expression -> . expression MINUS expression
+    (3) expression -> . expression BSYMBOL1 expression
+    (4) expression -> . expression BSYMBOL2 expression
+    (5) expression -> . expression BSYMBOL3 expression
+    (6) expression -> . MINUS expression
+    (9) expression -> . WORD LBRACKET nakedlist RBRACKET
+    (10) expression -> . LPAREN expression RPAREN
+    (11) expression -> . NUMBER
+    (12) expression -> . NUMBER DEGREE
+    (13) expression -> . DEGREE
+    (14) expression -> . WORD
+
+    MINUS           shift and go to state 2
+    WORD            shift and go to state 3
+    LPAREN          shift and go to state 4
+    NUMBER          shift and go to state 5
+    DEGREE          shift and go to state 6
+
+    expression                     shift and go to state 12
+
+state 3
+
+    (9) expression -> WORD . LBRACKET nakedlist RBRACKET
+    (14) expression -> WORD .
+
+    LBRACKET        shift and go to state 13
+    BSYMBOL0        reduce using rule 14 (expression -> WORD .)
+    MINUS           reduce using rule 14 (expression -> WORD .)
+    BSYMBOL1        reduce using rule 14 (expression -> WORD .)
+    BSYMBOL2        reduce using rule 14 (expression -> WORD .)
+    BSYMBOL3        reduce using rule 14 (expression -> WORD .)
+    $end            reduce using rule 14 (expression -> WORD .)
+    RPAREN          reduce using rule 14 (expression -> WORD .)
+    RBRACKET        reduce using rule 14 (expression -> WORD .)
+    COMMA           reduce using rule 14 (expression -> WORD .)
+
+
+state 4
+
+    (10) expression -> LPAREN . expression RPAREN
+    (1) expression -> . expression BSYMBOL0 expression
+    (2) expression -> . expression MINUS expression
+    (3) expression -> . expression BSYMBOL1 expression
+    (4) expression -> . expression BSYMBOL2 expression
+    (5) expression -> . expression BSYMBOL3 expression
+    (6) expression -> . MINUS expression
+    (9) expression -> . WORD LBRACKET nakedlist RBRACKET
+    (10) expression -> . LPAREN expression RPAREN
+    (11) expression -> . NUMBER
+    (12) expression -> . NUMBER DEGREE
+    (13) expression -> . DEGREE
+    (14) expression -> . WORD
+
+    MINUS           shift and go to state 2
+    WORD            shift and go to state 3
+    LPAREN          shift and go to state 4
+    NUMBER          shift and go to state 5
+    DEGREE          shift and go to state 6
+
+    expression                     shift and go to state 14
+
+state 5
+
+    (11) expression -> NUMBER .
+    (12) expression -> NUMBER . DEGREE
+
+    BSYMBOL0        reduce using rule 11 (expression -> NUMBER .)
+    MINUS           reduce using rule 11 (expression -> NUMBER .)
+    BSYMBOL1        reduce using rule 11 (expression -> NUMBER .)
+    BSYMBOL2        reduce using rule 11 (expression -> NUMBER .)
+    BSYMBOL3        reduce using rule 11 (expression -> NUMBER .)
+    $end            reduce using rule 11 (expression -> NUMBER .)
+    RPAREN          reduce using rule 11 (expression -> NUMBER .)
+    RBRACKET        reduce using rule 11 (expression -> NUMBER .)
+    COMMA           reduce using rule 11 (expression -> NUMBER .)
+    DEGREE          shift and go to state 15
+
+
+state 6
+
+    (13) expression -> DEGREE .
+
+    BSYMBOL0        reduce using rule 13 (expression -> DEGREE .)
+    MINUS           reduce using rule 13 (expression -> DEGREE .)
+    BSYMBOL1        reduce using rule 13 (expression -> DEGREE .)
+    BSYMBOL2        reduce using rule 13 (expression -> DEGREE .)
+    BSYMBOL3        reduce using rule 13 (expression -> DEGREE .)
+    $end            reduce using rule 13 (expression -> DEGREE .)
+    RPAREN          reduce using rule 13 (expression -> DEGREE .)
+    RBRACKET        reduce using rule 13 (expression -> DEGREE .)
+    COMMA           reduce using rule 13 (expression -> DEGREE .)
+
+
+state 7
+
+    (1) expression -> expression BSYMBOL0 . expression
+    (1) expression -> . expression BSYMBOL0 expression
+    (2) expression -> . expression MINUS expression
+    (3) expression -> . expression BSYMBOL1 expression
+    (4) expression -> . expression BSYMBOL2 expression
+    (5) expression -> . expression BSYMBOL3 expression
+    (6) expression -> . MINUS expression
+    (9) expression -> . WORD LBRACKET nakedlist RBRACKET
+    (10) expression -> . LPAREN expression RPAREN
+    (11) expression -> . NUMBER
+    (12) expression -> . NUMBER DEGREE
+    (13) expression -> . DEGREE
+    (14) expression -> . WORD
+
+    MINUS           shift and go to state 2
+    WORD            shift and go to state 3
+    LPAREN          shift and go to state 4
+    NUMBER          shift and go to state 5
+    DEGREE          shift and go to state 6
+
+    expression                     shift and go to state 16
+
+state 8
+
+    (2) expression -> expression MINUS . expression
+    (1) expression -> . expression BSYMBOL0 expression
+    (2) expression -> . expression MINUS expression
+    (3) expression -> . expression BSYMBOL1 expression
+    (4) expression -> . expression BSYMBOL2 expression
+    (5) expression -> . expression BSYMBOL3 expression
+    (6) expression -> . MINUS expression
+    (9) expression -> . WORD LBRACKET nakedlist RBRACKET
+    (10) expression -> . LPAREN expression RPAREN
+    (11) expression -> . NUMBER
+    (12) expression -> . NUMBER DEGREE
+    (13) expression -> . DEGREE
+    (14) expression -> . WORD
+
+    MINUS           shift and go to state 2
+    WORD            shift and go to state 3
+    LPAREN          shift and go to state 4
+    NUMBER          shift and go to state 5
+    DEGREE          shift and go to state 6
+
+    expression                     shift and go to state 17
+
+state 9
+
+    (3) expression -> expression BSYMBOL1 . expression
+    (1) expression -> . expression BSYMBOL0 expression
+    (2) expression -> . expression MINUS expression
+    (3) expression -> . expression BSYMBOL1 expression
+    (4) expression -> . expression BSYMBOL2 expression
+    (5) expression -> . expression BSYMBOL3 expression
+    (6) expression -> . MINUS expression
+    (9) expression -> . WORD LBRACKET nakedlist RBRACKET
+    (10) expression -> . LPAREN expression RPAREN
+    (11) expression -> . NUMBER
+    (12) expression -> . NUMBER DEGREE
+    (13) expression -> . DEGREE
+    (14) expression -> . WORD
+
+    MINUS           shift and go to state 2
+    WORD            shift and go to state 3
+    LPAREN          shift and go to state 4
+    NUMBER          shift and go to state 5
+    DEGREE          shift and go to state 6
+
+    expression                     shift and go to state 18
+
+state 10
+
+    (4) expression -> expression BSYMBOL2 . expression
+    (1) expression -> . expression BSYMBOL0 expression
+    (2) expression -> . expression MINUS expression
+    (3) expression -> . expression BSYMBOL1 expression
+    (4) expression -> . expression BSYMBOL2 expression
+    (5) expression -> . expression BSYMBOL3 expression
+    (6) expression -> . MINUS expression
+    (9) expression -> . WORD LBRACKET nakedlist RBRACKET
+    (10) expression -> . LPAREN expression RPAREN
+    (11) expression -> . NUMBER
+    (12) expression -> . NUMBER DEGREE
+    (13) expression -> . DEGREE
+    (14) expression -> . WORD
+
+    MINUS           shift and go to state 2
+    WORD            shift and go to state 3
+    LPAREN          shift and go to state 4
+    NUMBER          shift and go to state 5
+    DEGREE          shift and go to state 6
+
+    expression                     shift and go to state 19
+
+state 11
+
+    (5) expression -> expression BSYMBOL3 . expression
+    (1) expression -> . expression BSYMBOL0 expression
+    (2) expression -> . expression MINUS expression
+    (3) expression -> . expression BSYMBOL1 expression
+    (4) expression -> . expression BSYMBOL2 expression
+    (5) expression -> . expression BSYMBOL3 expression
+    (6) expression -> . MINUS expression
+    (9) expression -> . WORD LBRACKET nakedlist RBRACKET
+    (10) expression -> . LPAREN expression RPAREN
+    (11) expression -> . NUMBER
+    (12) expression -> . NUMBER DEGREE
+    (13) expression -> . DEGREE
+    (14) expression -> . WORD
+
+    MINUS           shift and go to state 2
+    WORD            shift and go to state 3
+    LPAREN          shift and go to state 4
+    NUMBER          shift and go to state 5
+    DEGREE          shift and go to state 6
+
+    expression                     shift and go to state 20
+
+state 12
+
+    (6) expression -> MINUS expression .
+    (1) expression -> expression . BSYMBOL0 expression
+    (2) expression -> expression . MINUS expression
+    (3) expression -> expression . BSYMBOL1 expression
+    (4) expression -> expression . BSYMBOL2 expression
+    (5) expression -> expression . BSYMBOL3 expression
+
+    BSYMBOL0        reduce using rule 6 (expression -> MINUS expression .)
+    MINUS           reduce using rule 6 (expression -> MINUS expression .)
+    BSYMBOL1        reduce using rule 6 (expression -> MINUS expression .)
+    $end            reduce using rule 6 (expression -> MINUS expression .)
+    RPAREN          reduce using rule 6 (expression -> MINUS expression .)
+    RBRACKET        reduce using rule 6 (expression -> MINUS expression .)
+    COMMA           reduce using rule 6 (expression -> MINUS expression .)
+    BSYMBOL2        shift and go to state 10
+    BSYMBOL3        shift and go to state 11
+
+  ! BSYMBOL2        [ reduce using rule 6 (expression -> MINUS expression .) ]
+  ! BSYMBOL3        [ reduce using rule 6 (expression -> MINUS expression .) ]
+  ! BSYMBOL0        [ shift and go to state 7 ]
+  ! MINUS           [ shift and go to state 8 ]
+  ! BSYMBOL1        [ shift and go to state 9 ]
+
+
+state 13
+
+    (9) expression -> WORD LBRACKET . nakedlist RBRACKET
+    (7) nakedlist -> . expression
+    (8) nakedlist -> . nakedlist COMMA expression
+    (1) expression -> . expression BSYMBOL0 expression
+    (2) expression -> . expression MINUS expression
+    (3) expression -> . expression BSYMBOL1 expression
+    (4) expression -> . expression BSYMBOL2 expression
+    (5) expression -> . expression BSYMBOL3 expression
+    (6) expression -> . MINUS expression
+    (9) expression -> . WORD LBRACKET nakedlist RBRACKET
+    (10) expression -> . LPAREN expression RPAREN
+    (11) expression -> . NUMBER
+    (12) expression -> . NUMBER DEGREE
+    (13) expression -> . DEGREE
+    (14) expression -> . WORD
+
+    MINUS           shift and go to state 2
+    WORD            shift and go to state 3
+    LPAREN          shift and go to state 4
+    NUMBER          shift and go to state 5
+    DEGREE          shift and go to state 6
+
+    nakedlist                      shift and go to state 21
+    expression                     shift and go to state 22
+
+state 14
+
+    (10) expression -> LPAREN expression . RPAREN
+    (1) expression -> expression . BSYMBOL0 expression
+    (2) expression -> expression . MINUS expression
+    (3) expression -> expression . BSYMBOL1 expression
+    (4) expression -> expression . BSYMBOL2 expression
+    (5) expression -> expression . BSYMBOL3 expression
+
+    RPAREN          shift and go to state 23
+    BSYMBOL0        shift and go to state 7
+    MINUS           shift and go to state 8
+    BSYMBOL1        shift and go to state 9
+    BSYMBOL2        shift and go to state 10
+    BSYMBOL3        shift and go to state 11
+
+
+state 15
+
+    (12) expression -> NUMBER DEGREE .
+
+    BSYMBOL0        reduce using rule 12 (expression -> NUMBER DEGREE .)
+    MINUS           reduce using rule 12 (expression -> NUMBER DEGREE .)
+    BSYMBOL1        reduce using rule 12 (expression -> NUMBER DEGREE .)
+    BSYMBOL2        reduce using rule 12 (expression -> NUMBER DEGREE .)
+    BSYMBOL3        reduce using rule 12 (expression -> NUMBER DEGREE .)
+    $end            reduce using rule 12 (expression -> NUMBER DEGREE .)
+    RPAREN          reduce using rule 12 (expression -> NUMBER DEGREE .)
+    RBRACKET        reduce using rule 12 (expression -> NUMBER DEGREE .)
+    COMMA           reduce using rule 12 (expression -> NUMBER DEGREE .)
+
+
+state 16
+
+    (1) expression -> expression BSYMBOL0 expression .
+    (1) expression -> expression . BSYMBOL0 expression
+    (2) expression -> expression . MINUS expression
+    (3) expression -> expression . BSYMBOL1 expression
+    (4) expression -> expression . BSYMBOL2 expression
+    (5) expression -> expression . BSYMBOL3 expression
+
+    BSYMBOL0        reduce using rule 1 (expression -> expression BSYMBOL0 expression .)
+    $end            reduce using rule 1 (expression -> expression BSYMBOL0 expression .)
+    RPAREN          reduce using rule 1 (expression -> expression BSYMBOL0 expression .)
+    RBRACKET        reduce using rule 1 (expression -> expression BSYMBOL0 expression .)
+    COMMA           reduce using rule 1 (expression -> expression BSYMBOL0 expression .)
+    MINUS           shift and go to state 8
+    BSYMBOL1        shift and go to state 9
+    BSYMBOL2        shift and go to state 10
+    BSYMBOL3        shift and go to state 11
+
+  ! MINUS           [ reduce using rule 1 (expression -> expression BSYMBOL0 expression .) ]
+  ! BSYMBOL1        [ reduce using rule 1 (expression -> expression BSYMBOL0 expression .) ]
+  ! BSYMBOL2        [ reduce using rule 1 (expression -> expression BSYMBOL0 expression .) ]
+  ! BSYMBOL3        [ reduce using rule 1 (expression -> expression BSYMBOL0 expression .) ]
+  ! BSYMBOL0        [ shift and go to state 7 ]
+
+
+state 17
+
+    (2) expression -> expression MINUS expression .
+    (1) expression -> expression . BSYMBOL0 expression
+    (2) expression -> expression . MINUS expression
+    (3) expression -> expression . BSYMBOL1 expression
+    (4) expression -> expression . BSYMBOL2 expression
+    (5) expression -> expression . BSYMBOL3 expression
+
+    BSYMBOL0        reduce using rule 2 (expression -> expression MINUS expression .)
+    MINUS           reduce using rule 2 (expression -> expression MINUS expression .)
+    BSYMBOL1        reduce using rule 2 (expression -> expression MINUS expression .)
+    $end            reduce using rule 2 (expression -> expression MINUS expression .)
+    RPAREN          reduce using rule 2 (expression -> expression MINUS expression .)
+    RBRACKET        reduce using rule 2 (expression -> expression MINUS expression .)
+    COMMA           reduce using rule 2 (expression -> expression MINUS expression .)
+    BSYMBOL2        shift and go to state 10
+    BSYMBOL3        shift and go to state 11
+
+  ! BSYMBOL2        [ reduce using rule 2 (expression -> expression MINUS expression .) ]
+  ! BSYMBOL3        [ reduce using rule 2 (expression -> expression MINUS expression .) ]
+  ! BSYMBOL0        [ shift and go to state 7 ]
+  ! MINUS           [ shift and go to state 8 ]
+  ! BSYMBOL1        [ shift and go to state 9 ]
+
+
+state 18
+
+    (3) expression -> expression BSYMBOL1 expression .
+    (1) expression -> expression . BSYMBOL0 expression
+    (2) expression -> expression . MINUS expression
+    (3) expression -> expression . BSYMBOL1 expression
+    (4) expression -> expression . BSYMBOL2 expression
+    (5) expression -> expression . BSYMBOL3 expression
+
+    BSYMBOL0        reduce using rule 3 (expression -> expression BSYMBOL1 expression .)
+    MINUS           reduce using rule 3 (expression -> expression BSYMBOL1 expression .)
+    BSYMBOL1        reduce using rule 3 (expression -> expression BSYMBOL1 expression .)
+    $end            reduce using rule 3 (expression -> expression BSYMBOL1 expression .)
+    RPAREN          reduce using rule 3 (expression -> expression BSYMBOL1 expression .)
+    RBRACKET        reduce using rule 3 (expression -> expression BSYMBOL1 expression .)
+    COMMA           reduce using rule 3 (expression -> expression BSYMBOL1 expression .)
+    BSYMBOL2        shift and go to state 10
+    BSYMBOL3        shift and go to state 11
+
+  ! BSYMBOL2        [ reduce using rule 3 (expression -> expression BSYMBOL1 expression .) ]
+  ! BSYMBOL3        [ reduce using rule 3 (expression -> expression BSYMBOL1 expression .) ]
+  ! BSYMBOL0        [ shift and go to state 7 ]
+  ! MINUS           [ shift and go to state 8 ]
+  ! BSYMBOL1        [ shift and go to state 9 ]
+
+
+state 19
+
+    (4) expression -> expression BSYMBOL2 expression .
+    (1) expression -> expression . BSYMBOL0 expression
+    (2) expression -> expression . MINUS expression
+    (3) expression -> expression . BSYMBOL1 expression
+    (4) expression -> expression . BSYMBOL2 expression
+    (5) expression -> expression . BSYMBOL3 expression
+
+    BSYMBOL0        reduce using rule 4 (expression -> expression BSYMBOL2 expression .)
+    MINUS           reduce using rule 4 (expression -> expression BSYMBOL2 expression .)
+    BSYMBOL1        reduce using rule 4 (expression -> expression BSYMBOL2 expression .)
+    BSYMBOL2        reduce using rule 4 (expression -> expression BSYMBOL2 expression .)
+    $end            reduce using rule 4 (expression -> expression BSYMBOL2 expression .)
+    RPAREN          reduce using rule 4 (expression -> expression BSYMBOL2 expression .)
+    RBRACKET        reduce using rule 4 (expression -> expression BSYMBOL2 expression .)
+    COMMA           reduce using rule 4 (expression -> expression BSYMBOL2 expression .)
+    BSYMBOL3        shift and go to state 11
+
+  ! BSYMBOL3        [ reduce using rule 4 (expression -> expression BSYMBOL2 expression .) ]
+  ! BSYMBOL0        [ shift and go to state 7 ]
+  ! MINUS           [ shift and go to state 8 ]
+  ! BSYMBOL1        [ shift and go to state 9 ]
+  ! BSYMBOL2        [ shift and go to state 10 ]
+
+
+state 20
+
+    (5) expression -> expression BSYMBOL3 expression .
+    (1) expression -> expression . BSYMBOL0 expression
+    (2) expression -> expression . MINUS expression
+    (3) expression -> expression . BSYMBOL1 expression
+    (4) expression -> expression . BSYMBOL2 expression
+    (5) expression -> expression . BSYMBOL3 expression
+
+    BSYMBOL0        reduce using rule 5 (expression -> expression BSYMBOL3 expression .)
+    MINUS           reduce using rule 5 (expression -> expression BSYMBOL3 expression .)
+    BSYMBOL1        reduce using rule 5 (expression -> expression BSYMBOL3 expression .)
+    BSYMBOL2        reduce using rule 5 (expression -> expression BSYMBOL3 expression .)
+    $end            reduce using rule 5 (expression -> expression BSYMBOL3 expression .)
+    RPAREN          reduce using rule 5 (expression -> expression BSYMBOL3 expression .)
+    RBRACKET        reduce using rule 5 (expression -> expression BSYMBOL3 expression .)
+    COMMA           reduce using rule 5 (expression -> expression BSYMBOL3 expression .)
+    BSYMBOL3        shift and go to state 11
+
+  ! BSYMBOL3        [ reduce using rule 5 (expression -> expression BSYMBOL3 expression .) ]
+  ! BSYMBOL0        [ shift and go to state 7 ]
+  ! MINUS           [ shift and go to state 8 ]
+  ! BSYMBOL1        [ shift and go to state 9 ]
+  ! BSYMBOL2        [ shift and go to state 10 ]
+
+
+state 21
+
+    (9) expression -> WORD LBRACKET nakedlist . RBRACKET
+    (8) nakedlist -> nakedlist . COMMA expression
+
+    RBRACKET        shift and go to state 24
+    COMMA           shift and go to state 25
+
+
+state 22
+
+    (7) nakedlist -> expression .
+    (1) expression -> expression . BSYMBOL0 expression
+    (2) expression -> expression . MINUS expression
+    (3) expression -> expression . BSYMBOL1 expression
+    (4) expression -> expression . BSYMBOL2 expression
+    (5) expression -> expression . BSYMBOL3 expression
+
+    RBRACKET        reduce using rule 7 (nakedlist -> expression .)
+    COMMA           reduce using rule 7 (nakedlist -> expression .)
+    BSYMBOL0        shift and go to state 7
+    MINUS           shift and go to state 8
+    BSYMBOL1        shift and go to state 9
+    BSYMBOL2        shift and go to state 10
+    BSYMBOL3        shift and go to state 11
+
+
+state 23
+
+    (10) expression -> LPAREN expression RPAREN .
+
+    BSYMBOL0        reduce using rule 10 (expression -> LPAREN expression RPAREN .)
+    MINUS           reduce using rule 10 (expression -> LPAREN expression RPAREN .)
+    BSYMBOL1        reduce using rule 10 (expression -> LPAREN expression RPAREN .)
+    BSYMBOL2        reduce using rule 10 (expression -> LPAREN expression RPAREN .)
+    BSYMBOL3        reduce using rule 10 (expression -> LPAREN expression RPAREN .)
+    $end            reduce using rule 10 (expression -> LPAREN expression RPAREN .)
+    RPAREN          reduce using rule 10 (expression -> LPAREN expression RPAREN .)
+    RBRACKET        reduce using rule 10 (expression -> LPAREN expression RPAREN .)
+    COMMA           reduce using rule 10 (expression -> LPAREN expression RPAREN .)
+
+
+state 24
+
+    (9) expression -> WORD LBRACKET nakedlist RBRACKET .
+
+    BSYMBOL0        reduce using rule 9 (expression -> WORD LBRACKET nakedlist RBRACKET .)
+    MINUS           reduce using rule 9 (expression -> WORD LBRACKET nakedlist RBRACKET .)
+    BSYMBOL1        reduce using rule 9 (expression -> WORD LBRACKET nakedlist RBRACKET .)
+    BSYMBOL2        reduce using rule 9 (expression -> WORD LBRACKET nakedlist RBRACKET .)
+    BSYMBOL3        reduce using rule 9 (expression -> WORD LBRACKET nakedlist RBRACKET .)
+    $end            reduce using rule 9 (expression -> WORD LBRACKET nakedlist RBRACKET .)
+    RPAREN          reduce using rule 9 (expression -> WORD LBRACKET nakedlist RBRACKET .)
+    RBRACKET        reduce using rule 9 (expression -> WORD LBRACKET nakedlist RBRACKET .)
+    COMMA           reduce using rule 9 (expression -> WORD LBRACKET nakedlist RBRACKET .)
+
+
+state 25
+
+    (8) nakedlist -> nakedlist COMMA . expression
+    (1) expression -> . expression BSYMBOL0 expression
+    (2) expression -> . expression MINUS expression
+    (3) expression -> . expression BSYMBOL1 expression
+    (4) expression -> . expression BSYMBOL2 expression
+    (5) expression -> . expression BSYMBOL3 expression
+    (6) expression -> . MINUS expression
+    (9) expression -> . WORD LBRACKET nakedlist RBRACKET
+    (10) expression -> . LPAREN expression RPAREN
+    (11) expression -> . NUMBER
+    (12) expression -> . NUMBER DEGREE
+    (13) expression -> . DEGREE
+    (14) expression -> . WORD
+
+    MINUS           shift and go to state 2
+    WORD            shift and go to state 3
+    LPAREN          shift and go to state 4
+    NUMBER          shift and go to state 5
+    DEGREE          shift and go to state 6
+
+    expression                     shift and go to state 26
+
+state 26
+
+    (8) nakedlist -> nakedlist COMMA expression .
+    (1) expression -> expression . BSYMBOL0 expression
+    (2) expression -> expression . MINUS expression
+    (3) expression -> expression . BSYMBOL1 expression
+    (4) expression -> expression . BSYMBOL2 expression
+    (5) expression -> expression . BSYMBOL3 expression
+
+    RBRACKET        reduce using rule 8 (nakedlist -> nakedlist COMMA expression .)
+    COMMA           reduce using rule 8 (nakedlist -> nakedlist COMMA expression .)
+    BSYMBOL0        shift and go to state 7
+    MINUS           shift and go to state 8
+    BSYMBOL1        shift and go to state 9
+    BSYMBOL2        shift and go to state 10
+    BSYMBOL3        shift and go to state 11
+

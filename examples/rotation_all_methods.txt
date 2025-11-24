@@ -1,0 +1,34 @@
+const int 150 -> cx
+const int 150 -> cy
+point : cx cy -> Center
+const int 200 -> x0
+const int 150 -> y0
+point : x0 y0 -> P0
+const int 45 -> deg45
+rotate : P0 deg45 Center -> P1
+const AngleSize 1.570796 -> rad90
+rotate : P0 rad90 Center -> P2
+const int 100 -> x1
+const int 100 -> y1
+point : x1 y1 -> A
+const int 100 -> x2
+const int 150 -> y2
+point : x2 y2 -> B
+const int 150 -> x3
+const int 100 -> y3
+point : x3 y3 -> C
+angle : A B C -> angle_abc
+rotate : P0 angle_abc B -> P3
+segment : Center P0 -> s0
+segment : Center P1 -> s1
+segment : Center P2 -> s2
+segment : Center P3 -> s3
+segment : P0 P1 -> arc1
+segment : P1 P2 -> arc2
+segment : P2 P3 -> arc3
+point :  -> temp
+are_equal : temp temp -> expr0
+prove : expr0 -> result
+
+
+

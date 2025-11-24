@@ -1,0 +1,19 @@
+const int 150 -> int1
+const int 150 -> int2
+point : int1 int2 -> Center
+const int 200 -> int3
+const int 150 -> int4
+point : int3 int4 -> A
+const AngleSize 1.5707963267948966 -> angle5
+rotate : A angle5 Center -> B
+const AngleSize 1.5707963267948966 -> angle6
+rotate : B angle6 Center -> C
+const AngleSize 1.5707963267948966 -> angle7
+rotate : C angle7 Center -> D
+segment : A B -> seg8
+segment : B C -> seg9
+segment : C D -> seg10
+segment : D A -> seg11
+point :  -> _temp
+are_equal : _temp _temp -> expr0
+prove : expr0 -> result

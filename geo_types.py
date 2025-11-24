@@ -1,5 +1,6 @@
-import cairo
 import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.patches import Arc as MPLArc, Circle as MPLCircle, FancyArrowPatch, Polygon as MPLPolygon
 
 def interpolate(start, end, alpha):
     return (1-alpha)*start + alpha*end
@@ -20,9 +21,8 @@ class Point:
     def __init__(self, a):
         self.a = np.array(a)
     def __repr__(self): return "Point({}, {})".format(self.a[0], self.a[1])
-    def draw(self, cr, corners):
-        cr.arc(self.a[0], self.a[1], 3, 0, 2*np.pi)
-        cr.fill()
+    def draw(self, ax, corners):
+        ax.plot(self.a[0], self.a[1], 'ko', markersize=5)
     def equivalent(self, other):
         if not isinstance(other, Point): return False
         return np.isclose(self.a, other.a).all()
@@ -88,15 +88,13 @@ class Line:
         if endpoints is None: return self.n*self.c
         return interpolate(endpoints[0], endpoints[1], np.random.random())
 
-    def draw(self, cr, corners):
+    def draw(self, ax, corners):
         endpoints = self.get_endpoints(corners)
         if endpoints is None: return
 
-        cr.move_to(*endpoints[0])
-        cr.line_to(*endpoints[1])
-
-        cr.set_line_width(1)
-        cr.stroke()
+        ax.plot([endpoints[0][0], endpoints[1][0]], 
+                [endpoints[0][1], endpoints[1][1]], 
+                'k-', linewidth=1)
 
     def contains(self, x):
         return np.isclose(np.dot(x,self.n), self.c)
@@ -199,11 +197,13 @@ class Angle:
         if isinstance(other, AngleSize): return np.isclose(self.angle, other.x)
         return False
 
-    def draw(self, cr, corners):
-        cr.arc(self.p[0], self.p[1], self.r,
-               self.start_angle, self.end_angle)
-        cr.set_line_width(1)
-        cr.stroke()
+    def draw(self, ax, corners):
+        angle_deg_start = np.degrees(self.start_angle)
+        angle_deg_end = np.degrees(self.end_angle)
+        arc = MPLArc(self.p, 2*self.r, 2*self.r, angle=0, 
+                     theta1=angle_deg_start, theta2=angle_deg_end,
+                     color='black', linewidth=1, fill=False)
+        ax.add_patch(arc)
 
 
 class Polygon:
@@ -217,16 +217,12 @@ class Polygon:
     def important_points(self):
         return []
 
-    def draw(self, cr, corners):
-
+    def draw(self, ax, corners):
         return
-        cr.save()
-        cr.move_to(*self.points[-1])
-        for point in self.points:
-            cr.line_to(*point)
-        cr.set_source_rgba(0, 0, 0, 0.1)
-        cr.fill()
-        cr.restore()
+        # Polygon drawing disabled by default (as in original)
+        # polygon = MPLPolygon(self.points, closed=True, 
+        #                      facecolor='black', alpha=0.1, edgecolor='none')
+        # ax.add_patch(polygon)
 
 
 class Circle:
@@ -251,10 +247,10 @@ class Circle:
         if not isinstance(other, Circle): return False
         return np.isclose(self.c, other.c).all() and np.isclose(self.r, other.r)
 
-    def draw(self, cr, corners):
-        cr.arc(self.c[0], self.c[1], self.r, 0, 2*np.pi)
-        cr.set_line_width(1)
-        cr.stroke()
+    def draw(self, ax, corners):
+        circle = MPLCircle(self.c, self.r, color='black', 
+                          linewidth=1, fill=False)
+        ax.add_patch(circle)
 
     def contains(self, x):
         return np.isclose(square_norm(x-self.c), self.r_squared)
@@ -271,10 +267,13 @@ class Arc(Circle):
         ]
         return [(p1+p2)/2]
 
-    def draw(self, cr, corners):
-        cr.arc(self.c[0], self.c[1], self.r, *self.angles)
-        cr.set_line_width(1)
-        cr.stroke()
+    def draw(self, ax, corners):
+        angle_deg_start = np.degrees(self.angles[0])
+        angle_deg_end = np.degrees(self.angles[1])
+        arc = MPLArc(self.c, 2*self.r, 2*self.r, angle=0,
+                     theta1=angle_deg_start, theta2=angle_deg_end,
+                     color='black', linewidth=1, fill=False)
+        ax.add_patch(arc)
 
     def contains(self, x):
         if not Circle.contains(self, x): return False
@@ -302,19 +301,11 @@ class Vector:
         if not isinstance(other, Vector): return False
         return np.isclose(self.v, other.v).all()
 
-    def draw(self, cr, corners):
-        cr.move_to(*self.end_points[0])
-        cr.line_to(*self.end_points[1])
-        cr.set_line_width(1)
-        cr.stroke()
-
-        tip_vec = -12*self.v / np.linalg.norm(self.v)
-        tip_vec2 = 0.5*vector_perp_rot(tip_vec)
-        cr.move_to(*self.end_points[1])
-        cr.line_to(*self.end_points[1]+tip_vec+tip_vec2)
-        cr.line_to(*self.end_points[1]+tip_vec-tip_vec2)
-        cr.move_to(*self.end_points[1])
-        cr.fill()
+    def draw(self, ax, corners):
+        arrow = FancyArrowPatch(self.end_points[0], self.end_points[1],
+                               arrowstyle='->', mutation_scale=15,
+                               linewidth=1, color='black')
+        ax.add_patch(arrow)
 
 class Measure:
     def __init__(self, x, dim = 0):

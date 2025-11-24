@@ -1,0 +1,23 @@
+const int 50 -> x1
+const int 50 -> y1
+point : x1 y1 -> A
+const int 100 -> x2
+const int 150 -> y2
+point : x2 y2 -> B
+const int 200 -> x3
+const int 100 -> y3
+point : x3 y3 -> C
+polygon : A B C -> poly1 a b c
+const int 30 -> radius1
+circle : A radius1 -> circle1
+const int 40 -> radius2
+circle : B radius2 -> circle2
+const int 35 -> radius3
+circle : C radius3 -> circle3
+segment : A B -> seg1
+segment : B C -> seg2
+segment : C A -> seg3
+midpoint : seg1 -> D
+line : C D -> median
+equality : A A -> expr0
+prove : expr0 -> result
