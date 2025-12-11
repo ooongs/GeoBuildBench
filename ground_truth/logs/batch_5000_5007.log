@@ -1,0 +1,66 @@
+[2025-12-10 16:02:32] 배치 51 시작: 5000 ~ 5007
+✓ OpenAI API key found
+  Using gpt-4.1 for two-stage processing:
+    - Stage 1: Problem validation + text cleaning
+    - Stage 2: Object extraction + construction difficulty rating
+
+Input directory: data-5/GeoQA3/json
+Total files found: 5007
+Output file: ground_truth/dataset_5000_5007.jsonl
+
+Processing options:
+  - Range: 5000 to 5007 (7 files)
+  - Skip ambiguous references (∠1, ∠2, etc.): ✓
+  - Clean text (remove '如图所示', questions): ✓
+  - Classify problems: ✓
+  - Rate difficulty: ✓
+  - Resume mode: ✓
+
+============================================================
+Two-Stage LLM Processing
+  Stage 1: Validate + Clean
+  Stage 2: Parse + Rate Difficulty (construction-focused)
+============================================================
+Processing range: 5000 to 5007
+Files to process: 7
+Output file: ground_truth/dataset_5000_5007.jsonl
+Resume mode: True (found 4846 already processed)
+============================================================
+
+Validation failed for 9912: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 14.3%] ✓ Parsed: 9912 | Unknown            | Diff: 3/5
+Validation failed for 9913: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 28.6%] ✓ Parsed: 9913 | Unknown            | Diff: 3/5
+Validation failed for 9915: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 42.9%] ✓ Parsed: 9915 | Unknown            | Diff: 3/5
+Validation failed for 9916: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 57.1%] ✓ Parsed: 9916 | Unknown            | Diff: 3/5
+Validation failed for 9917: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 71.4%] ✓ Parsed: 9917 | Unknown            | Diff: 3/5
+Validation failed for 9918: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 85.7%] ✓ Parsed: 9918 | Unknown            | Diff: 3/5
+Validation failed for 9922: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[100.0%] ✓ Parsed: 9922 | Unknown            | Diff: 3/5
+
+============================================================
+Range 5000-5007 Complete!
+============================================================
+  Already done: 0
+  Parsed: 7
+  Skipped (validation failed): 0
+  Errors: 0
+  Total processed this run: 7
+
+✓ Processing complete!
+  Output saved to: ground_truth/dataset_5000_5007.jsonl
+
+  To merge all files into final dataset:
+  python create_dataset.py --merge
+[2025-12-10 16:03:03] 배치 51 완료: 5000 ~ 5007

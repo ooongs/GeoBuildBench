@@ -14,7 +14,7 @@
 set -e
 
 # Default configuration
-DATASET="ground_truth/geoqa3_dataset.json"
+DATASET="data/geoqa3_dataset.json"
 MAX_ITER=5
 LIMIT=""
 START_IDX=0
@@ -24,7 +24,7 @@ API_BASE=""
 
 # Default models list (customize as needed)
 DEFAULT_MODELS=(
-    "gpt-4.1"
+    "gpt-5-mini"
     # Add vLLM models here
     # "Qwen/Qwen2.5-VL-7B-Instruct"
     # "meta-llama/Llama-3.2-11B-Vision-Instruct"
@@ -219,13 +219,13 @@ if [ ${#RESULT_FILES[@]} -gt 0 ]; then
     JSON_FILE="$RUN_DIR/comparison_report.json"
     
     # Generate text report
-    python analyze_benchmark_results.py "${RESULT_FILES[@]}" --format text --output "$REPORT_FILE" --per-problem
+    python scripts/analyze_benchmark_results.py "${RESULT_FILES[@]}" --format text --output "$REPORT_FILE" --per-problem
     
     # Generate CSV for spreadsheet
-    python analyze_benchmark_results.py "${RESULT_FILES[@]}" --format csv --output "$CSV_FILE"
+    python scripts/analyze_benchmark_results.py "${RESULT_FILES[@]}" --format csv --output "$CSV_FILE"
     
     # Generate JSON for programmatic access
-    python analyze_benchmark_results.py "${RESULT_FILES[@]}" --format json --output "$JSON_FILE"
+    python scripts/analyze_benchmark_results.py "${RESULT_FILES[@]}" --format json --output "$JSON_FILE"
     
     echo -e "${GREEN}Reports generated:${NC}"
     echo "  Text report: $REPORT_FILE"

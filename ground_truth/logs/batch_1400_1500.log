@@ -1,0 +1,271 @@
+[2025-12-10 14:54:06] 배치 15 시작: 1400 ~ 1500
+✓ OpenAI API key found
+  Using gpt-4.1 for two-stage processing:
+    - Stage 1: Problem validation + text cleaning
+    - Stage 2: Object extraction + construction difficulty rating
+
+Input directory: data-5/GeoQA3/json
+Total files found: 5007
+Output file: ground_truth/dataset_1400_1500.jsonl
+
+Processing options:
+  - Range: 1400 to 1500 (100 files)
+  - Skip ambiguous references (∠1, ∠2, etc.): ✓
+  - Clean text (remove '如图所示', questions): ✓
+  - Classify problems: ✓
+  - Rate difficulty: ✓
+  - Resume mode: ✓
+
+============================================================
+Two-Stage LLM Processing
+  Stage 1: Validate + Clean
+  Stage 2: Parse + Rate Difficulty (construction-focused)
+============================================================
+Processing range: 1400 to 1500
+Files to process: 100
+Output file: ground_truth/dataset_1400_1500.jsonl
+Resume mode: True (found 1230 already processed)
+============================================================
+
+[  1.0%] ✓ Parsed: 2294 | Measurement & Rati | Diff: 2/5
+Validation failed for 2295: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 659. Please try again in 1.318s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 1852. Please try again in 3.704s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[  2.0%] ✓ Parsed: 2295 | Unknown            | Diff: 3/5
+[  3.0%] ✓ Parsed: 2296 | Measurement & Rati | Diff: 2/5
+Validation failed for 2297: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 643. Please try again in 1.286s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 1839. Please try again in 3.678s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[  4.0%] ✓ Parsed: 2297 | Unknown            | Diff: 3/5
+Problem 2298 rejected: 树、学生、影子的顶端、B、A、C等点的位置均未明确定义，无法进行几何作图
+[  5.0%] ⊘ Skipped: 2298
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 28878, Requested 1803. Please try again in 1.362s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[  6.0%] ✓ Parsed: 2300 | Unknown            | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 1786. Please try again in 3.572s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[  7.0%] ✓ Parsed: 2301 | Unknown            | Diff: 3/5
+Validation failed for 2302: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29446, Requested 622. Please try again in 136ms. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+[  8.0%] ✓ Parsed: 2302 | Polygon Properties | Diff: 4/5
+Validation failed for 2303: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 645. Please try again in 1.29s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 28800, Requested 1837. Please try again in 1.274s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[  9.0%] ✓ Parsed: 2303 | Unknown            | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 28668, Requested 1809. Please try again in 954ms. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 10.0%] ✓ Parsed: 2304 | Unknown            | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29560, Requested 1807. Please try again in 2.734s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 11.0%] ✓ Parsed: 2305 | Unknown            | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 28341, Requested 1832. Please try again in 346ms. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 12.0%] ✓ Parsed: 2306 | Unknown            | Diff: 3/5
+Problem 2307 rejected: 点A、B、C、D、E的位置关系未定义，无法确定各点的具体位置，属于未定义点。
+[ 13.0%] ⊘ Skipped: 2307
+Validation failed for 2308: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 622. Please try again in 1.244s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 28716, Requested 1817. Please try again in 1.066s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 14.0%] ✓ Parsed: 2308 | Unknown            | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29708, Requested 1823. Please try again in 3.062s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 15.0%] ✓ Parsed: 2309 | Unknown            | Diff: 3/5
+[ 16.0%] ✓ Parsed: 2310 | Basic Construction | Diff: 3/5
+Validation failed for 2311: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 620. Please try again in 1.24s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 1805. Please try again in 3.61s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 17.0%] ✓ Parsed: 2311 | Unknown            | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29017, Requested 1796. Please try again in 1.626s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 18.0%] ✓ Parsed: 2312 | Unknown            | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29362, Requested 1816. Please try again in 2.356s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 19.0%] ✓ Parsed: 2313 | Unknown            | Diff: 3/5
+[ 20.0%] ✓ Parsed: 2314 | Basic Construction | Diff: 3/5
+Validation failed for 2315: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 623. Please try again in 1.246s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29144, Requested 1817. Please try again in 1.921s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 21.0%] ✓ Parsed: 2315 | Unknown            | Diff: 3/5
+Problem 2316 rejected: 点C、E的位置未定义，无法确定其在何处，导致影长CE、BE不可构造
+[ 22.0%] ⊘ Skipped: 2316
+Validation failed for 2317: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29565, Requested 631. Please try again in 392ms. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 28804, Requested 1826. Please try again in 1.26s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 23.0%] ✓ Parsed: 2317 | Unknown            | Diff: 3/5
+[ 24.0%] ✓ Parsed: 2318 | Measurement & Rati | Diff: 2/5
+Validation failed for 2319: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 624. Please try again in 1.248s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+[ 25.0%] ✓ Parsed: 2319 | Measurement & Rati | Diff: 3/5
+Validation failed for 2320: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 650. Please try again in 1.3s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29771, Requested 1843. Please try again in 3.228s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 26.0%] ✓ Parsed: 2320 | Unknown            | Diff: 3/5
+Validation failed for 2321: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29610, Requested 659. Please try again in 538ms. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+[ 27.0%] ✓ Parsed: 2321 | Measurement & Rati | Diff: 4/5
+Validation failed for 2322: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 607. Please try again in 1.214s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 28235, Requested 1801. Please try again in 72ms. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 28.0%] ✓ Parsed: 2322 | Unknown            | Diff: 3/5
+Problem 2323 rejected: D的位置未定义，无法确定D点在何处，属于Undefined Points
+[ 29.0%] ⊘ Skipped: 2323
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29422, Requested 1862. Please try again in 2.568s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 30.0%] ✓ Parsed: 2324 | Unknown            | Diff: 3/5
+Problem 2327 rejected: 油筒的形状、桶盖小口的位置、木棒插入的具体路径等均未定义，涉及点和线的位置不明确，无法进行几何作图
+[ 31.0%] ⊘ Skipped: 2327
+Problem 2329 rejected: 没有定义任何点、线、角或几何图形的位置，所有条件均为物理量描述，无法进行几何作图
+[ 32.0%] ⊘ Skipped: 2329
+Validation failed for 2330: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 641. Please try again in 1.282s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+[ 33.0%] ✓ Parsed: 2330 | Measurement & Rati | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 28512, Requested 1843. Please try again in 710ms. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 34.0%] ✓ Parsed: 2331 | Unknown            | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 1782. Please try again in 3.564s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 35.0%] ✓ Parsed: 2332 | Unknown            | Diff: 3/5
+Validation failed for 2333: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 598. Please try again in 1.196s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 28268, Requested 1794. Please try again in 124ms. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 36.0%] ✓ Parsed: 2333 | Unknown            | Diff: 3/5
+Problem 2334 rejected: 树、学生、影子的具体位置和点A、B、C的定义不明确，无法唯一确定各点的几何位置，属于未定义点。
+[ 37.0%] ⊘ Skipped: 2334
+Validation failed for 2335: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29771, Requested 648. Please try again in 838ms. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+LLM parsing failed: Expecting value: line 85 column 67 (char 5835), falling back to rule-based
+[ 38.0%] ✓ Parsed: 2335 | Unknown            | Diff: 3/5
+[ 39.0%] ✓ Parsed: 2337 | Basic Construction | Diff: 3/5
+Validation failed for 2338: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 603. Please try again in 1.206s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29854, Requested 1803. Please try again in 3.314s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 40.0%] ✓ Parsed: 2338 | Unknown            | Diff: 3/5
+Problem 2339 rejected: 没有定义任何点、线或角的位置，无法进行几何作图。
+[ 41.0%] ⊘ Skipped: 2339
+Validation failed for 2340: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 639. Please try again in 1.278s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29984, Requested 1834. Please try again in 3.636s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 42.0%] ✓ Parsed: 2340 | Unknown            | Diff: 3/5
+Problem 2342 rejected: 点E、D的位置不完全定义，DC和CD的具体位置关系不明，无法唯一构造
+[ 43.0%] ⊘ Skipped: 2342
+[ 44.0%] ✓ Parsed: 2343 | Circle Properties  | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 28214, Requested 1796. Please try again in 20ms. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 45.0%] ✓ Parsed: 2344 | Unknown            | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29233, Requested 1830. Please try again in 2.126s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 46.0%] ✓ Parsed: 2346 | Unknown            | Diff: 3/5
+Problem 2347 rejected: 电杆和钢索的具体位置、间距、钢索的固定点等均未定义，无法唯一确定几何图形，点P（钢索交点）的位置不明确
+[ 47.0%] ⊘ Skipped: 2347
+Validation failed for 2348: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29589, Requested 669. Please try again in 516ms. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+[ 48.0%] ✓ Parsed: 2348 | Measurement & Rati | Diff: 3/5
+Validation failed for 2349: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 634. Please try again in 1.268s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 1829. Please try again in 3.658s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 49.0%] ✓ Parsed: 2349 | Unknown            | Diff: 3/5
+Problem 2350 rejected: 缺少栏杆旋转轴、短臂和长臂的具体位置及连接方式，无法唯一确定几何图形，点的位置未定义。
+[ 50.0%] ⊘ Skipped: 2350
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29620, Requested 1808. Please try again in 2.856s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 51.0%] ✓ Parsed: 2351 | Unknown            | Diff: 3/5
+Validation failed for 2355: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29531, Requested 627. Please try again in 316ms. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29359, Requested 1822. Please try again in 2.362s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 52.0%] ✓ Parsed: 2355 | Unknown            | Diff: 3/5
+[ 53.0%] ✓ Parsed: 2356 | Measurement & Rati | Diff: 3/5
+Validation failed for 2358: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 619. Please try again in 1.238s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29442, Requested 1819. Please try again in 2.522s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 54.0%] ✓ Parsed: 2358 | Unknown            | Diff: 3/5
+Problem 2360 rejected: E点的位置未定义，无法确定E在何处，无法构造
+[ 55.0%] ⊘ Skipped: 2360
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 1802. Please try again in 3.604s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 56.0%] ✓ Parsed: 2361 | Unknown            | Diff: 3/5
+Problem 2362 rejected: 未定义O点的位置和OA、OB的具体构造方式，A、B的运动方式也未几何化描述，无法进行几何作图。
+[ 57.0%] ⊘ Skipped: 2362
+Problem 2363 rejected: 点E、C、B、A、D的位置关系未定义，树DB的相关点D、B未说明其在何处，无法唯一确定图形，属于未定义点。
+[ 58.0%] ⊘ Skipped: 2363
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 59.0%] ✓ Parsed: 2365 | Unknown            | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 60.0%] ✓ Parsed: 2366 | Unknown            | Diff: 3/5
+Validation failed for 2367: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+[ 61.0%] ✓ Parsed: 2367 | Measurement & Rati | Diff: 2/5
+Validation failed for 2369: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 62.0%] ✓ Parsed: 2369 | Unknown            | Diff: 3/5
+Validation failed for 2373: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 63.0%] ✓ Parsed: 2373 | Unknown            | Diff: 3/5
+Validation failed for 2374: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 64.0%] ✓ Parsed: 2374 | Unknown            | Diff: 3/5
+Validation failed for 2375: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 65.0%] ✓ Parsed: 2375 | Unknown            | Diff: 3/5
+Validation failed for 2376: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 66.0%] ✓ Parsed: 2376 | Unknown            | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 67.0%] ✓ Parsed: 2377 | Unknown            | Diff: 3/5
+Validation failed for 2378: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 68.0%] ✓ Parsed: 2378 | Unknown            | Diff: 3/5
+Validation failed for 2379: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 69.0%] ✓ Parsed: 2379 | Unknown            | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 70.0%] ✓ Parsed: 2381 | Unknown            | Diff: 3/5
+Validation failed for 2382: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 71.0%] ✓ Parsed: 2382 | Unknown            | Diff: 3/5
+Validation failed for 2383: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 72.0%] ✓ Parsed: 2383 | Unknown            | Diff: 3/5
+Validation failed for 2386: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+[ 73.0%] ✓ Parsed: 2386 | Measurement & Rati | Diff: 2/5
+Problem 2389 rejected: 纯计算问题，没有定义可作图的几何对象或位置，无法进行几何作图
+[ 74.0%] ⊘ Skipped: 2389
+Problem 2390 rejected: 树、A、B、C等点的具体位置和树影的方向未定义，无法唯一确定几何图形，属于不完全约束。
+[ 75.0%] ⊘ Skipped: 2390
+Validation failed for 2392: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+[ 76.0%] ✓ Parsed: 2392 | Locus Construction | Diff: 2/5
+Validation failed for 2393: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 77.0%] ✓ Parsed: 2393 | Unknown            | Diff: 3/5
+Validation failed for 2396: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+[ 78.0%] ✓ Parsed: 2396 | Measurement & Rati | Diff: 2/5
+[ 79.0%] ✓ Parsed: 2397 | Basic Construction | Diff: 2/5
+Validation failed for 2399: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+[ 80.0%] ✓ Parsed: 2399 | Circle Properties  | Diff: 2/5
+Validation failed for 2400: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+[ 81.0%] ✓ Parsed: 2400 | Measurement & Rati | Diff: 1/5
+Validation failed for 2402: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+[ 82.0%] ✓ Parsed: 2402 | Measurement & Rati | Diff: 2/5
+Validation failed for 2403: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+[ 83.0%] ✓ Parsed: 2403 | Measurement & Rati | Diff: 4/5
+Validation failed for 2405: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 84.0%] ✓ Parsed: 2405 | Unknown            | Diff: 3/5
+Validation failed for 2406: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+[ 85.0%] ✓ Parsed: 2406 | Measurement & Rati | Diff: 1/5
+Problem 2407 rejected: 点D和点B的位置未定义，树DB的具体位置关系不明，无法构造完整图形
+[ 86.0%] ⊘ Skipped: 2407
+Problem 2408 rejected: 点C和D的位置未定义,无法确定建筑物CD的具体位置,不满足几何作图条件
+[ 87.0%] ⊘ Skipped: 2408
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 88.0%] ✓ Parsed: 2409 | Unknown            | Diff: 3/5
+Validation failed for 2410: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 89.0%] ✓ Parsed: 2410 | Unknown            | Diff: 3/5
+Validation failed for 2411: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+[ 90.0%] ✓ Parsed: 2411 | Measurement & Rati | Diff: 2/5
+Validation failed for 2412: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 91.0%] ✓ Parsed: 2412 | Unknown            | Diff: 3/5
+Validation failed for 2413: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 92.0%] ✓ Parsed: 2413 | Unknown            | Diff: 3/5
+Validation failed for 2414: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 93.0%] ✓ Parsed: 2414 | Unknown            | Diff: 3/5
+Validation failed for 2415: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+[ 94.0%] ✓ Parsed: 2415 | Measurement & Rati | Diff: 2/5
+Validation failed for 2418: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 95.0%] ✓ Parsed: 2418 | Unknown            | Diff: 3/5
+Validation failed for 2419: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 96.0%] ✓ Parsed: 2419 | Unknown            | Diff: 3/5
+Validation failed for 2420: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 97.0%] ✓ Parsed: 2420 | Unknown            | Diff: 3/5
+[ 98.0%] ✓ Parsed: 2421 | Circle Properties  | Diff: 3/5
+Validation failed for 2422: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[ 99.0%] ✓ Parsed: 2422 | Unknown            | Diff: 3/5
+Validation failed for 2424: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}, falling back to rule-based
+[100.0%] ✓ Parsed: 2424 | Unknown            | Diff: 3/5
+
+============================================================
+Range 1400-1500 Complete!
+============================================================
+  Already done: 0
+  Parsed: 82
+  Skipped (validation failed): 18
+  Errors: 0
+  Total processed this run: 100
+
+✓ Processing complete!
+  Output saved to: ground_truth/dataset_1400_1500.jsonl
+
+  To merge all files into final dataset:
+  python create_dataset.py --merge
+[2025-12-10 15:05:33] 배치 15 완료: 1400 ~ 1500

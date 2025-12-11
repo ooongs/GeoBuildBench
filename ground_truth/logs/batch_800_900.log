@@ -1,0 +1,253 @@
+[2025-12-10 14:43:34] 배치 9 시작: 800 ~ 900
+✓ OpenAI API key found
+  Using gpt-4.1 for two-stage processing:
+    - Stage 1: Problem validation + text cleaning
+    - Stage 2: Object extraction + construction difficulty rating
+
+Input directory: data-5/GeoQA3/json
+Total files found: 5007
+Output file: ground_truth/dataset_800_900.jsonl
+
+Processing options:
+  - Range: 800 to 900 (100 files)
+  - Skip ambiguous references (∠1, ∠2, etc.): ✓
+  - Clean text (remove '如图所示', questions): ✓
+  - Classify problems: ✓
+  - Rate difficulty: ✓
+  - Resume mode: ✓
+
+============================================================
+Two-Stage LLM Processing
+  Stage 1: Validate + Clean
+  Stage 2: Parse + Rate Difficulty (construction-focused)
+============================================================
+Processing range: 800 to 900
+Files to process: 100
+Output file: ground_truth/dataset_800_900.jsonl
+Resume mode: True (found 762 already processed)
+============================================================
+
+Skipping problem 1265: contains numbered angles (∠1, ∠2)
+[  1.0%] ⊘ Skipped: 1265
+Skipping problem 1266: contains numbered angles (∠1, ∠2)
+[  2.0%] ⊘ Skipped: 1266
+Problem 1267 rejected: 点E的位置未定义，无法确定其在何处，折痕AE也无法唯一确定，D′的定义也依赖于E的位置，属于未定义点。
+[  3.0%] ⊘ Skipped: 1267
+Skipping problem 1269: contains numbered angles (∠1, ∠2)
+[  4.0%] ⊘ Skipped: 1269
+Problem 1270 rejected: 点A和点B的位置未定义，无法进行几何作图
+[  5.0%] ⊘ Skipped: 1270
+Problem 1272 rejected: 点D的位置未定义，无法确定D的具体位置，属于Undefined Points
+[  6.0%] ⊘ Skipped: 1272
+Skipping problem 1275: contains numbered angles (∠1, ∠2)
+[  7.0%] ⊘ Skipped: 1275
+Problem 1277 rejected: E点的位置未定义，无法确定E的构造。
+[  8.0%] ⊘ Skipped: 1277
+Skipping problem 1278: contains numbered angles (∠1, ∠2)
+[  9.0%] ⊘ Skipped: 1278
+[ 10.0%] ✓ Parsed: 1279 | Angle Relationship | Diff: 2/5
+Problem 1280 rejected: E点的位置未定义，∠E=30°为单字母角，无法确定具体角度，违反了'Undefined Points'和'Ambiguous Angles'规则
+[ 11.0%] ⊘ Skipped: 1280
+[ 12.0%] ✓ Parsed: 1281 | Polygon Properties | Diff: 2/5
+Validation failed for 1284: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 598. Please try again in 1.196s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 28800, Requested 1795. Please try again in 1.19s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 13.0%] ✓ Parsed: 1284 | Unknown            | Diff: 3/5
+Problem 1286 rejected: Point F and E are mentioned but their positions are not defined, making the construction impossible.
+[ 14.0%] ⊘ Skipped: 1286
+[ 15.0%] ✓ Parsed: 1287 | Triangle Propertie | Diff: 3/5
+Validation failed for 1288: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 613. Please try again in 1.226s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29415, Requested 1805. Please try again in 2.44s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 16.0%] ✓ Parsed: 1288 | Unknown            | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29344, Requested 1797. Please try again in 2.282s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 17.0%] ✓ Parsed: 1292 | Unknown            | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29016, Requested 1796. Please try again in 1.624s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 18.0%] ✓ Parsed: 1293 | Unknown            | Diff: 3/5
+Problem 1295 rejected: 点F的位置未定义，点A、B、F、E、D均未明确给出具体位置或关系，无法唯一确定图形，存在未定义点。
+[ 19.0%] ⊘ Skipped: 1295
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29188, Requested 1790. Please try again in 1.955s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 20.0%] ✓ Parsed: 1297 | Unknown            | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29939, Requested 1796. Please try again in 3.47s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 21.0%] ✓ Parsed: 1298 | Unknown            | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 1804. Please try again in 3.608s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 22.0%] ✓ Parsed: 1299 | Unknown            | Diff: 3/5
+Validation failed for 1300: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 612. Please try again in 1.224s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29618, Requested 1812. Please try again in 2.86s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 23.0%] ✓ Parsed: 1300 | Unknown            | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 28622, Requested 1810. Please try again in 864ms. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 24.0%] ✓ Parsed: 1301 | Unknown            | Diff: 3/5
+Problem 1302 rejected: 点B和D的位置未定义，无法确定其在何处，属于未定义点。
+[ 25.0%] ⊘ Skipped: 1302
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29085, Requested 1803. Please try again in 1.776s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 26.0%] ✓ Parsed: 1303 | Unknown            | Diff: 3/5
+Problem 1307 rejected: 点E和点G的位置未定义，无法确定其在何处，属于未定义点。
+[ 27.0%] ⊘ Skipped: 1307
+Skipping problem 1308: contains numbered angles (∠1, ∠2)
+[ 28.0%] ⊘ Skipped: 1308
+Skipping problem 1309: contains numbered angles (∠1, ∠2)
+[ 29.0%] ⊘ Skipped: 1309
+Skipping problem 1310: contains numbered angles (∠1, ∠2)
+[ 30.0%] ⊘ Skipped: 1310
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 28243, Requested 1786. Please try again in 58ms. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 31.0%] ✓ Parsed: 1311 | Unknown            | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 1783. Please try again in 3.566s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 32.0%] ✓ Parsed: 1312 | Unknown            | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29622, Requested 1783. Please try again in 2.81s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 33.0%] ✓ Parsed: 1315 | Unknown            | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 28707, Requested 1799. Please try again in 1.011s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 34.0%] ✓ Parsed: 1316 | Unknown            | Diff: 3/5
+Problem 1317 rejected: 点E和F的位置未定义，无法确定其在何处，角CEF也无法唯一确定
+[ 35.0%] ⊘ Skipped: 1317
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 28698, Requested 1788. Please try again in 972ms. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 36.0%] ✓ Parsed: 1322 | Unknown            | Diff: 3/5
+Skipping problem 1323: contains numbered angles (∠1, ∠2)
+[ 37.0%] ⊘ Skipped: 1323
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29235, Requested 1792. Please try again in 2.054s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 38.0%] ✓ Parsed: 1325 | Unknown            | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29442, Requested 1788. Please try again in 2.46s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 39.0%] ✓ Parsed: 1326 | Unknown            | Diff: 3/5
+Skipping problem 1329: contains numbered angles (∠1, ∠2)
+[ 40.0%] ⊘ Skipped: 1329
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 28212, Requested 1806. Please try again in 36ms. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 41.0%] ✓ Parsed: 1330 | Unknown            | Diff: 3/5
+Problem 1331 rejected: 点E、F、D、C、D′、C′的位置均未定义，无法确定其在长方形上的具体位置，属于未定义点。
+[ 42.0%] ⊘ Skipped: 1331
+Skipping problem 1332: contains numbered angles (∠1, ∠2)
+[ 43.0%] ⊘ Skipped: 1332
+Validation failed for 1334: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 598. Please try again in 1.196s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+[ 44.0%] ✓ Parsed: 1334 | Polygon Properties | Diff: 1/5
+Skipping problem 1336: contains numbered angles (∠1, ∠2)
+[ 45.0%] ⊘ Skipped: 1336
+Validation failed for 1337: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 611. Please try again in 1.222s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29380, Requested 1811. Please try again in 2.382s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 46.0%] ✓ Parsed: 1337 | Unknown            | Diff: 3/5
+Skipping problem 1341: contains numbered angles (∠1, ∠2)
+[ 47.0%] ⊘ Skipped: 1341
+Skipping problem 1342: contains numbered angles (∠1, ∠2)
+[ 48.0%] ⊘ Skipped: 1342
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 28552, Requested 1785. Please try again in 674ms. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 49.0%] ✓ Parsed: 1344 | Unknown            | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29241, Requested 1785. Please try again in 2.052s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 50.0%] ✓ Parsed: 1345 | Unknown            | Diff: 3/5
+Skipping problem 1346: contains numbered angles (∠1, ∠2)
+[ 51.0%] ⊘ Skipped: 1346
+Skipping problem 1349: contains numbered angles (∠1, ∠2)
+[ 52.0%] ⊘ Skipped: 1349
+Problem 1350 rejected: 点F的位置未定义，无法确定F的构造方法，存在未定义点
+[ 53.0%] ⊘ Skipped: 1350
+Skipping problem 1354: contains numbered angles (∠1, ∠2)
+[ 54.0%] ⊘ Skipped: 1354
+Problem 1355 rejected: 点B、C的位置未定义，∠ABC无法定位，缺乏足够的构造信息
+[ 55.0%] ⊘ Skipped: 1355
+Validation failed for 1356: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29607, Requested 628. Please try again in 469ms. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 28226, Requested 1821. Please try again in 94ms. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 56.0%] ✓ Parsed: 1356 | Unknown            | Diff: 3/5
+Skipping problem 1358: contains numbered angles (∠1, ∠2)
+[ 57.0%] ⊘ Skipped: 1358
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29758, Requested 1807. Please try again in 3.13s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 58.0%] ✓ Parsed: 1359 | Unknown            | Diff: 3/5
+Problem 1360 rejected: Point D is mentioned but its position is not defined (D is not specified to be on any side or with any construction rule).
+[ 59.0%] ⊘ Skipped: 1360
+Skipping problem 1362: contains numbered angles (∠1, ∠2)
+[ 60.0%] ⊘ Skipped: 1362
+Skipping problem 1366: contains numbered angles (∠1, ∠2)
+[ 61.0%] ⊘ Skipped: 1366
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29079, Requested 1786. Please try again in 1.73s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 62.0%] ✓ Parsed: 1368 | Unknown            | Diff: 3/5
+Skipping problem 1369: contains numbered angles (∠1, ∠2)
+[ 63.0%] ⊘ Skipped: 1369
+Skipping problem 1371: contains numbered angles (∠1, ∠2)
+[ 64.0%] ⊘ Skipped: 1371
+Skipping problem 1374: contains numbered angles (∠1, ∠2)
+[ 65.0%] ⊘ Skipped: 1374
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29606, Requested 1789. Please try again in 2.79s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 66.0%] ✓ Parsed: 1377 | Unknown            | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29984, Requested 1785. Please try again in 3.538s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 67.0%] ✓ Parsed: 1380 | Unknown            | Diff: 3/5
+Problem 1382 rejected: 未定义点和角的位置,没有足够的几何对象和约束来进行作图
+[ 68.0%] ⊘ Skipped: 1382
+Problem 1388 rejected: 点A和B的位置未定义，无法进行几何作图
+[ 69.0%] ⊘ Skipped: 1388
+Problem 1390 rejected: ∠B=33°为单字母角，B点位置未定义，且∠B含义不明确，属于歧义角。
+[ 70.0%] ⊘ Skipped: 1390
+Skipping problem 1392: contains numbered angles (∠1, ∠2)
+[ 71.0%] ⊘ Skipped: 1392
+Skipping problem 1393: contains numbered angles (∠1, ∠2)
+[ 72.0%] ⊘ Skipped: 1393
+Validation failed for 1397: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29675, Requested 607. Please try again in 564ms. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 28523, Requested 1801. Please try again in 648ms. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 73.0%] ✓ Parsed: 1397 | Unknown            | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29724, Requested 1789. Please try again in 3.026s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 74.0%] ✓ Parsed: 1398 | Unknown            | Diff: 3/5
+Validation failed for 1399: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 588. Please try again in 1.176s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 28683, Requested 1778. Please try again in 922ms. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 75.0%] ✓ Parsed: 1399 | Unknown            | Diff: 3/5
+Problem 1400 rejected: 点E的位置未定义，点C的位置未定义，无法确定其在何处，属于未定义点。
+[ 76.0%] ⊘ Skipped: 1400
+Skipping problem 1401: contains numbered angles (∠1, ∠2)
+[ 77.0%] ⊘ Skipped: 1401
+Problem 1404 rejected: 点D、E、F、O的位置均未定义，无法进行几何作图
+[ 78.0%] ⊘ Skipped: 1404
+Validation failed for 1405: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 601. Please try again in 1.202s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 1797. Please try again in 3.594s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 79.0%] ✓ Parsed: 1405 | Unknown            | Diff: 3/5
+Skipping problem 1406: contains numbered angles (∠1, ∠2)
+[ 80.0%] ⊘ Skipped: 1406
+Skipping problem 1408: contains numbered angles (∠1, ∠2)
+[ 81.0%] ⊘ Skipped: 1408
+Skipping problem 1411: contains numbered angles (∠1, ∠2)
+[ 82.0%] ⊘ Skipped: 1411
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29060, Requested 1788. Please try again in 1.696s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 83.0%] ✓ Parsed: 1412 | Unknown            | Diff: 3/5
+Problem 1414 rejected: 未定义点和角的位置,没有足够的几何对象和约束,无法进行几何作图
+[ 84.0%] ⊘ Skipped: 1414
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29033, Requested 1789. Please try again in 1.644s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 85.0%] ✓ Parsed: 1416 | Unknown            | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29284, Requested 1790. Please try again in 2.148s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 86.0%] ✓ Parsed: 1417 | Unknown            | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 1817. Please try again in 3.634s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 87.0%] ✓ Parsed: 1418 | Unknown            | Diff: 3/5
+Validation failed for 1420: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 606. Please try again in 1.212s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 28222, Requested 1800. Please try again in 44ms. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 88.0%] ✓ Parsed: 1420 | Unknown            | Diff: 3/5
+Problem 1422 rejected: 地面未定义为一条具体的直线，且点A、B的位置关系不明，无法唯一确定灰斗柄AB的位置，点A未定义。
+[ 89.0%] ⊘ Skipped: 1422
+Validation failed for 1424: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29977, Requested 602. Please try again in 1.158s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29092, Requested 1796. Please try again in 1.776s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 90.0%] ✓ Parsed: 1424 | Unknown            | Diff: 3/5
+Skipping problem 1425: contains numbered angles (∠1, ∠2)
+[ 91.0%] ⊘ Skipped: 1425
+Problem 1427 rejected: 点O的位置未定义，无法确定DO=4的含义，存在未定义点
+[ 92.0%] ⊘ Skipped: 1427
+Skipping problem 1428: contains numbered angles (∠1, ∠2)
+[ 93.0%] ⊘ Skipped: 1428
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 29823, Requested 1807. Please try again in 3.26s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 94.0%] ✓ Parsed: 1434 | Unknown            | Diff: 3/5
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 1797. Please try again in 3.594s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 95.0%] ✓ Parsed: 1435 | Unknown            | Diff: 3/5
+Validation failed for 1437: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 593. Please try again in 1.186s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+[ 96.0%] ✓ Parsed: 1437 | Angle Relationship | Diff: 3/5
+Validation failed for 1439: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 617. Please try again in 1.234s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 28957, Requested 1814. Please try again in 1.542s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 97.0%] ✓ Parsed: 1439 | Unknown            | Diff: 3/5
+Problem 1440 rejected: 点D和E的位置未完全定义,DE虽然是AC的垂直平分线,但D和E分别在何处未说明,且DE的具体位置不明,不满足可作图条件
+[ 98.0%] ⊘ Skipped: 1440
+LLM parsing failed: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-4.1 in organization org-lxMnhZSYE2KsWOPVAy20ySVC on tokens per min (TPM): Limit 30000, Used 30000, Requested 1788. Please try again in 3.576s. Visit https://platform.openai.com/account/rate-limits to learn more.', 'type': 'tokens', 'param': None, 'code': 'rate_limit_exceeded'}}, falling back to rule-based
+[ 99.0%] ✓ Parsed: 1443 | Unknown            | Diff: 3/5
+Problem 1444 rejected: Point E is mentioned (∠ABE=120°) but its position is not defined, making the construction impossible.
+[100.0%] ⊘ Skipped: 1444
+
+============================================================
+Range 800-900 Complete!
+============================================================
+  Already done: 0
+  Parsed: 45
+  Skipped (validation failed): 55
+  Errors: 0
+  Total processed this run: 100
+
+✓ Processing complete!
+  Output saved to: ground_truth/dataset_800_900.jsonl
+
+  To merge all files into final dataset:
+  python create_dataset.py --merge
+[2025-12-10 14:50:25] 배치 9 완료: 800 ~ 900

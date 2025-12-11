@@ -1,0 +1,45 @@
+[2025-12-10 14:43:32] 배치 5 시작: 400 ~ 500
+✓ OpenAI API key found
+  Using gpt-4.1 for two-stage processing:
+    - Stage 1: Problem validation + text cleaning
+    - Stage 2: Object extraction + construction difficulty rating
+
+Input directory: data-5/GeoQA3/json
+Total files found: 5007
+Output file: ground_truth/dataset_400_500.jsonl
+
+Processing options:
+  - Range: 400 to 500 (100 files)
+  - Skip ambiguous references (∠1, ∠2, etc.): ✓
+  - Clean text (remove '如图所示', questions): ✓
+  - Classify problems: ✓
+  - Rate difficulty: ✓
+  - Resume mode: ✓
+
+============================================================
+Two-Stage LLM Processing
+  Stage 1: Validate + Clean
+  Stage 2: Parse + Rate Difficulty (construction-focused)
+============================================================
+Processing range: 400 to 500
+Files to process: 100
+Output file: ground_truth/dataset_400_500.jsonl
+Resume mode: True (found 762 already processed)
+============================================================
+
+
+============================================================
+Range 400-500 Complete!
+============================================================
+  Already done: 100
+  Parsed: 0
+  Skipped (validation failed): 0
+  Errors: 0
+  Total processed this run: 0
+
+✓ Processing complete!
+  Output saved to: ground_truth/dataset_400_500.jsonl
+
+  To merge all files into final dataset:
+  python create_dataset.py --merge
+[2025-12-10 14:43:33] 배치 5 완료: 400 ~ 500

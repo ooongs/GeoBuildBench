@@ -1,12 +1,20 @@
-Python tool for generating pictures from geometric constructions
+# PyGGB - Geometry Construction from Text
+
+Python tool for generating geometric constructions from problem descriptions using multimodal LLMs.
+
+## Features
+
+- **Geometry Problem Parsing**: Extract geometric objects and verification conditions from text
+- **DSL-based Construction**: Domain-specific language for geometric constructions
+- **Multimodal LLM Agent**: ReAct agent using vision-language models
+- **Benchmark System**: Evaluate LLM performance on geometry tasks
+- **Visualization**: Interactive matplotlib-based viewer
 
 ## Installation
 
-This project now uses modern Python libraries. Install dependencies:
-
 ```bash
 # Using conda (recommended)
-conda activate laws  # or your environment name
+conda activate your_env
 pip install -r requirements.txt
 
 # Or using pip with virtual environment
@@ -15,17 +23,27 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-Or install dependencies manually:
+### Environment Setup
+
+Create a `.env` file with your API keys:
 
 ```bash
-pip install numpy matplotlib
+OPENAI_API_KEY=your-openai-api-key
 ```
 
-## Usage
+## Quick Start
 
-### Interactive Viewer (preview.py)
+### Run Benchmark
 
-View geometric constructions interactively with matplotlib:
+```bash
+# Single problem
+python run_agent_benchmark.py --problem-id 0 --model gpt-4o --verbose
+
+# Batch mode
+python run_agent_benchmark.py --batch --model gpt-4o --limit 10
+```
+
+### Interactive Viewer
 
 ```bash
 python preview.py
@@ -33,57 +51,101 @@ python preview.py
 
 **Controls:**
 
-- **Arrow keys (Up/Down/Left/Right)**: Navigate between different constructions
+- **Arrow keys**: Navigate between constructions
 - **Space**: Regenerate current construction
-- **Escape**: Exit the viewer
-
-### Testing
-
-Run the simple test to verify matplotlib rendering:
-
-```bash
-python test_matplotlib.py
-```
-
-This will generate `test_output.png` showing various geometric shapes.
+- **Escape**: Exit
 
 ## Project Structure
 
-### Converting GeoGebra files to simpler construction format:
+```
+pyggb/
+├── src/                          # Core source code
+│   ├── core/                     # Geometry primitives and commands
+│   ├── dsl/                      # DSL executor and validator
+│   ├── agent/                    # ReAct agent implementation
+│   ├── benchmark/                # Benchmark dataset handling
+│   ├── interfaces/               # LLM interfaces
+│   ├── parser/                   # Problem parsing
+│   ├── ggb/                      # GeoGebra integration
+│   └── utils.py                  # Path utilities
+├── scripts/                      # Utility scripts
+│   ├── create_dataset.py         # Dataset creation
+│   ├── analyze_benchmark_results.py  # Result analysis
+│   └── ...
+├── prompts/                      # Agent prompts
+├── data/                 # Benchmark datasets
+├── run_agent_benchmark.py        # Main execution script
+├── preview.py                    # Visualization tool
+└── *.sh                          # Shell scripts for benchmarking
+```
 
-- `ggb_expr.py`, `ggb_parsetab.py` - Parsing expressions in GeoGebra
-- `read_ggb.py` - Main conversion file
+## Shell Scripts
 
-### ggb-benchmark
+| Script                         | Description                |
+| ------------------------------ | -------------------------- |
+| `run_multi_model_benchmark.sh` | Compare multiple models    |
+| `run_vision_comparison.sh`     | Vision model benchmarks    |
+| `run_parallel_dataset.sh`      | Parallel dataset creation  |
+| `run_parallel_simple.sh`       | Simple parallel processing |
 
-Directory containing decoded dataset from GeoGebra http://dev.geogebra.org/trac/browser/trunk/geogebra/test/scripts/benchmark/prover/tests
+## Documentation
 
-### Decoded constructions to pictures
+| Document                                     | Description                                 |
+| -------------------------------------------- | ------------------------------------------- |
+| [DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md) | Parser, validation, and parallel processing |
+| [BENCHMARK_GUIDE.md](BENCHMARK_GUIDE.md)     | Running and analyzing benchmarks            |
+| [CHANGELOG.md](CHANGELOG.md)                 | Version history and changes                 |
 
-- `random_constr.py` - Main file for construction generation
-- `preview.py` - Interactive viewer using matplotlib (keyboard navigation)
+## Core Modules
 
-### Other files
+### Geometry Types (`src/core/geo_types.py`)
 
-- `geo_types.py` - Geometric types (Line, Point, Circle, ...) with matplotlib rendering
-- `commands.py` - Implementation of construction commands (intersection, are_collinear, ...)
-- `requirements.txt` - Python package dependencies
+Geometric primitives with matplotlib rendering:
 
-## Migration from Gtk/Cairo to Matplotlib
+- Point, Line, Segment
+- Circle, Arc
+- Polygon, Triangle
 
-This codebase has been modernized from using Gtk 3.0 and Cairo to using Matplotlib:
+### Commands (`src/core/commands.py`)
 
-**Benefits:**
+Construction commands:
 
-- ✅ Modern, actively maintained libraries
-- ✅ Cross-platform compatibility (works on macOS, Linux, Windows)
-- ✅ Easy to install with pip
-- ✅ Rich plotting capabilities
-- ✅ Interactive and non-interactive backends
-- ✅ Better documentation and community support
+- `line_pp`: Line through two points
+- `intersect_ll`: Line-line intersection
+- `circle_cr`: Circle with center and radius
+- And many more...
 
-**Changes:**
+### DSL Executor (`src/dsl/dsl_executor.py`)
 
-- All geometric shapes (`Point`, `Line`, `Circle`, etc.) now use `matplotlib.axes.Axes` for rendering
-- Interactive viewer uses matplotlib's event system instead of Gtk
-- Simpler installation process (no system packages needed)
+Executes DSL code and renders constructions:
+
+```python
+from src.dsl.dsl_executor import DSLExecutor
+
+executor = DSLExecutor()
+executor.execute("""
+point : free A
+point : free B
+segment : A B -> seg_AB
+""")
+executor.save_image("output.png")
+```
+
+### ReAct Agent (`src/agent/react_agent.py`)
+
+Multimodal agent for geometry problem-solving:
+
+```python
+from src.agent.react_agent import ReActAgent
+from src.benchmark.benchmark_dataset import BenchmarkDataset
+
+dataset = BenchmarkDataset("data/geoqa3_dataset.json")
+problem = dataset.get_problem("123")
+
+agent = ReActAgent(model="gpt-4o")
+result = agent.solve(problem)
+```
+
+## License
+
+MIT License

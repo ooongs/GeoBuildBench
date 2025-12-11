@@ -15,13 +15,13 @@
 set -e
 
 # Default configuration
-DATASET="ground_truth/geoqa3_dataset.json"
+DATASET="data/geoqa3_dataset.json"
 MAX_ITER=5
 LIMIT=""
 START_IDX=0
 OUTPUT_DIR="benchmark_results"
 VERBOSE=""
-MODEL="gpt-4o"
+MODEL="gpt-5.1-mini"
 
 # Color codes for output
 RED='\033[0;31m'
@@ -212,13 +212,13 @@ JSON_FILE="$RUN_DIR/vision_comparison.json"
 # Check if both result files exist
 if [ -f "$OUTPUT_VISION" ] && [ -f "$OUTPUT_NO_VISION" ]; then
     # Generate comparison reports
-    python analyze_benchmark_results.py "$OUTPUT_VISION" "$OUTPUT_NO_VISION" \
+    python scripts/analyze_benchmark_results.py "$OUTPUT_VISION" "$OUTPUT_NO_VISION" \
         --format text --output "$REPORT_FILE" --per-problem
     
-    python analyze_benchmark_results.py "$OUTPUT_VISION" "$OUTPUT_NO_VISION" \
+    python scripts/analyze_benchmark_results.py "$OUTPUT_VISION" "$OUTPUT_NO_VISION" \
         --format csv --output "$CSV_FILE"
     
-    python analyze_benchmark_results.py "$OUTPUT_VISION" "$OUTPUT_NO_VISION" \
+    python scripts/analyze_benchmark_results.py "$OUTPUT_VISION" "$OUTPUT_NO_VISION" \
         --format json --output "$JSON_FILE"
     
     echo -e "${GREEN}Reports generated:${NC}"

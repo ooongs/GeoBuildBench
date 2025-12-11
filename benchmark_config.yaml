@@ -11,11 +11,11 @@ defaults:
 # Model configurations
 models:
   # OpenAI Models
-  - name: "gpt-4o"
+  - name: "gpt-5.1"
     provider: "openai"
     enabled: true
     
-  - name: "gpt-4o-mini"
+  - name: "gpt-5.1-mini"
     provider: "openai"
     enabled: true
     
@@ -117,6 +117,9 @@ output:
     - text
   include_per_problem_analysis: true
   include_rankings: true
+
+
+
 
 
 

@@ -10,9 +10,10 @@ import json
 import argparse
 from datetime import datetime
 from typing import List, Dict, Any, Optional
-from benchmark_dataset import BenchmarkDataset
-from react_agent import ReActAgent
-from dsl_validator import ValidationErrorLogger, set_validation_error_logger
+from src.benchmark.benchmark_dataset import BenchmarkDataset
+from src.agent.react_agent import ReActAgent
+from src.dsl.dsl_validator import ValidationErrorLogger, set_validation_error_logger
+from src.utils import get_data_dir, get_output_dir
 
 
 class DetailedMetrics:
@@ -663,10 +664,11 @@ def main():
         help="Run on multiple problems"
     )
     
+    default_dataset = str(get_data_dir() / "geoqa3_dataset.json")
     parser.add_argument(
         "--dataset",
         type=str,
-        default="ground_truth/geoqa3_dataset.json",
+        default=default_dataset,
         help="Path to benchmark dataset"
     )
     

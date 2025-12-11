@@ -1,7 +1,8 @@
 import os
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
-from random_constr import Construction
+from src.core.random_constr import Construction
+from src.utils import get_project_root, get_examples_dir
 
 # 한글 폰트 설정
 plt.rcParams['font.family'] = 'AppleGothic'
@@ -67,5 +68,9 @@ class DisplayWindow:
             self.draw()
 
 if __name__ == "__main__":
-    window = DisplayWindow(400, 300, "ggb-benchmark/true")
+    # Use examples directory by default, or specify another directory
+    default_dir = str(get_examples_dir())
+    import sys
+    datadir = sys.argv[1] if len(sys.argv) > 1 else default_dir
+    window = DisplayWindow(400, 300, datadir)
     plt.show()
