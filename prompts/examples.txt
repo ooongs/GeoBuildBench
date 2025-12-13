@@ -5,7 +5,9 @@
 point :  -> A
 point :  -> B
 point :  -> C
-polygon : A B C -> triangle c a b
+segment : A B -> AB
+segment : B C -> BC
+segment : C A -> CA
 equality : A A -> expr0
 prove : expr0 -> result
 ```
@@ -17,16 +19,19 @@ Problem: Triangle ABC with line DE parallel to BC, where D is on AB and E is on 
 point :  -> A
 point :  -> B
 point :  -> C
-polygon : A B C -> triangle c a b
+segment : A B -> AB
+segment : B C -> BC
+segment : C A -> CA
 line : B C -> line_BC
 point :  -> D
 parallel_line : D line_BC -> line_DE
 point : line_DE -> E
+segment : D E -> DE
 equality : A A -> expr0
 prove : expr0 -> result
 ```
 
-Note: Using `parallel_line` command ensures the line through D is parallel to BC.
+Note: Using `parallel_line` command ensures the line through D is parallel to BC. Create all segments explicitly.
 
 ## Example 3: Perpendicular Lines
 ```
@@ -70,6 +75,61 @@ equality : A A -> expr0
 prove : expr0 -> result
 ```
 
+## Example 7: Equilateral Triangle Using Polar Coordinates (NEW!)
+```
+# Create equilateral triangle centered at origin
+# Using polar coordinates: r*cos(θ), r*sin(θ)
+point : 0 0 -> O
+point : 100*cos(0°) 100*sin(0°) -> A       # 0 degrees
+point : 100*cos(120°) 100*sin(120°) -> B   # 120 degrees
+point : 100*cos(240°) 100*sin(240°) -> C   # 240 degrees
+segment : A B -> AB
+segment : B C -> BC
+segment : C A -> CA
+equality : O O -> expr0
+prove : expr0 -> result
+```
+
+## Example 8: Regular Hexagon Using Math Expressions (NEW!)
+```
+# Create regular hexagon using polar coordinates
+point : 0 0 -> Center
+point : 80*cos(0°) 80*sin(0°) -> H1
+point : 80*cos(60°) 80*sin(60°) -> H2
+point : 80*cos(120°) 80*sin(120°) -> H3
+point : 80*cos(180°) 80*sin(180°) -> H4
+point : 80*cos(240°) 80*sin(240°) -> H5
+point : 80*cos(300°) 80*sin(300°) -> H6
+segment : H1 H2 -> s1
+segment : H2 H3 -> s2
+segment : H3 H4 -> s3
+segment : H4 H5 -> s4
+segment : H5 H6 -> s5
+segment : H6 H1 -> s6
+equality : Center Center -> expr0
+prove : expr0 -> result
+```
+
+## Example 9: Circle with Calculated Radius (NEW!)
+```
+# Create circle with radius = 100 * sin(60°) ≈ 86.6
+point : 0 0 -> O
+point : 100 0 -> P
+circle : O 100*sin(60°) -> circle_O
+equality : O O -> expr0
+prove : expr0 -> result
+```
+
+## Example 10: Point with Offset Using Expressions (NEW!)
+```
+# Create point at (50,50) offset by 30 units at 45°
+point : 50+30*cos(45°) 50+30*sin(45°) -> P
+point : 50 50 -> Center
+segment : Center P -> offset_seg
+equality : Center Center -> expr0
+prove : expr0 -> result
+```
+
 ## Key Points:
 
 1. Always use `point :  -> Label` for random points
@@ -77,8 +137,90 @@ prove : expr0 -> result
 3. Always end with the two required lines
 4. Comments (starting with #) are allowed
 5. One object per line
+6. **NEW: You can use math expressions!**
+   - Arithmetic: `50+30`, `100/2`, `200*0.5`
+   - Trigonometric: `cos(45°)`, `sin(60°)`, `tan(30°)`
+   - Combined: `100*cos(120°)`, `50+30*sin(45°)`
+   - Use polar coordinates for precise angle-based positioning
+
+## Example 11: Error Recovery Process (NEW!)
+
+**Scenario**: You got an error and need to fix it.
+
+**Step 1 - Initial attempt (with error):**
+```
+point : 0 0 -> A
+point : 100 0 -> B
+line : A C -> line_AC  # ERROR: C is not defined!
+```
+
+**Error message says:**
+```
+Error at line 3: `line : A C -> line_AC`
+❌ UNDEFINED ELEMENT: 'C'
+```
+
+**Step 2 - Analyze:**
+```
+Thought: The error says 'C' is undefined at line 3.
+Looking at my DSL, I see I forgot to define point C before using it.
+I need to add point C definition before line 3.
+
+Action: modify_dsl
+```
+
+**Step 3 - Fix:**
+```
+point : 0 0 -> A
+point : 100 0 -> B
+point : 50 86.6 -> C   # Added missing point!
+line : A C -> line_AC  # Now C is defined
+segment : A B -> AB
+segment : B C -> BC
+segment : C A -> CA
+```
+
+**Step 4 - If you have an image, use it:**
+```
+Thought: Looking at the rendered image:
+- Points A, B, C are visible ✓
+- Segments AB and BC are drawn ✓
+- Segment CA is missing! ✗
+
+I need to add segment CA to complete the triangle.
+
+Action: modify_dsl
+```
+
+**Step 5 - Final fix:**
+```
+point : 0 0 -> A
+point : 100 0 -> B
+point : 50 86.6 -> C
+segment : A B -> AB
+segment : B C -> BC
+segment : C A -> CA    # Added missing segment!
+```
 
 ## What NOT to do:
+
+❌ Using polygon command:
+```
+point :  -> A
+point :  -> B
+point :  -> C
+polygon : A B C -> triangle a b c  # ERROR: polygon command is forbidden!
+```
+
+✅ Use explicit segments instead:
+```
+point :  -> A
+point :  -> B
+point :  -> C
+segment : A B -> AB
+segment : B C -> BC
+segment : C A -> CA
+```
 
 ❌ Redefining points:
 ```

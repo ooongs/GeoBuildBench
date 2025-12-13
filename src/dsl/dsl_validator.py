@@ -7,7 +7,7 @@ Validates DSL files against required objects and verification conditions.
 import os
 import json
 import numpy as np
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Dict, List, Any, Optional, Tuple, Set
 from dataclasses import dataclass, field
 from datetime import datetime
 
@@ -190,6 +190,44 @@ def set_validation_error_logger(logger: ValidationErrorLogger):
     _global_error_logger = logger
 
 
+def _convert_to_json_serializable(obj):
+    """
+    Convert numpy types and other non-serializable types to JSON-serializable Python types.
+
+    Args:
+        obj: Object to convert
+
+    Returns:
+        JSON-serializable version of the object
+    """
+    if obj is None:
+        return None
+
+    # Handle numpy types
+    if isinstance(obj, (np.bool_, np.integer)):
+        return bool(obj) if isinstance(obj, np.bool_) else int(obj)
+    elif isinstance(obj, np.floating):
+        return float(obj)
+    elif isinstance(obj, np.ndarray):
+        return obj.tolist()
+
+    # Handle Python bool explicitly (some conditions might have np.bool_)
+    elif isinstance(obj, bool):
+        return bool(obj)  # Ensure it's a Python bool, not numpy
+
+    # Handle dictionaries
+    elif isinstance(obj, dict):
+        return {k: _convert_to_json_serializable(v) for k, v in obj.items()}
+
+    # Handle lists and tuples
+    elif isinstance(obj, (list, tuple)):
+        return [_convert_to_json_serializable(item) for item in obj]
+
+    # Return as-is for primitives and other types
+    else:
+        return obj
+
+
 @dataclass
 class ValidationResult:
     """Result of validating a DSL against a benchmark problem."""
@@ -203,9 +241,10 @@ class ValidationResult:
     details: Optional[Dict[str, Any]] = None
     has_dataset_error: bool = False  # True if validation failed due to dataset issues
     dataset_error_types: List[str] = field(default_factory=list)  # List of error types encountered
-    
+
     def to_dict(self) -> Dict:
-        return {
+        """Convert to dictionary with all values JSON-serializable."""
+        return _convert_to_json_serializable({
             "success": self.success,
             "object_score": self.object_score,
             "condition_score": self.condition_score,
@@ -216,7 +255,7 @@ class ValidationResult:
             "details": self.details,
             "has_dataset_error": self.has_dataset_error,
             "dataset_error_types": self.dataset_error_types
-        }
+        })
 
 
 class DSLValidator:
@@ -438,14 +477,60 @@ class DSLValidator:
         for poly_points in required_objects.polygons:
             poly_label = self._find_polygon(poly_points)
             if poly_label:
-                found["polygons"].append(poly_points)
+                # Found a matching polygon - check if it's self-intersecting
+                # Use the actual polygon's point order, not the required order
+                polygon_obj = element_dict[poly_label].data
+                if hasattr(polygon_obj, 'points'):
+                    actual_poly_coords = list(polygon_obj.points)
+                    if self._is_polygon_self_intersecting(actual_poly_coords):
+                        # Self-intersecting polygon (e.g., hourglass) is invalid
+                        missing["polygons"].append(poly_points)
+                    else:
+                        found["polygons"].append(poly_points)
+                else:
+                    found["polygons"].append(poly_points)
             else:
                 # Relaxed: check if all points exist (polygon structure can be inferred)
                 if all(p in element_dict for p in poly_points):
                     all_points = all(isinstance(element_dict[p].data, gt.Point) for p in poly_points)
                     if all_points:
+                        # Try to find any Polygon object that contains these points
+                        # Check if the polygon has the same SET of points (order doesn't matter)
+                        found_polygon_obj = None
+                        for label, element in element_dict.items():
+                            if isinstance(element.data, gt.Polygon):
+                                poly = element.data
+                                # Check if this polygon has the same set of points
+                                if len(poly.points) == len(poly_points):
+                                    # Get coordinates of required points
+                                    required_coords = [element_dict[p].data.a for p in poly_points]
+
+                                    # Check if all polygon points match any required point
+                                    all_matched = True
+                                    for poly_point in poly.points:
+                                        found_match = False
+                                        for req_coord in required_coords:
+                                            if np.allclose(poly_point, req_coord, atol=self.tolerance):
+                                                found_match = True
+                                                break
+                                        if not found_match:
+                                            all_matched = False
+                                            break
+
+                                    if all_matched:
+                                        found_polygon_obj = poly
+                                        break
+
+                        if found_polygon_obj:
+                            # Use the actual polygon's point order
+                            actual_poly_coords = list(found_polygon_obj.points)
+                            if self._is_polygon_self_intersecting(actual_poly_coords):
+                                # Self-intersecting polygon (e.g., hourglass) is invalid
+                                missing["polygons"].append(poly_points)
+                            else:
+                                found["polygons"].append(poly_points)
                         # Check if points are not collinear (valid polygon)
-                        if len(poly_points) == 3:
+                        elif len(poly_points) == 3:
                             # Triangle: check non-collinearity
                             p1, p2, p3 = [element_dict[p].data for p in poly_points]
                             collinear = cmd.are_collinear_ppp(p1, p2, p3)
@@ -454,8 +539,27 @@ class DSLValidator:
                             else:
                                 missing["polygons"].append(poly_points)
                         else:
-                            # Other polygons: accept if points exist
-                            found["polygons"].append(poly_points)
+                            # No polygon object found, but points exist
+                            # Try to find the actual polygon path from segments
+                            polygon_path = self._find_polygon_path_from_segments(poly_points)
+
+                            if polygon_path:
+                                # Found a path through segments - check if it's self-intersecting
+                                poly_coords = [element_dict[p].data.a for p in polygon_path]
+                                if self._is_polygon_self_intersecting(poly_coords):
+                                    # Segments form a self-intersecting polygon (invalid)
+                                    missing["polygons"].append(poly_points)
+                                else:
+                                    # Segments form a valid polygon
+                                    found["polygons"].append(poly_points)
+                            else:
+                                # No connected path found through segments
+                                # Fall back to checking if points form a valid polygon (relaxed)
+                                poly_coords = [element_dict[p].data.a for p in poly_points]
+                                if self._is_polygon_self_intersecting(poly_coords):
+                                    missing["polygons"].append(poly_points)
+                                else:
+                                    found["polygons"].append(poly_points)
                     else:
                         missing["polygons"].append(poly_points)
                 else:
@@ -596,35 +700,149 @@ class DSLValidator:
         
         return None
     
-    def _points_match_polygon(self, points1: List[np.ndarray], 
+    def _find_polygon_path_from_segments(self, poly_points: List[str]) -> Optional[List[str]]:
+        """
+        Find the actual path that connects the polygon points through segments.
+        Returns the ordered list of points, or None if no valid path exists.
+
+        Args:
+            poly_points: List of point labels that should form a polygon
+
+        Returns:
+            Ordered list of point labels forming a closed polygon path, or None
+        """
+        element_dict = self.construction.element_dict
+
+        # Find all segments that connect these points
+        poly_segments = []
+        for label, element in element_dict.items():
+            if isinstance(element.data, gt.Segment):
+                seg = element.data
+                # Check if both endpoints are in poly_points
+                endpoints = []
+                for p_label in poly_points:
+                    if p_label in element_dict and isinstance(element_dict[p_label].data, gt.Point):
+                        p_coord = element_dict[p_label].data.a
+                        # Check both endpoints of the segment
+                        if np.allclose(seg.end_points[0], p_coord, atol=self.tolerance) or \
+                           np.allclose(seg.end_points[1], p_coord, atol=self.tolerance):
+                            endpoints.append(p_label)
+
+                if len(endpoints) == 2:
+                    poly_segments.append(tuple(endpoints))
+
+        if len(poly_segments) < len(poly_points):
+            # Not enough segments to form a polygon
+            return None
+
+        # Build adjacency graph
+        graph = {p: [] for p in poly_points}
+        for seg in poly_segments:
+            p1, p2 = seg
+            graph[p1].append(p2)
+            graph[p2].append(p1)
+
+        # Try to find a Hamiltonian cycle starting from each point
+        for start_point in poly_points:
+            path = self._find_hamiltonian_cycle(graph, start_point, poly_points)
+            if path:
+                return path
+
+        return None
+
+    def _find_hamiltonian_cycle(self, graph: Dict[str, List[str]],
+                                start: str, all_points: List[str]) -> Optional[List[str]]:
+        """
+        Find a Hamiltonian cycle (path visiting all vertices once) starting from start.
+        """
+        def dfs(current: str, visited: Set[str], path: List[str]) -> Optional[List[str]]:
+            if len(path) == len(all_points):
+                # Check if we can return to start
+                if start in graph[current]:
+                    return path
+                return None
+
+            for neighbor in graph[current]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    path.append(neighbor)
+                    result = dfs(neighbor, visited, path)
+                    if result:
+                        return result
+                    path.pop()
+                    visited.remove(neighbor)
+
+            return None
+
+        return dfs(start, {start}, [start])
+
+    def _is_polygon_self_intersecting(self, points: List[np.ndarray]) -> bool:
+        """
+        Check if a polygon is self-intersecting (e.g., hourglass shape).
+        Uses line segment intersection to detect self-intersection.
+
+        Args:
+            points: List of polygon vertices in order
+
+        Returns:
+            True if the polygon self-intersects, False otherwise
+        """
+        n = len(points)
+        if n < 4:
+            # Triangles cannot self-intersect
+            return False
+
+        def segments_intersect(p1, p2, p3, p4):
+            """Check if line segment p1-p2 intersects with p3-p4."""
+            def ccw(A, B, C):
+                return (C[1] - A[1]) * (B[0] - A[0]) > (B[1] - A[1]) * (C[0] - A[0])
+
+            return ccw(p1, p3, p4) != ccw(p2, p3, p4) and ccw(p1, p2, p3) != ccw(p1, p2, p4)
+
+        # Check each edge against all non-adjacent edges
+        for i in range(n):
+            p1, p2 = points[i], points[(i + 1) % n]
+            for j in range(i + 2, n):
+                # Skip adjacent edges
+                if j == (i + n - 1) % n or j == (i + 1) % n:
+                    continue
+                p3, p4 = points[j], points[(j + 1) % n]
+                if segments_intersect(p1, p2, p3, p4):
+                    return True
+
+        return False
+
+    def _points_match_polygon(self, points1: List[np.ndarray],
                              points2: np.ndarray) -> bool:
-        """Check if two sets of points match (considering rotation)."""
+        """
+        Check if two sets of points match (considering rotation and reversal).
+        """
         n = len(points1)
         if n != len(points2):
             return False
-        
+
         # Try all rotations
         for offset in range(n):
             match = True
             for i in range(n):
-                if not np.allclose(points1[i], points2[(i + offset) % n], 
+                if not np.allclose(points1[i], points2[(i + offset) % n],
                                   atol=self.tolerance):
                     match = False
                     break
             if match:
                 return True
-        
-        # Try reverse order
+
+        # Try reverse order (clockwise vs counterclockwise)
         for offset in range(n):
             match = True
             for i in range(n):
-                if not np.allclose(points1[i], points2[(offset - i) % n], 
+                if not np.allclose(points1[i], points2[(offset - i) % n],
                                   atol=self.tolerance):
                     match = False
                     break
             if match:
                 return True
-        
+
         return False
     
     def _check_verification_conditions(self, conditions: List[VerificationCondition]) -> Dict[str, Any]:
@@ -1135,25 +1353,39 @@ class DSLValidator:
     def _check_point_on_circle(self, data: Dict) -> Dict[str, Any]:
         """Check if a point lies on a circle (supports concentric circles)."""
         point = data.get("point")
+
+        # Support both formats:
+        # 1. circle_center: "O" (ConditionBuilder format)
+        # 2. circle: {center: "O", radius_point: "A"} (dataset format)
         circle_center = data.get("circle_center")
-        
+        if not circle_center and "circle" in data:
+            circle_data = data.get("circle")
+            if isinstance(circle_data, dict):
+                circle_center = circle_data.get("center")
+            elif isinstance(circle_data, str):
+                # If circle is just a string, it's the center
+                circle_center = circle_data
+
         if not point or not circle_center:
-            return {"passed": False, "message": "Invalid point_on_circle condition"}
-        
+            return {"passed": False, "message": f"Invalid point_on_circle condition: missing point or circle_center (got point={point}, circle_center={circle_center})"}
+
         element_dict = self.construction.element_dict
-        
-        if point not in element_dict or circle_center not in element_dict:
-            return {"passed": False, "message": "Could not find point or circle"}
-        
+
+        if point not in element_dict:
+            return {"passed": False, "message": f"Could not find point '{point}'"}
+
+        if circle_center not in element_dict:
+            return {"passed": False, "message": f"Could not find circle center '{circle_center}'"}
+
         pt = element_dict[point].data
         if not isinstance(pt, gt.Point):
-            return {"passed": False, "message": "Invalid point type"}
-        
+            return {"passed": False, "message": f"'{point}' is not a point"}
+
         # Find all circles with this center (handles concentric circles)
         circle_labels = self._find_all_circles_with_center(circle_center)
         if not circle_labels:
-            return {"passed": False, "message": "Could not find circle"}
-        
+            return {"passed": False, "message": f"Could not find any circle with center '{circle_center}'"}
+
         # Check if point is on any of the circles with this center
         for circle_label in circle_labels:
             circle = element_dict[circle_label].data
@@ -1161,19 +1393,19 @@ class DSLValidator:
             if result.b:
                 return {
                     "passed": True,
-                    "message": f"Point is on circle {circle_label}"
+                    "message": f"Point '{point}' is on circle '{circle_label}' (center='{circle_center}')"
                 }
-        
+
         # Point is not on any circle with this center
         if len(circle_labels) == 1:
             return {
                 "passed": False,
-                "message": "Point is not on circle"
+                "message": f"Point '{point}' is not on circle '{circle_labels[0]}' with center '{circle_center}'"
             }
         else:
             return {
                 "passed": False,
-                "message": f"Point is not on any of the {len(circle_labels)} circles with center {circle_center}"
+                "message": f"Point '{point}' is not on any of the {len(circle_labels)} circles with center '{circle_center}'"
             }
     
     def _check_angle_bisector(self, data: Dict) -> Dict[str, Any]:

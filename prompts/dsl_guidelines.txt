@@ -46,10 +46,21 @@ circle : O radius -> circle_O    # Center O, radius (variable)
 circle : O 50 -> circle_O        # Center O, radius 50 (inline literal)
 ```
 
-### 6. Polygons
+### 6. Polygons (DO NOT USE POLYGON COMMAND!)
 ```
-polygon : A B C -> poly1 c a b   # Triangle (poly + sides)
-polygon : A B C D -> poly1 d c b a  # Quad (poly + sides)
+# ❌ FORBIDDEN - Do NOT use polygon command:
+# polygon : A B C -> poly1 c a b   # DON'T DO THIS!
+
+# ✅ CORRECT - Always create explicit segments:
+segment : A B -> AB              # Triangle side 1
+segment : B C -> BC              # Triangle side 2
+segment : C A -> CA              # Triangle side 3
+
+# For quadrilateral ABCD:
+segment : A B -> AB
+segment : B C -> BC
+segment : C D -> CD
+segment : D A -> DA
 ```
 
 ### 7. Angles
@@ -114,10 +125,19 @@ rotate : P 1.5708rad Center -> S # 1.5708 radians (explicit radian)
 rotate : P 90 Center -> T        # 90 degrees (default = degree)
 ```
 
-### 12.1 Trigonometric Functions (NEW!)
+### 12.1 Mathematical Expressions (NEW!)
 ```
-# Use cos(), sin(), tan() with degree or radian values as inline literals
-# Default is degree (like angle notation)
+# You can now use mathematical expressions directly in DSL!
+# Supports: +, -, *, /, (), cos(), sin(), tan()
+
+# ===== ARITHMETIC EXPRESSIONS =====
+point : 50+30 100-20 -> P          # Simple arithmetic: (80, 80)
+point : 100/2 200*0.5 -> Q         # Division and multiplication: (50, 100)
+circle : O 50+25 -> c              # Radius = 75
+
+# ===== TRIGONOMETRIC FUNCTIONS =====
+# Use cos(), sin(), tan() with degree or radian values
+# Default unit is degree (like angle notation)
 
 # Degree notation (° or deg):
 point : cos(30°) sin(30°) -> A     # Point at (cos(30°), sin(30°)) ≈ (0.866, 0.5)
@@ -131,21 +151,38 @@ point : cos(0.5236r) sin(0.5236r) -> E      # cos(30° in rad), sin(30° in rad)
 # Default (no unit = degree):
 point : cos(30) sin(30) -> F       # Same as cos(30°) sin(30°)
 
-# Scale with multiplication:
-# To create point at distance r from origin with angle θ:
-# x = r * cos(θ), y = r * sin(θ)
-# Use arithmetic commands:
-const Measure 100 -> r
-const Measure 0.866 -> cos30       # cos(30°) ≈ 0.866
-const Measure 0.5 -> sin30         # sin(30°) ≈ 0.5
-product : r cos30 -> x
-product : r sin30 -> y
-point : x y -> P                   # Point at distance 100, angle 30°
+# ===== COMBINED EXPRESSIONS (Arithmetic + Trig) =====
+# This is the most powerful feature!
+# Create points at polar coordinates directly: (r*cos(θ), r*sin(θ))
 
-# OR more directly (inline trig):
-point : 0 0 -> Origin
-point : cos(30°) sin(30°) -> UnitP  # Unit circle point
-# Then scale...
+point : 100*cos(0°) 100*sin(0°) -> P0       # Point at distance 100, angle 0°
+point : 100*cos(45°) 100*sin(45°) -> P45    # Point at distance 100, angle 45°
+point : 100*cos(90°) 100*sin(90°) -> P90    # Point at distance 100, angle 90°
+point : 100*cos(135°) 100*sin(135°) -> P135 # Point at distance 100, angle 135°
+
+# Equilateral triangle using polar coordinates
+point : 0 0 -> O
+point : 100*cos(0°) 100*sin(0°) -> A       # 0°
+point : 100*cos(120°) 100*sin(120°) -> B   # 120°
+point : 100*cos(240°) 100*sin(240°) -> C   # 240°
+polygon : A B C -> triangle AB BC CA
+
+# Regular hexagon
+point : 0 0 -> Center
+point : 80*cos(0°) 80*sin(0°) -> H1        # 0°
+point : 80*cos(60°) 80*sin(60°) -> H2      # 60°
+point : 80*cos(120°) 80*sin(120°) -> H3    # 120°
+point : 80*cos(180°) 80*sin(180°) -> H4    # 180°
+point : 80*cos(240°) 80*sin(240°) -> H5    # 240°
+point : 80*cos(300°) 80*sin(300°) -> H6    # 300°
+
+# Complex expressions
+point : 50+30*cos(45°) 50+30*sin(45°) -> Q    # Offset center at (50,50), radius 30
+point : 2*sin(30°)+3*cos(60°) 10*tan(45°) -> R # Mixed expression
+
+# Circle with calculated radius
+point : 0 0 -> O
+circle : O 100*sin(60°) -> c    # Radius = 100 * sin(60°) ≈ 86.6
 ```
 
 **Common Trigonometric Values (for reference):**
@@ -156,11 +193,23 @@ point : cos(30°) sin(30°) -> UnitP  # Unit circle point
 | 45°   | √2/2 ≈ 0.707 | √2/2 ≈ 0.707 | 1 |
 | 60°   | 1/2 = 0.5 | √3/2 ≈ 0.866 | √3 ≈ 1.732 |
 | 90°   | 0   | 1   | undefined |
+| 120°  | -0.5 | √3/2 ≈ 0.866 | -√3 ≈ -1.732 |
+| 180°  | -1  | 0   | 0   |
+| 240°  | -0.5 | -√3/2 ≈ -0.866 | √3 ≈ 1.732 |
+| 270°  | 0   | -1  | undefined |
+| 300°  | 0.5 | -√3/2 ≈ -0.866 | -√3 ≈ -1.732 |
+
+**Expression Evaluation Rules:**
+1. **Existing objects take priority**: If you defined `point : 0 0 -> 100`, then `100` refers to that point, not the number
+2. **Expressions are evaluated**: `100*cos(45°)` is calculated automatically
+3. **Simple numbers**: `100` without operators is treated as a numeric literal
+4. **Safe evaluation**: Only +, -, *, /, (), and trig functions are allowed
 
 **Use cases:**
-- Creating points on unit circle
-- Calculating coordinates with angles
-- Positioning points at specific angles from origin
+- Creating points on circles at specific angles (polar coordinates)
+- Regular polygons (equilateral triangles, squares, hexagons, etc.)
+- Positioning points with calculated offsets
+- Complex geometric constructions with precise angles
 
 ### 13. Arithmetic
 ```
@@ -263,18 +312,18 @@ translate : D vec_BC -> E
 
 ### Pattern 4: Creating Triangles
 
-Always use polygon command for triangles:
+Always use explicit segments for triangles (DO NOT use polygon command):
 
 ```
 point :  -> A
 point :  -> B
 point :  -> C
-polygon : A B C -> triangle side_c side_a side_b
+segment : A B -> AB
+segment : B C -> BC
+segment : C A -> CA
 ```
 
-This creates:
-- `triangle`: the polygon object
-- `side_c`, `side_a`, `side_b`: the three sides (in reverse order!)
+This creates all three sides of the triangle explicitly.
 
 ### Pattern 5: Angles with Specific Values
 
@@ -356,6 +405,49 @@ rotate : P deg Center -> P_rotated
 3. **Outputs**: Polygon command outputs: polygon, then sides in reverse order
 4. **Random vs Fixed**: Use `point :  -> A` for unconstrained points
 
+## Error Analysis and Image Observation
+
+### When DSL Execution Fails
+
+**READ THE ERROR MESSAGE:**
+- Line number tells you WHERE the problem is
+- Error type tells you WHAT went wrong
+- Hints tell you HOW to fix it
+
+**Common Error Types:**
+- `UNDEFINED ELEMENT`: You used something before defining it
+- `DUPLICATE LABEL`: You defined something twice
+- `UNKNOWN COMMAND`: Command doesn't exist or wrong input types
+- `OUTPUT COUNT MISMATCH`: Wrong number of outputs for command
+- `MISSING ARROW`: Forgot `->` in command
+
+### When You Have a Rendered Image
+
+**THE IMAGE IS YOUR MOST IMPORTANT FEEDBACK!**
+
+It shows exactly what your DSL code created. Check:
+
+1. **Points**: Are all required points visible? Are they in correct positions?
+2. **Segments**: Are all required segments drawn? Any missing connections?
+3. **Circles**: Are circles present? Correct centers and radii?
+4. **Overall shape**: Does it match the problem requirements?
+
+**Example Image Analysis:**
+```
+Problem requires: Triangle ABC with segments AB, BC, CA
+Image shows:
+  ✓ Points A, B, C are visible
+  ✓ Segments AB and BC are drawn
+  ✗ Segment CA is MISSING
+
+Fix: Add line `segment : C A -> CA`
+```
+
+**Use the image to verify your fixes:**
+- After each change, compare new image with requirements
+- If image is closer to goal, you're making progress
+- If image is worse or unchanged, try different approach
+
 ## Common Errors
 
 ❌ **Using undefined object**:
@@ -381,13 +473,15 @@ point :  -> O
 circle : O 50 -> c
 ```
 
-❌ **Wrong output count**:
+❌ **Using polygon command**:
 ```
-polygon : A B C -> triangle  # Error: polygon outputs 4 things
+polygon : A B C -> triangle side_c side_a side_b  # Error: polygon is forbidden!
 ```
 
-✅ **Correct**:
+✅ **Correct - use explicit segments**:
 ```
-polygon : A B C -> triangle side_c side_a side_b
+segment : A B -> AB
+segment : B C -> BC
+segment : C A -> CA
 ```
 

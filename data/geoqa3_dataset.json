@@ -405,24 +405,18 @@
           "point": "A",
           "circle": {
             "center": "O",
-            "radius_point": "A"
-          }
+              "radius_point": "A"
+            }
         },
         {
           "type": "point_on_circle",
           "point": "B",
-          "circle": {
-            "center": "O",
-            "radius_point": "A"
-          }
+          "circle_center": "O"
         },
         {
           "type": "point_on_circle",
           "point": "C",
-          "circle": {
-            "center": "O",
-            "radius_point": "A"
-          }
+          "circle_center": "O"
         },
         {
           "type": "same_side",
@@ -19272,18 +19266,12 @@
         {
           "type": "point_on_circle",
           "point": "A",
-          "circle": {
-            "center": "O",
-            "radius_point": "A"
-          }
+          "circle_center": "O"
         },
         {
           "type": "point_on_circle",
           "point": "C",
-          "circle": {
-            "center": "O",
-            "radius_point": "A"
-          }
+          "circle_center": "O"
         },
         {
           "type": "point_on_line",
@@ -20050,26 +20038,17 @@
         {
           "type": "point_on_circle",
           "point": "A",
-          "circle": {
-            "center": "O",
-            "radius_point": "A"
-          }
+          "circle_center": "O"
         },
         {
           "type": "point_on_circle",
           "point": "B",
-          "circle": {
-            "center": "O",
-            "radius_point": "A"
-          }
+          "circle_center": "O"
         },
         {
           "type": "point_on_circle",
           "point": "C",
-          "circle": {
-            "center": "O",
-            "radius_point": "A"
-          }
+          "circle_center": "O"
         }
       ],
       "category": "Circle Properties & Constructions",
@@ -20289,42 +20268,27 @@
         {
           "type": "point_on_circle",
           "point": "A",
-          "circle": {
-            "center": "O",
-            "radius_point": "A"
-          }
+          "circle_center": "O"
         },
         {
           "type": "point_on_circle",
           "point": "B",
-          "circle": {
-            "center": "O",
-            "radius_point": "A"
-          }
+          "circle_center": "O"
         },
         {
           "type": "point_on_circle",
           "point": "C",
-          "circle": {
-            "center": "O",
-            "radius_point": "A"
-          }
+          "circle_center": "O"
         },
         {
           "type": "point_on_circle",
           "point": "D",
-          "circle": {
-            "center": "O",
-            "radius_point": "A"
-          }
+          "circle_center": "O"
         },
         {
           "type": "point_on_circle",
           "point": "E",
-          "circle": {
-            "center": "O",
-            "radius_point": "A"
-          }
+          "circle_center": "O"
         },
         {
           "type": "angle_value",
@@ -22024,121 +21988,6 @@
       "difficulty": 3,
       "original_text": "如图,△ODC是由△OAB绕点O顺时针旋转30°后得到的图形,若点D恰好落在AB上,则∠ADO的度数是()",
       "cleaned_text": "△ODC是由△OAB绕点O顺时针旋转30°后得到的图形,点D恰好落在AB上"
-    },
-    {
-      "id": "538",
-      "subject": "AB为⊙O的直径,C为⊙O外一点,过点C作⊙O的切线,切点为B,连接AC交⊙O于点D,∠C=40°,点E在AB左侧的半圆上运动(不与A、B重合)",
-      "required_objects": {
-        "points": [
-          "A",
-          "B",
-          "C",
-          "D",
-          "E",
-          "O"
-        ],
-        "segments": [
-          [
-            "A",
-            "B"
-          ],
-          [
-            "A",
-            "C"
-          ],
-          [
-            "C",
-            "D"
-          ],
-          [
-            "A",
-            "D"
-          ],
-          [
-            "B",
-            "C"
-          ],
-          [
-            "A",
-            "E"
-          ],
-          [
-            "B",
-            "E"
-          ]
-        ],
-        "lines": [
-          [
-            "C",
-            "B"
-          ]
-        ],
-        "circles": [
-          {
-            "center": "O",
-            "radius_point": "A"
-          }
-        ],
-        "polygons": []
-      },
-      "verification_conditions": [
-        {
-          "type": "point_on_segment",
-          "point": "D",
-          "segment": [
-            "A",
-            "C"
-          ]
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "A",
-              "C",
-              "B"
-            ]
-          ],
-          "value": 40
-        },
-        {
-          "type": "tangent",
-          "objects": [
-            [
-              "C",
-              "B"
-            ],
-            {
-              "circle_center": "O",
-              "radius_point": "A"
-            }
-          ]
-        },
-        {
-          "type": "point_on_circle",
-          "point": "E",
-          "circle": {
-            "center": "O",
-            "segment": [
-              "A",
-              "B"
-            ],
-            "side": "left"
-          }
-        },
-        {
-          "type": "diameter",
-          "segment": [
-            "A",
-            "B"
-          ],
-          "circle_center": "O"
-        }
-      ],
-      "category": "Circle Properties & Constructions",
-      "difficulty": 4,
-      "original_text": "如图,AB为⊙O的直径,C为⊙O外一点,过点C作⊙O的切线,切点为B,连接AC交⊙O于点D,∠C=40°,点E在AB左侧的半圆上运动(不与A、B重合),则∠AED的大小是()",
-      "cleaned_text": "AB为⊙O的直径,C为⊙O外一点,过点C作⊙O的切线,切点为B,连接AC交⊙O于点D,∠C=40°,点E在AB左侧的半圆上运动(不与A、B重合)"
     },
     {
       "id": "539",
@@ -24107,10 +23956,7 @@
         {
           "type": "point_on_circle",
           "point": "C",
-          "circle": {
-            "center": "O",
-            "radius_point": "A"
-          }
+          "circle_center": "O"
         },
         {
           "type": "midpoint_of_arc",
@@ -26076,18 +25922,12 @@
         {
           "type": "point_on_circle",
           "point": "A",
-          "circle": {
-            "center": "O",
-            "radius_point": "A"
-          }
+          "circle_center": "O"
         },
         {
           "type": "point_on_circle",
           "point": "B",
-          "circle": {
-            "center": "O",
-            "radius_point": "A"
-          }
+          "circle_center": "O"
         },
         {
           "type": "point_on_arc_midpoint",

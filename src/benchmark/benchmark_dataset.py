@@ -89,11 +89,26 @@ class BenchmarkDataset:
     
     # Supported condition types (must match dsl_validator.py)
     SUPPORTED_CONDITION_TYPES = {
-        "parallel", "perpendicular", "angle_value", "angle_equality",
+       "parallel", "perpendicular", "angle_value", "angle_equality", 
         "segment_equality", "collinear", "not_collinear", "concyclic",
         "concurrent", "point_on_line", "point_on_circle", "angle_bisector",
-        "point_on_segment", "midpoint_of", "distance_equals",
-        "triangle_valid", "point_between", "concentric_circles"
+        "point_on_segment", "midpoint_of", "distance_equals", "triangle_valid",
+        "point_between", "concentric_circles",
+        # New types from dataset
+        "angle_sum", "isosceles_triangle", "right_triangle",
+        "segment_equal", "equal_length",  # Aliases for segment_equality
+        "length", "length_value", "segment_length", "length_equal",  # Aliases for distance_equals
+        "perpendicular_bisector", "point_on_line_extension", "point_on_segment_extension",
+        "same_side", "point_inside_circle",
+        "tangent", "tangent_line", "line_is_tangent", "tangent_at_point", "tangent_point",
+        "diameter", "segment_is_diameter",
+        "intersection_point", "polygon_property", "polygon_type",
+        "regular_polygon", "square", "order_on_line", "perimeter",
+        "point_incenter", "point_on_arc", "point_on_arc_midpoint", "midpoint_of_arc",
+        "point_outside_line", "point_above_line",
+        "intersection", "point_intersection",
+        "geometric_transformation", "rotation",
+        "contact", "point_height"
     }
     
     def __init__(self, dataset_path: Optional[str] = None):

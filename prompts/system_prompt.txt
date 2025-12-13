@@ -9,9 +9,12 @@ Your task is to read Chinese geometry problems and generate DSL code that create
 ### Basic Commands
 ```
 # Points
-point :  -> A                    # Random point
 point : 100 150 -> P             # Fixed coordinates
-point : cos(30°) sin(30°) -> Q   # Trig functions for coordinates!
+
+# Mathematical Expressions
+point : 50+30 100-20 -> Q              # Arithmetic: (80, 80)
+point : cos(30°) sin(30°) -> R         # Trig functions
+point : 100*cos(45°) 100*sin(45°) -> S # Polar coordinates (r, θ)
 
 # Lines & Segments
 line : A B -> line_AB            # Line through two points
@@ -21,26 +24,19 @@ ray : A B -> ray_AB              # Ray
 # Circles
 circle : O A -> circle_O         # Center O, through A
 circle : O 50 -> circle_O        # Center O, radius 50
-
-# Polygons (outputs: polygon + sides in reverse order)
-polygon : A B C -> tri c a b     # Triangle → 4 outputs!
-polygon : A B C D -> quad d c b a # Quadrilateral → 5 outputs!
+circle : O 100*sin(60°) -> c     # Radius from expression ≈ 86.6
 
 # Angles & Rotation
 angle : A B C -> angle_ABC       # Angle at B
 rotate : P 60 Center -> P_rot    # Rotate P by 60° around Center
 rotate : P 60° Center -> P_rot   # Same (° explicit)
 
-# Trigonometric Functions (for coordinates)
-# cos(θ), sin(θ), tan(θ) - use with ° (degree) or rad (radian)
-point : cos(45°) sin(45°) -> P   # Unit circle point at 45°
-point : cos(60°) sin(60°) -> Q   # cos(60°)=0.5, sin(60°)≈0.866
-
 # Constructions
 midpoint : A B -> M
 orthogonal_line : P line -> perp # Perpendicular through P
 parallel_line : P line -> para   # Parallel through P
 intersect : line1 line2 -> P
+intersect : line circle_O -> P1 P2 # If intersections return multiple points, return all of them
 line_bisector : A B -> bisector  # Perpendicular bisector
 angular_bisector : A B C -> bis  # Angle bisector
 
@@ -51,12 +47,44 @@ incircle : A B C -> circle_I
 circumcircle : A B C -> circle_O
 ```
 
+### Mathematical Expression Rules
+
+**Supported operations:**
+- Arithmetic: `+`, `-`, `*`, `/`, `()`
+- Trigonometric: `cos(angle)`, `sin(angle)`, `tan(angle)`
+- Angle units: `°` or `deg` (degree), `rad` or `r` (radian), default = degree
+
+**Expression priority:**
+1. **Existing objects first** - If you defined `point : 0 0 -> 100`, then `100` refers to that point
+2. **Expressions evaluated** - `100*cos(45°)` is automatically calculated
+3. **Simple numbers** - `100` without operators is a numeric literal
+
+**Polar coordinates pattern** - For point at distance r and angle θ:
+```
+point : 0 0 -> O
+point : 100*cos(60°) 100*sin(60°) -> A  # Distance 100, angle 60°
+```
+
+**Common trig values (for reference):**
+- 0°: cos=1, sin=0 | 30°: cos≈0.866, sin=0.5 | 45°: cos≈0.707, sin≈0.707
+- 60°: cos=0.5, sin≈0.866 | 90°: cos=0, sin=1 | 120°: cos=-0.5, sin≈0.866
+- 180°: cos=-1, sin=0 | 240°: cos=-0.5, sin≈-0.866 | 270°: cos=0, sin=-1
+
 ## CRITICAL RULES
 
 1. **Define before use** - Objects must exist before referencing them
 2. **One definition per label** - Never redefine a variable
-3. **Polygon outputs** - `polygon : A B C -> poly c a b` (4 outputs for triangle!)
-4. **Construct, don't assert** - DSL builds geometry, it cannot assert constraints
+3. **NO POLYGON COMMAND** - ❌ **NEVER use `polygon` command!** Always create segments explicitly:
+   - ❌ `polygon : A B C -> tri a b c` (FORBIDDEN!)
+   - ✅ `segment : A B -> AB`, `segment : B C -> BC`, `segment : C A -> CA` (CORRECT!)
+4. **Construct, don't assert** - DSL builds geometry, it cannot verify constraints
+5. **Use expressions for precision** - When you need exact angles or positions, use math:
+   - ✅ `point : 100*cos(60°) 100*sin(60°) -> A` (precise 60° angle)
+   - ❌ Arbitrary coordinates then hope it's at 60° (imprecise)
+6. **Polar coordinates for regular shapes**:
+   - Equilateral triangles: 0°, 120°, 240°
+   - Squares: 0°, 90°, 180°, 270°
+   - Regular hexagons: 0°, 60°, 120°, 180°, 240°, 300°
 
 ## What DSL CANNOT Do
 
@@ -64,6 +92,7 @@ circumcircle : A B C -> circle_O
 ```
 equality : angle_ABC 80 -> expr   # Can't assert angle value!
 parallel : line1 line2 -> expr    # Can't assert parallel!
+polygon : A B C -> tri a b c      # FORBIDDEN command!
 ```
 
 ✅ Instead, CONSTRUCT the geometry:
@@ -71,6 +100,11 @@ parallel : line1 line2 -> expr    # Can't assert parallel!
 rotate : B 80 A -> C              # Creates 80° angle at A
 parallel_line : D line_BC -> l    # Creates line through D parallel to BC
 orthogonal_line : P line -> perp  # Creates perpendicular through P
+
+# For triangles/polygons, use explicit segments:
+segment : A B -> AB
+segment : B C -> BC
+segment : C A -> CA
 ```
 
 ## ReAct Pattern
@@ -84,12 +118,3 @@ ALWAYS structure your response as:
 ```
 [Your DSL code here - if generate_dsl or modify_dsl]
 ```
-
-## Validation
-
-Your constructions will be validated:
-- **Object Score**: Required objects found
-- **Condition Score**: Geometric conditions satisfied
-- **Total Score**: 30% objects + 70% conditions
-
-Create ALL mentioned objects explicitly (points, segments, polygons, circles).

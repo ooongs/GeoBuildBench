@@ -11,7 +11,7 @@ Your DSL line has incorrect syntax.
 # WRONG:
 point  -> A
 # CORRECT:
-point :  -> A
+point : 0 0 -> A
 ```
 
 2. **Missing arrow (->)**
@@ -35,10 +35,13 @@ point : 100 100 -> A
 # WRONG:
 point:->A
 # CORRECT:
-point :  -> A
+point : 0 0 -> A
 ```
 
 **Tip**: Each line should have exactly ONE `:` and ONE `->`
+
+
+
 
 
 

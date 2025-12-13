@@ -8,31 +8,31 @@ from src.core.geo_types import *
 def parse_trig_function(token: str) -> float:
     """
     Parse trigonometric function expressions like cos(30°), sin(45°), tan(60°).
-    
+
     Supports:
     - cos(30°), sin(45°), tan(60°)  - degree input
     - cos(1.5708rad), sin(0.5rad), tan(0.785rad)  - radian input
     - cos(30), sin(45), tan(60)  - degree input (default)
-    
+
     Returns:
         Calculated float value, or None if not a trig function
     """
     # Pattern: func(value[°|rad|r])
     trig_pattern = r'^(cos|sin|tan)\(([+-]?[\d.]+)(°|deg|rad|r)?\)$'
     match = re.match(trig_pattern, token, re.IGNORECASE)
-    
+
     if not match:
         return None
-    
+
     func_name = match.group(1).lower()
     value_str = match.group(2)
     unit = match.group(3)
-    
+
     try:
         value = float(value_str)
     except ValueError:
         return None
-    
+
     # Convert to radians if needed
     if unit in ('°', 'deg', None):
         # Default is degree
@@ -40,7 +40,7 @@ def parse_trig_function(token: str) -> float:
     else:
         # Already in radians
         value_rad = value
-    
+
     # Calculate trig function
     if func_name == 'cos':
         return float(np.cos(value_rad))
@@ -48,8 +48,76 @@ def parse_trig_function(token: str) -> float:
         return float(np.sin(value_rad))
     elif func_name == 'tan':
         return float(np.tan(value_rad))
-    
+
     return None
+
+
+def evaluate_math_expression(expr: str) -> float:
+    """
+    Evaluate mathematical expressions with trigonometric functions.
+
+    Supports:
+    - Arithmetic operations: +, -, *, /, (, )
+    - Trigonometric functions: cos(angle), sin(angle), tan(angle)
+    - Degree notation: ° (e.g., cos(100°))
+    - Numbers: integers and floats
+
+    Examples:
+    - "100*cos(100°)" -> -17.36...
+    - "100*sin(100°)" -> 98.48...
+    - "50+30*cos(45°)" -> 71.21...
+    - "2*sin(30°)+3*cos(60°)" -> 2.5
+
+    Returns:
+        Calculated float value, or None if expression is invalid
+    """
+    try:
+        # Replace trigonometric functions with their calculated values
+        # Pattern: cos(value°), sin(value°), tan(value°)
+        def replace_trig(match):
+            func_name = match.group(1).lower()
+            value_str = match.group(2)
+            unit = match.group(3)
+
+            value = float(value_str)
+
+            # Convert to radians if needed
+            if unit in ('°', 'deg', None):
+                value_rad = np.radians(value)
+            else:
+                value_rad = value
+
+            # Calculate trig function
+            if func_name == 'cos':
+                result = np.cos(value_rad)
+            elif func_name == 'sin':
+                result = np.sin(value_rad)
+            elif func_name == 'tan':
+                result = np.tan(value_rad)
+            else:
+                return match.group(0)  # Return original if unknown function
+
+            return str(float(result))
+
+        # Replace all trig functions in the expression
+        trig_pattern = r'(cos|sin|tan)\(([+-]?[\d.]+)(°|deg|rad|r)?\)'
+        processed_expr = re.sub(trig_pattern, replace_trig, expr, flags=re.IGNORECASE)
+
+        # Remove any remaining degree symbols (in case of standalone numbers like "100°")
+        processed_expr = processed_expr.replace('°', '')
+
+        # Evaluate the expression safely
+        # Only allow numbers, basic operators, parentheses, and scientific notation (e/E)
+        allowed_chars = set('0123456789.+-*/()eE ')
+        if not all(c in allowed_chars for c in processed_expr):
+            return None
+
+        # Use eval with restricted globals/locals for safety
+        result = eval(processed_expr, {"__builtins__": {}}, {})
+        return float(result)
+
+    except Exception:
+        return None
 
 type_to_shortcut = {
     int       : 'i',
@@ -79,11 +147,12 @@ class Element:
     def __init__(self, label, element_dict):
         self.data = None
         self.label = label
-        assert(label not in element_dict)
+        if label in element_dict:
+            raise ValueError(f"Duplicate label '{label}'. This element name is already defined.")
         element_dict[label] = self
 
     def drawable(self):
-        return isinstance(self.data, (Point, Line, Angle, Polygon, Circle, Vector))
+        return isinstance(self.data, (Point, Line, Polygon, Circle, Vector))
     
     def draw(self, ax, corners, show_labels=True):
         if not self.drawable():
@@ -97,40 +166,15 @@ class Element:
             self._draw_label(ax, corners)
     
     def _draw_label(self, ax, corners):
-        """객체 레이블을 그림에 표시"""
+        """객체 레이블을 그림에 표시 (점에만 표시)"""
         offset = 3  # 레이블 오프셋
-        
+
         if isinstance(self.data, Point):
             # 점 레이블: 점 위쪽에 표시
             ax.text(self.data.a[0], self.data.a[1] + offset, self.label,
                    fontsize=9, ha='center', va='bottom', color='blue',
-                   bbox=dict(boxstyle='round,pad=0.3', facecolor='white', 
-                            edgecolor='none', alpha=0.7))
-        
-        elif isinstance(self.data, Circle):
-            # 원 레이블: 중심 근처에 표시
-            ax.text(self.data.c[0] + offset, self.data.c[1] + offset, self.label,
-                   fontsize=8, ha='left', va='bottom', color='green',
                    bbox=dict(boxstyle='round,pad=0.3', facecolor='white',
                             edgecolor='none', alpha=0.7))
-        
-        elif isinstance(self.data, (Line, Segment, Ray)):
-            # 선/선분 레이블: 중간점에 표시
-            endpoints = self.data.get_endpoints(corners)
-            if endpoints is not None and len(endpoints) == 2:
-                mid_x = (endpoints[0][0] + endpoints[1][0]) / 2
-                mid_y = (endpoints[0][1] + endpoints[1][1]) / 2
-                ax.text(mid_x, mid_y + offset, self.label,
-                       fontsize=8, ha='center', va='bottom', color='red',
-                       bbox=dict(boxstyle='round,pad=0.3', facecolor='white',
-                                edgecolor='none', alpha=0.7))
-        
-        # elif isinstance(self.data, Angle):
-        #     # 각도 레이블: 꼭짓점 근처에 표시
-        #     ax.text(self.data.p[0] + offset, self.data.p[1] + offset, self.label,
-        #            fontsize=8, ha='left', va='bottom', color='purple',
-        #            bbox=dict(boxstyle='round,pad=0.3', facecolor='white',
-        #                     edgecolor='none', alpha=0.7))
     def important_points(self):
         if self.drawable(): return self.data.important_points()
         else: return []
@@ -157,10 +201,23 @@ class Command:
         input_data = [x.data for x in self.input_elements]
         name = command_types_name(self.name, input_data)
         if name not in command_dict: name = self.name
+
+        # Check if command exists
+        if name not in command_dict:
+            input_types = ', '.join([type(x).__name__ for x in input_data])
+            raise KeyError(f"Unknown command '{self.name}' with input types ({input_types}). "
+                         f"This command may not exist or may not accept these input types.")
+
         f = command_dict[name]
         output_data = f(*input_data)
         if not isinstance(output_data, (tuple, list)): output_data = (output_data,)
-        assert(len(output_data) == len(self.output_elements))
+
+        # Check output count
+        if len(output_data) != len(self.output_elements):
+            raise AssertionError(f"Command '{self.name}' returned {len(output_data)} output(s), "
+                               f"but {len(self.output_elements)} output(s) were expected. "
+                               f"Please check the command documentation.")
+
         for x,o in zip(output_data, self.output_elements):
             if o is not None: o.data = x
 
@@ -202,10 +259,22 @@ def parse_command(line, element_dict, line_number=None):
     if len(tokens) == 0:  # 빈 줄 처리
         return None
     if tokens[0] == "const":
-        assert(len(tokens) == 5)
-        datatype = str_to_const_type[tokens[1]]
-        value = float(tokens[2])
-        assert(tokens[3] == "->")
+        if len(tokens) != 5:
+            raise ValueError(f"const command requires exactly 5 tokens, got {len(tokens)}. "
+                           f"Format: const <type> <value> -> <label>")
+        try:
+            datatype = str_to_const_type[tokens[1]]
+        except KeyError:
+            raise ValueError(f"Invalid const type '{tokens[1]}'. Valid types: {', '.join(const_type_to_str.values())}")
+
+        try:
+            value = float(tokens[2])
+        except ValueError:
+            raise ValueError(f"Invalid numeric value '{tokens[2]}' for const command")
+
+        if tokens[3] != "->":
+            raise ValueError(f"Expected '->' at position 4, got '{tokens[3]}'")
+
         label = tokens[4]
         element = Element(label, element_dict)
         command = ConstCommand(datatype, value, element, line_number=line_number, original_line=line.strip())
@@ -213,33 +282,67 @@ def parse_command(line, element_dict, line_number=None):
         return command
     else:
         command_name = tokens[0]
-        assert(tokens[1] == ":")
+        if len(tokens) < 2 or tokens[1] != ":":
+            raise ValueError(f"Invalid command format. Expected '<command> : ...', got '{' '.join(tokens[:2])}'")
+
         labels = [None if token == "_" else token for token in tokens[2:]]
-        arrow_index = labels.index("->")
+        try:
+            arrow_index = labels.index("->")
+        except ValueError:
+            raise ValueError(f"Missing '->' in command. Format: {command_name} : <inputs> -> <outputs>")
+
         input_labels = labels[:arrow_index]
         output_labels = labels[arrow_index+1:]
+
+        if len(input_labels) == 0:
+            raise ValueError(f"No inputs provided for command '{command_name}'")
+        if len(output_labels) == 0:
+            raise ValueError(f"No outputs provided for command '{command_name}'")
         
-        # 숫자 리터럴, 삼각함수를 자동으로 element로 변환
+        # 숫자 리터럴, 삼각함수, 수식을 자동으로 element로 변환
+        # 우선순위: 1) 기존 element, 2) 수식, 3) 삼각함수, 4) 숫자
         input_elements = []
         for label in input_labels:
-            # 1. 먼저 삼각함수 표현인지 확인 (cos, sin, tan)
+            # 1. 먼저 기존 element_dict에서 찾기 시도 (가장 우선순위 높음)
+            if label in element_dict:
+                input_elements.append(element_dict[label])
+                continue
+
+            # 2. 수식 평가 시도 (산술 연산이나 삼각함수가 포함된 경우)
+            # 수식일 가능성이 있는지 확인 (연산자나 삼각함수 포함)
+            if any(op in label for op in ['*', '+', '-', '/', '(', ')']) or \
+               any(func in label.lower() for func in ['cos', 'sin', 'tan']):
+                expr_value = evaluate_math_expression(label)
+                if expr_value is not None:
+                    # 수식 계산 성공
+                    auto_label = f"_auto_{len(element_dict)}"
+                    while auto_label in element_dict:
+                        auto_label = f"_auto_{len(element_dict)}_{np.random.randint(10000)}"
+
+                    element = Element(auto_label, element_dict)
+                    element.data = float(expr_value)
+                    element.command = None
+                    input_elements.append(element)
+                    continue
+
+            # 3. 단순 삼각함수 표현인지 확인 (이전 방식과의 호환성)
             trig_value = parse_trig_function(label)
             if trig_value is not None:
                 # 삼각함수 값을 float로 저장
                 auto_label = f"_auto_{len(element_dict)}"
                 while auto_label in element_dict:
                     auto_label = f"_auto_{len(element_dict)}_{np.random.randint(10000)}"
-                
+
                 element = Element(auto_label, element_dict)
                 element.data = trig_value
                 element.command = None
                 input_elements.append(element)
                 continue
-            
-            # 2. 각도 표기 확인 (degree: °, radian: rad/r)
+
+            # 4. 각도 표기 확인 (degree: °, radian: rad/r)
             is_degree = label.endswith('°')
             is_radian = label.endswith('rad') or label.endswith('r')
-            
+
             # 각도 표기 제거
             clean_label = label
             if is_degree:
@@ -249,18 +352,18 @@ def parse_command(line, element_dict, line_number=None):
                     clean_label = label[:-3]  # rad 제거
                 else:
                     clean_label = label[:-1]  # r 제거
-            
-            # 3. 숫자인지 확인
+
+            # 5. 숫자인지 확인
             try:
                 value = float(clean_label)
                 # 자동 레이블 생성 (충돌 방지)
                 auto_label = f"_auto_{len(element_dict)}"
                 while auto_label in element_dict:
                     auto_label = f"_auto_{len(element_dict)}_{np.random.randint(10000)}"
-                
+
                 # 임시 element 생성
                 element = Element(auto_label, element_dict)
-                
+
                 # 각도 타입에 따라 처리
                 if is_radian:
                     # radian → AngleSize 객체로 저장
@@ -274,13 +377,13 @@ def parse_command(line, element_dict, line_number=None):
                         element.data = float(value)
                     else:
                         element.data = int(value)
-                
+
                 # 더미 command 생성 (추적용)
                 element.command = None
                 input_elements.append(element)
             except ValueError:
-                # 숫자가 아니면 기존 element 찾기
-                input_elements.append(element_dict[label])
+                # 숫자도 아니고 기존 element도 아니면 에러
+                raise KeyError(f"Unknown element or invalid expression: '{label}'")
         
         def element_or_none(label):
             if label is None: return None
@@ -339,7 +442,16 @@ class Construction:
         self.element_dict = dict()
         with open(filename, 'r') as f:
             for line_num, line in enumerate(f, 1):
-                command = parse_command(line, self.element_dict, line_number=line_num)
+                try:
+                    command = parse_command(line, self.element_dict, line_number=line_num)
+                except Exception as e:
+                    # Wrap parse errors with line information
+                    original_line = line.strip()
+                    error_msg = f"Parse error at line {line_num}: `{original_line}`\n\n"
+                    error_msg += f"❌ {type(e).__name__}: {str(e)}\n"
+                    error_msg += f"\n💡 TIP: Check the DSL syntax for this line."
+                    raise RuntimeError(error_msg) from e
+
                 if command is None:  # 빈 줄이거나 주석 등
                     continue
                 if isinstance(command, ConstCommand): command.apply()
@@ -348,7 +460,8 @@ class Construction:
                         [inp] = command.input_elements
                         [out] = command.output_elements
                         if out is not None: del self.element_dict[out.label]
-                        assert(self.to_prove is None)
+                        if self.to_prove is not None:
+                            raise RuntimeError(f"Multiple 'prove' statements found. Only one is allowed.")
                         self.to_prove = inp
 
                     else: self.nc_commands.append(command)
@@ -361,9 +474,65 @@ class Construction:
             try:
                 command.apply()
             except Exception as e:
-                # Enhanced error message with line information
-                error_msg = f"Error at line {command.line_number}: `{command.original_line}`\n"
-                error_msg += f"Reason: {type(e).__name__}: {str(e)}"
+                # Enhanced error message with line information and specific diagnostics
+                error_msg = f"Error at line {command.line_number}: `{command.original_line}`\n\n"
+
+                # Determine specific error type and provide helpful message
+                error_type = type(e).__name__
+                error_str = str(e)
+
+                # Provide detailed error explanation
+                if error_type == "KeyError":
+                    # Check if this is an unknown command error
+                    if "Unknown command" in error_str:
+                        cleaned_error = error_str.strip("'\"")
+                        error_msg += f"❌ {cleaned_error}\n\n"
+                        error_msg += f"Suggestions:\n"
+                        error_msg += f"   - Check if the command name is spelled correctly\n"
+                        error_msg += f"   - Verify that the input types are correct for this command\n"
+                        error_msg += f"   - Some commands have type-specific variants (e.g., intersect_ll for lines)\n"
+                    else:
+                        # Undefined element reference
+                        undefined_elem = error_str.strip("'\"")
+                        error_msg += f"❌ UNDEFINED ELEMENT: '{undefined_elem}'\n"
+                        error_msg += f"   The element '{undefined_elem}' is used but not defined.\n"
+                        error_msg += f"   Make sure to define it before using it in a command.\n\n"
+                        error_msg += f"Available elements: {', '.join(sorted(self.element_dict.keys())[:10])}"
+                        if len(self.element_dict) > 10:
+                            error_msg += f" ... and {len(self.element_dict) - 10} more"
+
+                elif error_type == "AssertionError":
+                    # Likely output count mismatch or invalid command format
+                    if hasattr(command, 'output_elements'):
+                        error_msg += f"❌ COMMAND EXECUTION FAILED\n"
+                        error_msg += f"   Most likely cause: Output count mismatch\n"
+                        error_msg += f"   Command '{command.name}' may require different number of outputs.\n\n"
+                        error_msg += f"   Check:\n"
+                        error_msg += f"   - Does this command exist?\n"
+                        error_msg += f"   - Are you providing the correct number of outputs?\n"
+                        error_msg += f"   - Are input types correct?\n"
+                    else:
+                        error_msg += f"❌ ASSERTION ERROR\n"
+                        error_msg += f"   Invalid command format or constraint violation.\n"
+
+                elif error_type == "ValueError":
+                    error_msg += f"❌ VALUE ERROR: {error_str}\n"
+                    error_msg += f"   Invalid value or type in the command.\n"
+
+                elif "Unknown element or invalid expression" in error_str:
+                    error_msg += f"❌ {error_str}\n"
+                    error_msg += f"   This could be:\n"
+                    error_msg += f"   - A typo in an element name\n"
+                    error_msg += f"   - An invalid mathematical expression\n"
+                    error_msg += f"   - Missing element definition\n"
+
+                else:
+                    # Generic error
+                    error_msg += f"❌ {error_type}: {error_str if error_str else '(no details)'}\n"
+
+                # Add context
+                error_msg += f"\n💡 TIP: Check the DSL syntax and ensure all elements are defined before use."
+
                 raise RuntimeError(error_msg) from e
 
     def generate(self, require_theorem = True, max_attempts = 100): # max_attempts = 0 -> inf
@@ -439,4 +608,7 @@ if __name__ == "__main__":
         if not filename.endswith(".txt"): continue
         construction.load(os.path.join(datadir, filename))
         construction.test()
+
+
+
 

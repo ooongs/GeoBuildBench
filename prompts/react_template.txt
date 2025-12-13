@@ -1,4 +1,4 @@
-You are solving a geometry problem. Follow the ReAct (Reasoning and Acting) pattern:
+You are solving a geometry problem. Follow the ReAct (Reasoning and Acting) pattern to iteratively improve your solution.
 
 ## Problem:
 {problem_text}
@@ -6,21 +6,15 @@ You are solving a geometry problem. Follow the ReAct (Reasoning and Acting) patt
 ## Your Goal:
 Generate DSL code that creates a geometric construction matching the problem description.
 
-## Instructions:
+**Note**: DSL syntax and commands are provided in the system prompt. Refer to it for command reference, mathematical expressions, and critical rules.
 
-1. **Think** carefully about what geometric objects are needed
-2. **Learn** from previous attempts - analyze what worked and what failed
-3. **Act** by generating or modifying DSL code
-4. **Observe** the results (image and any errors)
-5. **Reflect** on whether the solution is correct and why previous attempts failed
-6. **Iterate** until the construction is complete
+## ReAct Workflow:
 
-## Key Principles:
-- **If you see repeated errors**, try a completely different approach
-- **If previous DSL had syntax errors**, carefully check the syntax before trying again
-- **If the construction failed**, understand WHY it failed before modifying
-- **Look at the rendered images** to see if the construction is geometrically correct
-- **Pay attention to error messages** - they tell you exactly what went wrong
+1. **Thought** - Analyze the problem and plan your approach
+2. **Action** - Choose: `generate_dsl`, `modify_dsl`, or `final_answer`
+3. **Observation** - Review execution results (image + errors + validation)
+4. **Reflect** - Learn from what worked or failed
+5. **Iterate** - Repeat until successful
 
 ## Output Format:
 
@@ -38,46 +32,102 @@ ALWAYS structure your response EXACTLY like this:
 [If final_answer:]
 The construction is complete. The DSL successfully creates [describe what was created].
 
-## Important Reminders:
+## Error Analysis Process
 
-- Define points BEFORE using them in lines/segments
-- Use meaningful labels (line_AB not line1)
-- **DO NOT** use constraint commands like `equality : angle 80` or `parallel : line1 line2`
-- **DO** construct geometry to naturally have the desired properties
-- Check the observation carefully for errors
-- If there's an error, think about what caused it and how to fix it
-- You can see the rendered image - use it to verify your construction!
-- Pay attention to validation scores and failed conditions to improve your construction
+When you receive an error, follow this systematic process:
 
-## Validation-Friendly Construction:
+### 1. Read the Error Message
 
-To ensure your construction validates correctly:
+Extract these key pieces:
+- **Line number**: Where the error occurred
+- **Error type**: KeyError, ValueError, AssertionError, etc.
+- **Specific cause**: What went wrong
+- **Hints**: Suggestions from the system
 
-1. **Create ALL required objects explicitly:**
-   - If problem mentions "segment AB", use: `segment : A B -> seg_AB`
-   - If problem mentions "line BC", use: `line : B C -> line_BC`
-   - If problem mentions "triangle ABC", use: `polygon : A B C -> triangle c a b`
+**Common Error Types:**
+- **UNDEFINED ELEMENT** (KeyError) - You used an element before defining it
+- **DUPLICATE LABEL** (ValueError) - You tried to redefine an existing element
+- **UNKNOWN COMMAND** (KeyError) - Wrong command name or input types
+- **OUTPUT COUNT MISMATCH** (AssertionError) - Command returned wrong number of outputs
+- **MISSING ARROW** (ValueError) - Forgot `->` in command syntax
 
-2. **Points on segments:**
-   - If "D is on AB", place D between A and B (check with distance or use coordinates)
-   - Example: If A is at (0,0) and B at (200,0), D could be at (80,0)
+### 2. Observe the Rendered Image (CRITICAL)
 
-3. **Parallel lines:**
-   - Use `parallel_line : Point line -> parallel_line` to create a line through Point parallel to line
-   - Example: `parallel_line : D line_BC -> line_DE` creates line through D parallel to BC
+If an image is provided, analyze it BEFORE modifying your DSL:
 
-4. **Perpendicular lines:**
-   - Use `orthogonal_line : Point line -> perpendicular`
+**What to check:**
+1. Are all required points visible and correctly positioned?
+2. Are all required segments/lines present?
+3. Are circles drawn with correct centers and radii?
+4. Does the overall shape match the problem requirements?
 
-5. **Angles:**
-   - Place points carefully to achieve desired angles
-   - Use rotation with specific degree values
-   - Example: `rotate : P 60° Center -> P_rotated`
+**Example analysis:**
+```
+Thought: Looking at the rendered image, I can see:
+- Points A, B, C form a triangle ✓
+- Segments AB and BC are drawn ✓
+- BUT segment CA is missing ✗
+- Point D should be on segment AB but appears elsewhere ✗
 
-6. **Validation uses hybrid mode:**
-   - Core objects (polygons, circles) must exist explicitly
-   - Segments/lines can be inferred from points if both endpoints exist
-   - BUT it's safer to create them explicitly!
+The error message confirms: line 8 has "UNDEFINED ELEMENT: 'D'".
+Looking at my DSL, I used D before defining it.
+
+Fix: Define point D on segment AB (before line 8), then add segment CA.
+
+Action: modify_dsl
+```
+
+### 3. Choose Your Fix Strategy
+
+**Strategy A - Specific Fix** (for small, isolated errors):
+- Single undefined element
+- One missing segment
+- Simple syntax error
+
+**Strategy B - Major Revision** (for fundamental issues):
+- Wrong overall approach
+- Multiple cascading errors
+- Misunderstood the problem
+
+**Strategy C - Incremental Addition** (when close to solution):
+- Construction is 90% correct
+- Just missing one or two elements
+- Validation score is high but not passing
+
+### 4. Learn from Previous Attempts
+
+**Track your progress:**
+- If same error repeats → Change your approach
+- If different errors appear → You're making progress
+- If image looks closer → You're on the right track
+
+**Avoid repeating mistakes:**
+- ❌ Don't try the exact same DSL code again
+- ❌ Don't use the forbidden `polygon` command
+- ❌ Don't use undefined elements
+- ✅ Make specific, targeted changes based on error
+- ✅ Use hints from error messages
+- ✅ Reference the image to understand what actually got constructed
+
+## Validation Understanding
+
+Your construction is scored on two dimensions:
+
+**Object Score (30%)**: Percentage of required objects found
+- Points, segments, circles, lines must be explicitly created
+- Segments can be inferred if both endpoints exist, but safer to create explicitly
+
+**Condition Score (70%)**: Percentage of geometric conditions satisfied
+- Angles, parallelism, perpendicularity, distances, etc.
+- These must be satisfied through careful construction
+
+**Passing threshold**: Both scores must be ≥90%
+
+**Validation-friendly construction:**
+1. Create ALL mentioned objects explicitly
+2. Use meaningful labels matching the problem (e.g., `triangle`, `line_BC`)
+3. For triangles/polygons, create each segment individually (NO `polygon` command!)
+4. Position points carefully to satisfy geometric constraints
 
 ## Previous Attempts:
 
@@ -85,40 +135,26 @@ To ensure your construction validates correctly:
 
 ## Learning from History:
 
-**IMPORTANT**: Review the history above carefully:
-- Look at which approaches succeeded and which failed
-- Identify the root cause of errors (syntax, logic, missing objects)
-- If you made the same mistake multiple times, try a different strategy
-- If syntax errors occurred, double-check DSL syntax in this attempt
-- Compare rendered images to see if you're making progress
+Review the history above carefully:
+- Which approaches succeeded and which failed?
+- What were the root causes of errors (syntax, logic, missing objects)?
+- Have you made the same mistake multiple times?
+- Are rendered images showing progress toward the solution?
+- What patterns can you identify in the error messages?
 
-## Common Mistakes to AVOID:
+**If you see repeated failures:**
+- Try a completely different construction approach
+- Re-read the problem statement carefully
+- Focus on what the image shows vs. what's required
+- Break down the problem into smaller steps
 
-❌ **WRONG:**
-```
-angle : A B C -> angle_ABC
-const int 80 -> angle_value
-equality : angle_ABC angle_value -> expr1  # This doesn't work!
-```
+## Key Principles:
 
-✅ **CORRECT:**
-```
-point :  -> A
-point :  -> B
-point :  -> C
-polygon : A B C -> triangle c a b
-line : B C -> line_BC
-point :  -> D
-point :  -> E
-line : D E -> line_DE
-```
-
-## CRITICAL Rules:
-
-1. **Never redefine a variable** - Each label can only be defined once
-2. **Use random points** - `point :  -> A` for unconstrained points  
-3. **Fixed coordinates** - `point : 100 150 -> A` only if you need exact position
-4. **Learn from validation feedback** - Check which conditions failed and improve your construction
+- **Use the image as your primary feedback** - It shows exactly what your DSL created
+- **Pay attention to error messages** - They tell you exactly what went wrong
+- **Learn from validation scores** - Check which conditions failed
+- **Iterate systematically** - Don't make random changes, have a clear reason for each modification
+- **Define before use** - Check your DSL for proper ordering
+- **Create explicit segments** - Never use the `polygon` command
 
 Now continue with your next step:
-

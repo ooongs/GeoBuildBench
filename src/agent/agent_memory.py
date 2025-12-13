@@ -8,6 +8,45 @@ from typing import List, Dict, Any, Optional
 from dataclasses import dataclass, asdict
 from datetime import datetime
 import json
+import numpy as np
+
+
+def _convert_to_json_serializable(obj):
+    """
+    Convert numpy types and other non-serializable types to JSON-serializable Python types.
+
+    Args:
+        obj: Object to convert
+
+    Returns:
+        JSON-serializable version of the object
+    """
+    if obj is None:
+        return None
+
+    # Handle numpy types
+    if isinstance(obj, (np.bool_, np.integer)):
+        return bool(obj) if isinstance(obj, np.bool_) else int(obj)
+    elif isinstance(obj, np.floating):
+        return float(obj)
+    elif isinstance(obj, np.ndarray):
+        return obj.tolist()
+
+    # Handle Python bool explicitly
+    elif isinstance(obj, bool):
+        return bool(obj)
+
+    # Handle dictionaries
+    elif isinstance(obj, dict):
+        return {k: _convert_to_json_serializable(v) for k, v in obj.items()}
+
+    # Handle lists and tuples
+    elif isinstance(obj, (list, tuple)):
+        return [_convert_to_json_serializable(item) for item in obj]
+
+    # Return as-is for primitives and other types
+    else:
+        return obj
 
 
 @dataclass
@@ -319,7 +358,10 @@ class AgentMemory:
             "steps": [step.to_dict() for step in self.steps],
             "summary": self.get_summary()
         }
-        
+
+        # Convert to JSON-serializable format (handles numpy types)
+        data = _convert_to_json_serializable(data)
+
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
     

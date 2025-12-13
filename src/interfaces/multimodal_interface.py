@@ -131,20 +131,18 @@ class MultimodalInterface:
         if self.model.startswith("gpt-5"):
             # Build user message with text and images
             content = []
-            
+
             # Add text
             content.append({"type": "input_text", "text": message.text})
-            
+
             # Add images
             for img_base64 in message.images:
+                # GPT-5 expects image_url as a string, not an object
                 content.append({
                     "type": "input_image",
-                    "image_url": {
-                        "url": f"data:image/png;base64,{img_base64}",
-                        "detail": "high"  # Use high detail for geometric precision
-                    }
+                    "image_url": f"data:image/png;base64,{img_base64}"
                 })
-            
+
             messages.append({"role": "user", "content": content})
         else:
             content = []

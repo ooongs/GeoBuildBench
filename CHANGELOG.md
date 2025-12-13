@@ -6,6 +6,99 @@ All notable changes to this project are documented in this file.
 
 ## [Unreleased]
 
+### Polygon Command Removal (December 12, 2025)
+
+Removed polygon command usage to enforce explicit segment creation.
+
+#### Changes
+
+**DSL Policy Update**
+- Polygon command is now forbidden in agent-generated DSL
+- All polygons (triangles, quadrilaterals, etc.) must be created using explicit segments
+- Updated all documentation and prompts to reflect this change
+
+**Benefits**
+- More explicit and clear constructions
+- Better control over geometric object creation
+- Easier validation of required segments
+- Clearer visualization (only points show labels)
+
+**Documentation Updates**
+- `prompts/system_prompt.txt`: Added rule #3 forbidding polygon command
+- `prompts/dsl_guidelines.txt`: Updated section 6 with explicit segment examples
+- `prompts/examples.txt`: All examples now use explicit segments
+- `prompts/hints/error_polygon_forbidden.txt`: New error hint for polygon usage
+
+**Example Change**
+```
+# Before (forbidden):
+polygon : A B C -> triangle AB BC CA
+
+# After (required):
+segment : A B -> AB
+segment : B C -> BC
+segment : C A -> CA
+```
+
+**Rendering Changes**
+- Only Point objects show labels in visualizations
+- Segments, lines, circles are drawn but without labels
+- Angles are no longer rendered (removed from drawable objects)
+
+---
+
+### Mathematical Expression Support (December 12, 2025)
+
+Added powerful mathematical expression evaluation in DSL for more intuitive geometry construction.
+
+#### New Features
+
+**Expression Evaluation**
+- Arithmetic operations: `+`, `-`, `*`, `/`, `()`
+- Trigonometric functions: `cos()`, `sin()`, `tan()`
+- Combined expressions: `100*cos(45°)`, `50+30*sin(60°)`
+- Support for both degree (`°`, `deg`) and radian (`rad`, `r`) units
+
+**Usage Examples**
+```
+# Polar coordinates for points
+point : 100*cos(0°) 100*sin(0°) -> A
+point : 100*cos(120°) 100*sin(120°) -> B
+point : 100*cos(240°) 100*sin(240°) -> C
+
+# Arithmetic expressions
+point : 50+30 100-20 -> P
+circle : O 100*sin(60°) -> c
+
+# Complex expressions
+point : 50+30*cos(45°) 50+30*sin(45°) -> Q
+```
+
+**Priority Rules**
+1. Existing objects are referenced first (prevents ambiguity)
+2. Expressions with operators are evaluated
+3. Simple numbers are treated as literals
+4. Clear error messages for invalid expressions
+
+**Documentation Updates**
+- Updated `prompts/dsl_guidelines.txt` with comprehensive expression syntax
+- Added examples in `prompts/examples.txt` for regular polygons and polar coordinates
+- Added trigonometric value reference table
+
+#### Technical Details
+
+**Implementation** (`src/core/random_constr.py`)
+- New function `evaluate_math_expression()`: Safe expression evaluation with restricted namespace
+- Updated `parse_command()`: Prioritizes existing objects over expression evaluation
+- Enhanced `parse_trig_function()`: Handles degree/radian units with scientific notation
+
+**Safety Features**
+- Sandboxed evaluation using restricted `eval()` with no builtins
+- Only allows: numbers, operators (+, -, *, /, ()), and trig functions
+- Supports scientific notation (e.g., `1e-17`)
+
+---
+
 ### Repository Reorganization (December 10, 2025)
 
 Major restructuring of the repository for improved maintainability and clarity.
@@ -256,4 +349,7 @@ The following files were consolidated into the above documents:
 - `VALIDATION_DEBUGGING_GUIDE.md`
 - `VALIDATION_IMPROVEMENTS.md`
 - `VERIFICATION_CHECKLIST.md`
+
+
+
 

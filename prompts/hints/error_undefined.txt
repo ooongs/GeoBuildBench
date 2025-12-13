@@ -11,8 +11,8 @@ line : A B -> line_AB  # Error: A and B not defined yet!
 
 **Example - CORRECT:**
 ```
-point :  -> A          # Define A first
-point :  -> B          # Define B second
+point : 0 0 -> A          # Define A first
+point : 0 1 -> B          # Define B second
 line : A B -> line_AB  # Now you can use A and B
 ```
 
@@ -20,6 +20,9 @@ line : A B -> line_AB  # Now you can use A and B
 - Using a point before defining it with `point :  -> X`
 - Using a circle/line before creating it
 - Typo in object name (case-sensitive!)
+
+
+
 
 
 

@@ -6,6 +6,7 @@ Python tool for generating geometric constructions from problem descriptions usi
 
 - **Geometry Problem Parsing**: Extract geometric objects and verification conditions from text
 - **DSL-based Construction**: Domain-specific language for geometric constructions
+- **Mathematical Expressions**: Arithmetic and trigonometric expressions in DSL (e.g., `100*cos(45°)`, `50+30*sin(60°)`)
 - **Multimodal LLM Agent**: ReAct agent using vision-language models
 - **Benchmark System**: Evaluate LLM performance on geometry tasks
 - **Visualization**: Interactive matplotlib-based viewer
@@ -123,12 +124,22 @@ Executes DSL code and renders constructions:
 from src.dsl.dsl_executor import DSLExecutor
 
 executor = DSLExecutor()
+
+# Simple construction
 executor.execute("""
-point : free A
-point : free B
+point :  -> A
+point :  -> B
 segment : A B -> seg_AB
 """)
-executor.save_image("output.png")
+
+# With mathematical expressions (NEW!)
+executor.execute("""
+point : 0 0 -> O
+point : 100*cos(0°) 100*sin(0°) -> A
+point : 100*cos(120°) 100*sin(120°) -> B
+point : 100*cos(240°) 100*sin(240°) -> C
+polygon : A B C -> triangle AB BC CA
+""")
 ```
 
 ### ReAct Agent (`src/agent/react_agent.py`)

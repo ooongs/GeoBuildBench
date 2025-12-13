@@ -513,10 +513,21 @@ class ReActAgent:
             # Validation results if present
             if step.observation.validation_result:
                 vr = step.observation.validation_result
-                history_parts.append(f"\n**Validation Score:** {vr.get('total_score', 0):.1%}")
+                history_parts.append(f"\n**Validation Scores:**")
                 history_parts.append(f"  - Object Score: {vr.get('object_score', 0):.1%}")
                 history_parts.append(f"  - Condition Score: {vr.get('condition_score', 0):.1%}")
-                
+                history_parts.append(f"  - **Total Score: {vr.get('total_score', 0):.1%}** ({'✓ PASS' if vr.get('success', False) else '✗ FAIL'})")
+
+                # Show found objects if available
+                details = vr.get('details', {})
+                found_objects = details.get('found_objects', {})
+                if found_objects and any(objs for objs in found_objects.values() if objs):
+                    history_parts.append(f"\n**✓ Found Objects:**")
+                    for obj_type, objs in found_objects.items():
+                        if objs:
+                            objs_str = ', '.join(str(o) for o in objs) if isinstance(objs, list) else str(objs)
+                            history_parts.append(f"  - {obj_type.capitalize()}: {objs_str}")
+
                 if vr.get('missing_objects'):
                     history_parts.append("\n**Missing Objects:**")
                     for obj_type, objs in vr['missing_objects'].items():
@@ -537,99 +548,111 @@ class ReActAgent:
                                     labels = f"poly {' '.join(['side_' + str(i) for i in range(len(poly))])}"
                                     history_parts.append(f"    💡 Fix: Add polygon - `polygon : {pts} -> {labels}`")
                 
-                if vr.get('failed_conditions'):
-                    history_parts.append(f"\n**Failed Conditions:** {len(vr['failed_conditions'])} conditions not met")
-                    for fc in vr['failed_conditions']:
+                # Show passed conditions summary
+                passed_details = [d for d in details.get('condition_details', []) if d.get('passed', False)]
+                if passed_details:
+                    history_parts.append(f"\n**✓ Passed Conditions:** {len(passed_details)} conditions satisfied")
+
+                # Show failed conditions with detailed information
+                failed_details = [d for d in details.get('condition_details', []) if not d.get('passed', False)]
+                if failed_details or vr.get('failed_conditions'):
+                    # Use condition_details if available, otherwise fall back to failed_conditions
+                    failed_list = failed_details if failed_details else []
+                    if not failed_list:
+                        failed_list = [{'condition': fc, 'message': fc.get('validation_message', 'No message')}
+                                      for fc in vr.get('failed_conditions', [])]
+
+                    history_parts.append(f"\n**✗ Failed Conditions:** {len(failed_list)} conditions NOT satisfied")
+
+                    for idx, detail in enumerate(failed_list, 1):
+                        if 'condition' in detail:
+                            fc = detail['condition']
+                            msg = detail.get('message', 'No message')
+                        else:
+                            fc = detail
+                            msg = fc.get('validation_message', 'No message')
+
                         cond_type = fc.get('type', 'unknown')
-                        history_parts.append(f"  - Type: {cond_type}")
-                        
-                        # Show validation message if available
-                        validation_msg = fc.get('validation_message')
-                        if validation_msg:
-                            history_parts.append(f"    Result: {validation_msg}")
-                        
-                        # Show specific details and helpful fixes based on condition type
+                        history_parts.append(f"\n  {idx}. **{cond_type}**")
+                        history_parts.append(f"     Status: {msg}")
+
+                        # Show all relevant parameters from the condition
+                        params_to_show = {}
+                        for key, value in fc.items():
+                            if key not in ['type', 'validation_message'] and value is not None:
+                                params_to_show[key] = value
+
+                        if params_to_show:
+                            for key, value in params_to_show.items():
+                                if isinstance(value, (list, tuple)):
+                                    value_str = ', '.join(str(v) for v in value)
+                                elif isinstance(value, float):
+                                    value_str = f"{value:.2f}"
+                                else:
+                                    value_str = str(value)
+                                history_parts.append(f"     • {key}: {value_str}")
+
+                        # Show helpful fix suggestions based on condition type
                         if cond_type == 'angle_value':
                             points = fc.get('points', [])
                             expected_value = fc.get('value', 'N/A')
-                            history_parts.append(f"    Points: {points}")
-                            history_parts.append(f"    Expected angle: {expected_value}°")
-                            if not validation_msg:
-                                history_parts.append(f"    Issue: The angle does not match the required value")
                             if points and len(points) > 0 and len(points[0]) == 3:
                                 p1, vertex, p3 = points[0]
-                                history_parts.append(f"    💡 Fix: Use rotation to create angle - `rotate : {p1} {expected_value}° {vertex} -> {p3}`")
+                                history_parts.append(f"     💡 Fix: Use rotation to create angle - `rotate : {p1} {expected_value}° {vertex} -> {p3}`")
                         
                         elif cond_type == 'parallel':
                             objects = fc.get('objects', [])
-                            history_parts.append(f"    Objects: {objects}")
-                            if not validation_msg:
-                                history_parts.append(f"    Issue: These lines should be parallel but are not")
                             if len(objects) == 2:
                                 line1, line2 = objects
-                                history_parts.append(f"    💡 Fix: Construct {line2[0]}{line2[1]} parallel to {line1[0]}{line1[1]} using same direction vector")
-                        
+                                history_parts.append(f"     💡 Fix: Construct {line2[0]}{line2[1]} parallel to {line1[0]}{line1[1]} using `parallel_line`")
+
                         elif cond_type == 'perpendicular':
                             objects = fc.get('objects', [])
-                            history_parts.append(f"    Objects: {objects}")
-                            if not validation_msg:
-                                history_parts.append(f"    Issue: These lines should be perpendicular but are not")
                             if len(objects) == 2:
                                 line1, line2 = objects
-                                history_parts.append(f"    💡 Fix: Use `orthogonal_line : {line2[0]} line_{line1[0]}{line1[1]} -> perp_line`")
-                        
+                                history_parts.append(f"     💡 Fix: Use `orthogonal_line : {line2[0]} line_{line1[0]}{line1[1]} -> perp_line`")
+
                         elif cond_type == 'point_on_segment':
                             point = fc.get('point', 'P')
                             segment = fc.get('segment', [])
-                            history_parts.append(f"    Point: {point}, Segment: {segment}")
-                            if not validation_msg:
-                                history_parts.append(f"    Issue: Point {point} should be on segment {segment[0]}{segment[1]}")
-                            history_parts.append(f"    💡 Fix: Place {point} between {segment[0]} and {segment[1]} (use coordinates or intersection)")
-                        
+                            if segment:
+                                history_parts.append(f"     💡 Fix: Place {point} between {segment[0]} and {segment[1]} (use coordinates or intersection)")
+
                         elif cond_type == 'segment_equality':
-                            segments = fc.get('segments', [])
-                            history_parts.append(f"    Segments: {segments}")
-                            if not validation_msg:
-                                history_parts.append(f"    Issue: These segments should have equal length but do not")
-                            history_parts.append(f"    💡 Fix: Use same distance for both segments or construct them symmetrically")
-                        
+                            history_parts.append(f"     💡 Fix: Use same distance for both segments or construct them symmetrically")
+
                         elif cond_type == 'angle_bisector':
-                            line = fc.get('line', [])
                             angle_points = fc.get('angle_points', [])
-                            history_parts.append(f"    Bisector line: {line}")
-                            history_parts.append(f"    Angle: {angle_points}")
-                            if not validation_msg:
-                                history_parts.append(f"    Issue: The line should bisect the angle but does not")
                             if len(angle_points) == 3:
-                                history_parts.append(f"    💡 Fix: Use `angular_bisector : {angle_points[0]} {angle_points[1]} {angle_points[2]} -> bisector`")
-                        
+                                history_parts.append(f"     💡 Fix: Use `angular_bisector : {angle_points[0]} {angle_points[1]} {angle_points[2]} -> bisector`")
+
                         elif cond_type == 'collinear':
-                            points = fc.get('points', [])
-                            history_parts.append(f"    Points: {points}")
-                            if not validation_msg:
-                                history_parts.append(f"    Issue: These points should be collinear but are not")
-                            history_parts.append(f"    💡 Fix: Place all points on the same line")
-                        
+                            history_parts.append(f"     💡 Fix: Place all points on the same line")
+
                         elif cond_type == 'not_collinear':
-                            points = fc.get('points', [])
-                            history_parts.append(f"    Points: {points}")
-                            if not validation_msg:
-                                history_parts.append(f"    Issue: These points should NOT be collinear (degenerate triangle)")
-                            history_parts.append(f"    💡 Fix: Ensure points form a valid triangle, not a line")
-                        
+                            history_parts.append(f"     💡 Fix: Ensure points form a valid triangle, not a line")
+
                         elif cond_type == 'midpoint_of':
                             point = fc.get('point', 'M')
                             segment = fc.get('segment', [])
-                            history_parts.append(f"    Point: {point}, Segment: {segment}")
-                            if not validation_msg:
-                                history_parts.append(f"    Issue: Point {point} should be midpoint of {segment[0]}{segment[1]}")
-                            history_parts.append(f"    💡 Fix: Use `midpoint : {segment[0]} {segment[1]} -> {point}`")
-                        
+                            if segment:
+                                history_parts.append(f"     💡 Fix: Use `midpoint : {segment[0]} {segment[1]} -> {point}`")
+
+                        elif cond_type == 'point_on_circle':
+                            point = fc.get('point')
+                            circle = fc.get('circle')
+                            if point and circle:
+                                history_parts.append(f"     💡 Fix: Place {point} on {circle} using rotation or intersection")
+
+                        elif cond_type == 'same_side':
+                            points = fc.get('points', [])
+                            line = fc.get('line', [])
+                            if points and line:
+                                history_parts.append(f"     💡 Fix: Ensure points {', '.join(str(p) for p in points)} are on the same side of the line")
+
                         else:
-                            # Generic condition display
-                            if not validation_msg:
-                                history_parts.append(f"    Details: {fc}")
-                            history_parts.append(f"    💡 Review the condition and adjust your construction accordingly")
+                            # Generic fix suggestion
+                            history_parts.append(f"     💡 Review the condition and adjust your construction accordingly")
             
             history_parts.append("\n" + "="*70 + "\n")
         
@@ -673,7 +696,8 @@ class ReActAgent:
                 "missing_objects": validation.missing_objects,
                 "failed_conditions": failed_conditions_with_messages,
                 "has_dataset_error": validation.has_dataset_error,
-                "dataset_error_types": validation.dataset_error_types
+                "dataset_error_types": validation.dataset_error_types,
+                "details": validation.details  # Include full validation details
             }
         finally:
             if os.path.exists(dsl_file):

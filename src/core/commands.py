@@ -470,6 +470,8 @@ def polygon_ppi(p1, p2, n):
     return [gt.Polygon(raw_points)] + segments + points
 
 def polygon(*points):
+    # Create polygon in the order provided by the agent
+    # Do NOT sort automatically - let the agent specify the order
     raw_points = [p.a for p in points]
     segments = [
         gt.Segment(p1, p2)
@@ -614,4 +616,7 @@ def translate_pv(point, vector):
 
 def vector_pp(p1, p2):
     return gt.Vector((p1.a, p2.a))
+
+
+
 

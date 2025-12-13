@@ -1,0 +1,35 @@
+ERROR: polygon command is forbidden
+
+The polygon command is not allowed in DSL. You must create segments explicitly.
+
+❌ WRONG:
+```
+polygon : A B C -> triangle AB BC CA
+polygon : A B C D -> quad AB BC CD DA
+```
+
+✅ CORRECT - Create explicit segments:
+```
+# For triangle ABC:
+segment : A B -> AB
+segment : B C -> BC
+segment : C A -> CA
+
+# For quadrilateral ABCD:
+segment : A B -> AB
+segment : B C -> BC
+segment : C D -> CD
+segment : D A -> DA
+```
+
+Why use explicit segments?
+- More control over construction
+- Clear visibility of all edges
+- Better for validation
+- Easier to reference individual sides
+
+IMPORTANT: Create ALL segments for the shape:
+- Triangle: 3 segments
+- Quadrilateral: 4 segments
+- Pentagon: 5 segments
+- Hexagon: 6 segments

@@ -6,13 +6,13 @@ You tried to define the same label twice.
 
 **Example - WRONG:**
 ```
-point :  -> A
+point : 0 0 -> A
 point : 100 100 -> A  # Error: A already exists!
 ```
 
 **Example - CORRECT:**
 ```
-point :  -> A
+point : 0 0 -> A
 point : 100 100 -> B  # Use different label
 ```
 
@@ -25,6 +25,9 @@ point : 100 100 -> B  # Use different label
 - `A`, `B`, `C` for main points
 - `M_AB` for midpoint of AB
 - `P1`, `P2` for auxiliary points
+
+
+
 
 
 

@@ -211,77 +211,110 @@ class AgentLogger:
         """Write validation results to log file."""
         f.write(f"\nVALIDATION RESULTS:\n")
         f.write(f"{'-'*80}\n")
-        
+
         # Check for validation error first
         if validation_result.get('error_message'):
             f.write(f"✗ VALIDATION ERROR:\n")
             f.write(f"{validation_result['error_message']}\n")
             f.write(f"\n")
             return
-        
+
         # Normal validation results
-        f.write(f"Object Score: {validation_result.get('object_score', 0):.1%}\n")
+        f.write(f"Object Score:    {validation_result.get('object_score', 0):.1%}\n")
         f.write(f"Condition Score: {validation_result.get('condition_score', 0):.1%}\n")
-        f.write(f"Total Score: {validation_result.get('total_score', 0):.1%}\n")
-        f.write(f"Success: {'✓ YES' if validation_result.get('success', False) else '✗ NO'}\n")
-        
+        f.write(f"Total Score:     {validation_result.get('total_score', 0):.1%}\n")
+        f.write(f"Success:         {'✓ YES' if validation_result.get('success', False) else '✗ NO'}\n")
+
         # Details section with found objects
         if validation_result.get('details'):
             details = validation_result['details']
-            
+
             # Show found objects
             found_objects = details.get('found_objects', {})
             has_found = any(objs for objs in found_objects.values() if objs)
-            
+
             if has_found:
                 f.write(f"\n📦 Found Objects:\n")
                 for obj_type, objs in found_objects.items():
                     if objs:
-                        f.write(f"  • {obj_type}: {objs}\n")
-        
+                        objs_str = ', '.join(str(o) for o in objs) if isinstance(objs, list) else str(objs)
+                        f.write(f"  • {obj_type.capitalize()}: {objs_str}\n")
+
         # Missing objects
         missing_objects = validation_result.get('missing_objects', {})
         has_missing = any(objs for objs in missing_objects.values() if objs)
         if has_missing:
-            f.write(f"\n📋 Missing Objects:\n")
+            f.write(f"\n❌ Missing Objects:\n")
             for obj_type, objs in missing_objects.items():
                 if objs:
-                    f.write(f"  • {obj_type}: {objs}\n")
-        
+                    objs_str = ', '.join(str(o) for o in objs) if isinstance(objs, list) else str(objs)
+                    f.write(f"  • {obj_type.capitalize()}: {objs_str}\n")
+
         # Passed and Failed conditions with detailed messages
         cond_details = validation_result.get('details', {}).get('condition_details', [])
         failed_conditions = validation_result.get('failed_conditions', [])
-        
+
         # Show passed conditions
         passed_details = [d for d in cond_details if d.get('passed', False)]
         if passed_details:
             f.write(f"\n✅ Passed Conditions ({len(passed_details)} total):\n")
-            for detail in passed_details:
+            for i, detail in enumerate(passed_details, 1):
                 cond = detail.get('condition', {})
                 message = detail.get('message', 'No message')
                 cond_type = cond.get('type', 'unknown')
-                f.write(f"  ✓ {cond_type}: {message}\n")
-        
+                f.write(f"  {i}. [{cond_type}] {message}\n")
+
         # Show failed conditions with enhanced details
         failed_details = [d for d in cond_details if not d.get('passed', False)]
         if failed_details:
             f.write(f"\n❌ Failed Conditions ({len(failed_details)} total):\n")
-            for detail in failed_details:
+            for i, detail in enumerate(failed_details, 1):
                 cond = detail.get('condition', {})
                 message = detail.get('message', 'No message')
                 cond_type = cond.get('type', 'unknown')
-                f.write(f"  ✗ {cond_type}: {message}\n")
-                
+                f.write(f"  {i}. [{cond_type}] {message}\n")
+
                 # Show additional parameters for context
+                shown_keys = {'type'}  # Already shown above
                 for key, value in cond.items():
-                    if key != 'type' and value:
-                        f.write(f"      {key}: {value}\n")
-        
+                    if key not in shown_keys and value is not None:
+                        # Format the value nicely
+                        if isinstance(value, (list, tuple)):
+                            value_str = ', '.join(str(v) for v in value)
+                        elif isinstance(value, float):
+                            value_str = f"{value:.2f}"
+                        else:
+                            value_str = str(value)
+                        f.write(f"     → {key}: {value_str}\n")
+        elif failed_conditions:
+            # If we have failed_conditions but no cond_details, show them anyway
+            f.write(f"\n❌ Failed Conditions ({len(failed_conditions)} total):\n")
+            for i, cond in enumerate(failed_conditions, 1):
+                cond_type = cond.get('type', 'unknown')
+                message = cond.get('validation_message', 'No message')
+                f.write(f"  {i}. [{cond_type}] {message}\n")
+
+                # Show additional parameters
+                shown_keys = {'type', 'validation_message'}
+                for key, value in cond.items():
+                    if key not in shown_keys and value is not None:
+                        if isinstance(value, (list, tuple)):
+                            value_str = ', '.join(str(v) for v in value)
+                        elif isinstance(value, float):
+                            value_str = f"{value:.2f}"
+                        else:
+                            value_str = str(value)
+                        f.write(f"     → {key}: {value_str}\n")
+
         # Show success message if all passed
-        if not has_missing and not failed_conditions and validation_result.get('total_score', 0) > 0:
-            f.write(f"\n✅ All objects and conditions satisfied!\n")
-        elif validation_result.get('total_score', 0) == 0 and not has_missing and not failed_conditions:
-            f.write(f"\n⚠️  Low scores but no detailed error information available.\n")
+        if not has_missing and not failed_details and not failed_conditions:
+            if validation_result.get('total_score', 0) >= 0.9:
+                f.write(f"\n✅ All objects and conditions satisfied!\n")
+
+        # Warning if scores are low but no specific errors
+        if validation_result.get('total_score', 0) < 0.5 and not has_missing and not failed_details and not failed_conditions:
+            f.write(f"\n⚠️  Low score but no detailed error information available.\n")
+            f.write(f"   This may indicate a validation bug or dataset error.\n")
     
     def log_final_result(self, session_id: str, success: bool, 
                         iterations: int, validation_result: Optional[Dict] = None):

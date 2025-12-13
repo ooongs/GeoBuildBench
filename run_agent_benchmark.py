@@ -10,10 +10,49 @@ import json
 import argparse
 from datetime import datetime
 from typing import List, Dict, Any, Optional
+import numpy as np
 from src.benchmark.benchmark_dataset import BenchmarkDataset
 from src.agent.react_agent import ReActAgent
 from src.dsl.dsl_validator import ValidationErrorLogger, set_validation_error_logger
 from src.utils import get_data_dir, get_output_dir
+
+
+def _convert_to_json_serializable(obj):
+    """
+    Convert numpy types and other non-serializable types to JSON-serializable Python types.
+
+    Args:
+        obj: Object to convert
+
+    Returns:
+        JSON-serializable version of the object
+    """
+    if obj is None:
+        return None
+
+    # Handle numpy types
+    if isinstance(obj, (np.bool_, np.integer)):
+        return bool(obj) if isinstance(obj, np.bool_) else int(obj)
+    elif isinstance(obj, np.floating):
+        return float(obj)
+    elif isinstance(obj, np.ndarray):
+        return obj.tolist()
+
+    # Handle Python bool explicitly
+    elif isinstance(obj, bool):
+        return bool(obj)
+
+    # Handle dictionaries
+    elif isinstance(obj, dict):
+        return {k: _convert_to_json_serializable(v) for k, v in obj.items()}
+
+    # Handle lists and tuples
+    elif isinstance(obj, (list, tuple)):
+        return [_convert_to_json_serializable(item) for item in obj]
+
+    # Return as-is for primitives and other types
+    else:
+        return obj
 
 
 class DetailedMetrics:
@@ -557,7 +596,8 @@ class AgentBenchmarkRunner:
             report["validation_error_log_file"] = validation_log_file
             print(f"\n⚠️  Validation errors logged to: {validation_log_file}")
         
-        # Save report
+        # Save report (convert to JSON-serializable format)
+        report = _convert_to_json_serializable(report)
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(report, f, ensure_ascii=False, indent=2)
         
@@ -790,7 +830,10 @@ def main():
             "result": results,
             "metrics": runner.metrics.to_dict()
         }
-        
+
+        # Convert to JSON-serializable format
+        output_data = _convert_to_json_serializable(output_data)
+
         with open(args.output, 'w', encoding='utf-8') as f:
             json.dump(output_data, f, ensure_ascii=False, indent=2)
         
