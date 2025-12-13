@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Multimodal Interface for Vision LLMs
-Supports GPT-4V, GPT-4o, Claude 3.5 Sonnet, and vLLM models with vision.
+Supports GPT-4V, GPT-4o, Claude 3.5 Sonnet, OpenRouter, and vLLM models with vision.
 """
 
 import os
@@ -48,6 +48,24 @@ class MultimodalInterface:
         self.model = model
         self.api_key = api_key
         self.api_base = api_base or os.getenv("OPENAI_API_BASE")
+
+        # OpenRouter support (OpenAI-compatible)
+        openrouter_key = os.getenv("OPENROUTER_API_KEY")
+        openrouter_base = None
+        if openrouter_key:
+            openrouter_base = os.getenv("OPENROUTER_API_BASE", "https://openrouter.ai/api/v1")
+            if self.api_base is None:
+                self.api_base = openrouter_base
+
+        self.is_openrouter = self.api_base is not None and "openrouter.ai" in self.api_base
+        self.openrouter_headers = {}
+        if self.is_openrouter:
+            referer = os.getenv("OPENROUTER_SITE_URL")
+            title = os.getenv("OPENROUTER_APP_NAME") or os.getenv("OPENROUTER_TITLE")
+            if referer:
+                self.openrouter_headers["HTTP-Referer"] = referer
+            if title:
+                self.openrouter_headers["X-Title"] = title
         
         # Determine provider
         if "claude" in model.lower() or "anthropic" in model.lower():
@@ -55,14 +73,19 @@ class MultimodalInterface:
             if api_key is None:
                 self.api_key = os.getenv("ANTHROPIC_API_KEY")
         else:
-            # Default to OpenAI-compatible API (works for GPT and vLLM)
-            self.provider = "openai"
+            # Default to OpenAI-compatible API (works for GPT, OpenRouter, and vLLM)
             if api_key is None:
-                self.api_key = os.getenv("OPENAI_API_KEY")
-            
-            # Check if this is a vLLM model (typically has / in name)
-            if "/" in model and self.api_base:
-                self.provider = "vllm"
+                self.api_key = openrouter_key or os.getenv("OPENAI_API_KEY")
+
+            if self.is_openrouter:
+                # Always treat OpenRouter as openrouter provider, even with "/" in model names
+                self.provider = "openrouter"
+            else:
+                # Check if this is a vLLM model (typically has / in name)
+                if "/" in model and self.api_base:
+                    self.provider = "vllm"
+                else:
+                    self.provider = "openai"
         
         if not self.api_key:
             # For vLLM, API key might be optional
@@ -77,7 +100,7 @@ class MultimodalInterface:
     
     def _initialize_client(self):
         """Initialize the appropriate API client."""
-        if self.provider in ["openai", "vllm"]:
+        if self.provider in ["openai", "vllm", "openrouter"]:
             try:
                 from openai import OpenAI
                 
@@ -85,6 +108,8 @@ class MultimodalInterface:
                 client_args = {"api_key": self.api_key}
                 if self.api_base:
                     client_args["base_url"] = self.api_base
+                if self.provider == "openrouter" and self.openrouter_headers:
+                    client_args["default_headers"] = self.openrouter_headers
                 
                 self.client = OpenAI(**client_args)
             except ImportError:
@@ -113,7 +138,7 @@ class MultimodalInterface:
         Returns:
             Response text from LLM
         """
-        if self.provider in ["openai", "vllm"]:
+        if self.provider in ["openai", "vllm", "openrouter"]:
             return self._send_openai(message, system_prompt, temperature, max_tokens)
         elif self.provider == "anthropic":
             return self._send_anthropic(message, system_prompt, temperature, max_tokens)
@@ -164,8 +189,9 @@ class MultimodalInterface:
         
         # Call API
         try:
+            use_responses_api = self.model.startswith("gpt-5") and self.provider == "openai"
 
-            if self.model.startswith("gpt-5"):
+            if use_responses_api:
                 response = self.client.responses.create(
                     model=self.model,
                     input=messages,
@@ -242,7 +268,7 @@ class MultimodalInterface:
         Returns:
             Response text
         """
-        if self.provider in ["openai", "vllm"]:
+        if self.provider in ["openai", "vllm", "openrouter"]:
             if system_prompt:
                 messages = [{"role": "system", "content": system_prompt}] + messages
             
