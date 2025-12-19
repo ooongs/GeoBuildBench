@@ -2700,14 +2700,14 @@
           "type": "angle_equality",
           "points": [
             [
-              "B",
+              "D",
               "A",
               "E"
             ],
             [
-              "C",
-              "D",
-              "E"
+              "A",
+              "B",
+              "C"
             ]
           ]
         }
@@ -5332,7 +5332,7 @@
     },
     {
       "id": "102",
-      "subject": "已知AB∥CD,AD平分∠BAE,∠D=38°",
+      "subject": "已知AB∥CD,AD平分∠BAE,E 在CD 上∠ADC=38°",
       "required_objects": {
         "points": [
           "A",
@@ -5399,7 +5399,7 @@
             [
               "C",
               "D",
-              "B"
+              "A"
             ]
           ],
           "value": 38
@@ -7136,16 +7136,6 @@
           [
             "A",
             "C"
-          ]
-        ],
-        "lines": [
-          [
-            "B",
-            "E"
-          ],
-          [
-            "C",
-            "F"
           ]
         ],
         "circles": [],
@@ -10191,26 +10181,22 @@
           ]
         },
         {
-          "type": "angle_value",
-          "points": [
+          "type": "angle_ratio",
+          "angle1": [
             [
               "C",
               "B",
               "D"
             ]
           ],
-          "value": 2
-        },
-        {
-          "type": "angle_value",
-          "points": [
+          "angle2": [
             [
               "B",
               "D",
               "C"
             ]
           ],
-          "value": 1
+          "ratio": [2,1]
         },
         {
           "type": "angle_value",
@@ -10561,13 +10547,14 @@
     },
     {
       "id": "206",
-      "subject": "在△ABC中,AC=4cm,线段AB的垂直平分线交AC于点N,△BCN的周长是7cm",
+      "subject": "在△ABC中,AC=4cm,线段AB的垂直平分线MN交AC于点N,△BCN的周长是7cm",
       "required_objects": {
         "points": [
           "A",
           "B",
-          "C",
-          "N"
+          "C",  
+          "N",
+          "M"
         ],
         "segments": [
           [
@@ -10583,28 +10570,19 @@
             "A"
           ],
           [
-            "A",
-            "C"
-          ],
-          [
-            "B",
-            "C"
-          ],
-          [
             "C",
             "N"
           ],
           [
             "B",
             "N"
-          ]
-        ],
-        "lines": [
+          ],
           [
-            "A",
-            "B"
+            "M",
+            "N"
           ]
         ],
+        "lines": [],
         "circles": [],
         "polygons": [
           [
@@ -10637,8 +10615,16 @@
             ],
             [
               "N",
-              "C"
+              "M"
             ]
+          ]
+        },
+        {
+          "type":"midpoint_of",
+          "point": "M",
+          "segment": [
+            "A",
+            "B"
           ]
         },
         {
@@ -10647,6 +10633,14 @@
           "segment": [
             "A",
             "C"
+          ]
+        },
+        {
+          "type": "point_on_segment",
+          "point": "M",
+          "segment": [
+            "A",
+            "B"
           ]
         },
         {
@@ -13695,7 +13689,7 @@
     },
     {
       "id": "271",
-      "subject": "将一个长为10cm,宽为8cm的矩形纸片对折两次后,沿所得矩形两邻边中点的连线(虚线)剪下,再打开,得到的菱形的面积为()",
+      "subject": "将一个长为10cm,宽为8cm的矩形纸片ABCD对折两次后,沿所得矩形两邻边中点的连线(虚线)剪下,再打开,得到的菱形ENFM的面积为()",
       "required_objects": {
         "points": [
           "A",
@@ -16953,7 +16947,7 @@
     },
     {
       "id": "327",
-      "subject": "在四边形ABCD中,∠B=120°,∠D=50°,将∠C向内折出一个△PRC′,恰好使C′P∥AB,C′R∥AD",
+      "subject": "在四边形ABCD中,∠B=120°,∠D=50°,将∠C向内折出一个△PRC′,P在BC上,R在CD上,恰好使C′P∥AB,C′R∥AD",
       "required_objects": {
         "points": [
           "A",
@@ -17029,6 +17023,32 @@
       },
       "verification_conditions": [
         {
+          "type": "segment_equality",
+          "segments": [
+            [
+              "C'",
+              "P"
+            ],
+            [
+              "C",
+              "P"
+            ]
+          ]
+        },
+        {
+          "type": "segment_equality",
+          "segments": [
+            [
+              "C'",
+              "R"
+            ],
+            [
+              "C",
+              "R"
+            ]
+          ]
+        },
+        {
           "type": "angle_value",
           "points": [
             [
@@ -17074,6 +17094,22 @@
               "A",
               "D"
             ]
+          ]
+        },
+        {
+          "type": "point_on_segment",
+          "point": "P",
+          "segment": [
+            "B",
+            "C"
+          ]
+        },
+        {
+          "type": "point_on_segment",
+          "point": "R",
+          "segment": [
+            "D",
+            "C"
           ]
         }
       ],
@@ -24296,7 +24332,7 @@
           ]
         },
         {
-          "type": "segment_equal",
+          "type": "segment_equality",
           "segments": [
             [
               "B",

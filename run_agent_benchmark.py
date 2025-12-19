@@ -346,10 +346,11 @@ class AgentBenchmarkRunner:
     
     def __init__(self, model: str = "gpt-4o", max_iterations: int = 10,
                  save_images: bool = True, verbose: bool = False,
-                 use_vision: bool = True, run_id: Optional[str] = None):
+                 use_vision: bool = True, run_id: Optional[str] = None,
+                 resume_dir: Optional[str] = None):
         """
         Initialize benchmark runner.
-        
+
         Args:
             model: LLM model to use
             max_iterations: Max iterations per problem
@@ -357,21 +358,28 @@ class AgentBenchmarkRunner:
             verbose: Print detailed logs
             use_vision: Whether to send rendered images to LLM
             run_id: Custom run identifier for logging
+            resume_dir: Existing log directory to resume from (reuses run_id)
         """
         self.model = model
         self.max_iterations = max_iterations
         self.save_images = save_images
         self.verbose = verbose
         self.use_vision = use_vision
-        
+
+        # If resuming, extract run_id from directory path
+        if resume_dir:
+            import os.path
+            run_id = os.path.basename(resume_dir.rstrip('/'))
+
         # Generate run_id if not provided
         if run_id is None:
             model_safe = model.replace("/", "_").replace(":", "_")
             vision_suffix = "vision" if use_vision else "no_vision"
             run_id = f"{model_safe}_{vision_suffix}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-        
+
         self.run_id = run_id
-        
+        self.resume_mode = resume_dir is not None
+
         self.agent = ReActAgent(
             model=model,
             max_iterations=max_iterations,
@@ -450,25 +458,31 @@ class AgentBenchmarkRunner:
         return results
     
     def run_batch(self, dataset_path: str, limit: Optional[int] = None,
-                  start_idx: int = 0, output_file: str = "agent_results.json") -> Dict[str, Any]:
+                  start_idx: int = 0, output_file: str = "agent_results.json",
+                  problems_filter: Optional[List] = None) -> Dict[str, Any]:
         """
         Run agent on multiple problems.
-        
+
         Args:
             dataset_path: Path to benchmark dataset
             limit: Maximum number of problems (None for all)
             start_idx: Starting index
             output_file: Output file for results
-            
+            problems_filter: List of specific BenchmarkProblem objects to run (overrides limit/start_idx)
+
         Returns:
             Evaluation report
         """
         dataset = BenchmarkDataset(dataset_path)
-        
-        problems = list(dataset)
-        problems = problems[start_idx:]
-        if limit:
-            problems = problems[:limit]
+
+        # Use problems_filter if provided, otherwise use start_idx/limit
+        if problems_filter is not None:
+            problems = problems_filter
+        else:
+            problems = list(dataset)
+            problems = problems[start_idx:]
+            if limit:
+                problems = problems[:limit]
         
         vision_mode = "with_vision" if self.use_vision else "no_vision"
         

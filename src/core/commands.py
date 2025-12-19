@@ -290,6 +290,14 @@ def intersect_cs(circle, segment):
     if not isinstance(results, (tuple, list)): results = (results,)
     return [x for x in results if segment.contains(x.a)]
 
+def intersect_rc(ray, circle):
+    results = intersect_lc(ray, circle)
+    if not isinstance(results, (tuple, list)): results = (results,)
+    return [x for x in results if ray.contains(x.a)]
+
+def intersect_cr(circle, ray):
+    return intersect_rc(ray, circle)
+
 def intersect_lr(line, ray):
     result = intersect_ll(line, ray)
     assert(ray.contains(result.a))

@@ -49,7 +49,7 @@ class ValidationErrorLogger:
     # List of all supported condition types
     SUPPORTED_CONDITION_TYPES = [
         # Original types
-        "parallel", "perpendicular", "angle_value", "angle_equality", 
+        "parallel", "perpendicular", "angle_value", "angle_equality",
         "segment_equality", "collinear", "not_collinear", "concyclic",
         "concurrent", "point_on_line", "point_on_circle", "angle_bisector",
         "point_on_segment", "midpoint_of", "distance_equals", "triangle_valid",
@@ -68,7 +68,9 @@ class ValidationErrorLogger:
         "point_outside_line", "point_above_line",
         "intersection", "point_intersection",
         "geometric_transformation", "rotation",
-        "contact", "point_height"
+        "contact", "point_height",
+        # Ratio conditions
+        "angle_ratio", "segment_ratio"
     ]
     
     def __init__(self, log_dir: Optional[str] = None):
@@ -617,25 +619,30 @@ class DSLValidator:
         return None
     
     def _find_line(self, p1: str, p2: str) -> Optional[str]:
-        """Find a line through two points in the construction."""
+        """Find a line through two points in the construction.
+
+        Note: This also recognizes Segment and Ray as lines, since they
+        represent the same geometric concept for validation purposes.
+        """
         element_dict = self.construction.element_dict
-        
+
         if p1 not in element_dict or p2 not in element_dict:
             return None
-        
+
         pt1 = element_dict[p1].data
         pt2 = element_dict[p2].data
-        
+
         if not isinstance(pt1, gt.Point) or not isinstance(pt2, gt.Point):
             return None
-        
+
         for label, element in element_dict.items():
-            if isinstance(element.data, gt.Line):
+            # Check Line, Segment, and Ray (all can represent a line through two points)
+            if isinstance(element.data, (gt.Line, gt.Segment, gt.Ray)):
                 line = element.data
-                # Check if both points lie on the line
+                # Check if both points lie on the line/segment/ray
                 if line.contains(pt1.a) and line.contains(pt2.a):
                     return label
-        
+
         return None
     
     def _find_circle_with_center(self, center: str) -> Optional[str]:
@@ -994,6 +1001,10 @@ class DSLValidator:
                 return self._check_segments_sum_equals(condition.data)
             elif condition_type == "ratio":
                 return self._check_ratio(condition.data)
+            elif condition_type == "angle_ratio":
+                return self._check_angle_ratio(condition.data)
+            elif condition_type == "segment_ratio":
+                return self._check_segment_ratio(condition.data)
             else:
                 # Log unknown condition type
                 error_msg = f"Unknown condition type: {condition_type}"
@@ -1823,7 +1834,169 @@ class DSLValidator:
             "passed": passed,
             "message": f"Segment length is {dist_corrected:.2f}, expected {expected_value} (tolerance {tolerance})"
         }
-    
+
+    def _check_angle_ratio(self, data: Dict) -> Dict[str, Any]:
+        """
+        Check if two angles have a specific ratio.
+
+        Format:
+        {
+            "type": "angle_ratio",
+            "angle1": ["C", "B", "D"],  # First angle (CBD)
+            "angle2": ["B", "D", "C"],  # Second angle (BDC)
+            "ratio": [2, 1]             # angle1 : angle2 = 2:1 (i.e., ∠CBD = 2∠BDC)
+        }
+
+        Examples:
+        - ∠CBD = 2∠BDC → ratio: [2, 1]
+        - 2∠ABC = 3∠DEF → ratio: [2, 3]
+        """
+        angle1_points = data.get("angle1", [])
+        angle2_points = data.get("angle2", [])
+        ratio = data.get("ratio", [1, 1])
+        tolerance = data.get("tolerance", 1.0)  # Tolerance in degrees
+
+        if len(angle1_points) != 3 or len(angle2_points) != 3:
+            return {"passed": False, "message": "Each angle requires exactly 3 points"}
+
+        if len(ratio) != 2:
+            return {"passed": False, "message": "Ratio must be [numerator, denominator]"}
+
+        element_dict = self.construction.element_dict
+
+        # Check all points exist
+        all_points = angle1_points + angle2_points
+        if not all(p in element_dict for p in all_points):
+            return {"passed": False, "message": "Could not find all points"}
+
+        # Get angle values
+        try:
+            # angle1 = ∠(p0, p1, p2) where p1 is the vertex
+            pts1 = [element_dict[p].data for p in angle1_points]
+            pts2 = [element_dict[p].data for p in angle2_points]
+
+            if not all(isinstance(p, gt.Point) for p in pts1 + pts2):
+                return {"passed": False, "message": "Invalid point types"}
+
+            # Calculate angles
+            angle1 = cmd.angle_ppp(pts1[0], pts1[1], pts1[2])
+            angle2 = cmd.angle_ppp(pts2[0], pts2[1], pts2[2])
+
+            angle1_deg = np.degrees(angle1.angle)
+            angle2_deg = np.degrees(angle2.angle)
+
+            # Consider reflex angles: allow either the measured angle or (360 - angle)
+            # Try all 4 combinations and use the one with the best ratio match
+            angle1_options = [angle1_deg, (360.0 - angle1_deg) % 360.0]
+            angle2_options = [angle2_deg, (360.0 - angle2_deg) % 360.0]
+
+            expected_ratio = ratio[0] / ratio[1]
+            best_diff = float('inf')
+            best_combo = (angle1_deg, angle2_deg)
+
+            for a1 in angle1_options:
+                for a2 in angle2_options:
+                    if a2 == 0:
+                        continue
+                    # Cross multiply: a1 * ratio[1] = a2 * ratio[0]
+                    lhs = a1 * ratio[1]
+                    rhs = a2 * ratio[0]
+                    diff = np.abs(lhs - rhs)
+                    if diff < best_diff:
+                        best_diff = diff
+                        best_combo = (a1, a2)
+
+            angle1_chosen, angle2_chosen = best_combo
+            actual_ratio = angle1_chosen / angle2_chosen if angle2_chosen != 0 else np.inf
+
+            passed = best_diff <= tolerance * max(ratio)
+
+            return {
+                "passed": passed,
+                "message": (
+                    f"Angle ratio: {angle1_chosen:.2f}° : {angle2_chosen:.2f}° = "
+                    f"{actual_ratio:.3f} (expected {expected_ratio:.3f}, "
+                    f"from ratio [{ratio[0]}, {ratio[1]}])"
+                )
+            }
+        except Exception as e:
+            return {"passed": False, "message": f"Error calculating angles: {str(e)}"}
+
+    def _check_segment_ratio(self, data: Dict) -> Dict[str, Any]:
+        """
+        Check if two segments have a specific ratio.
+
+        Format:
+        {
+            "type": "segment_ratio",
+            "segment1": ["A", "B"],  # First segment
+            "segment2": ["B", "D"],  # Second segment
+            "ratio": [3, 1]          # segment1 : segment2 = 3:1 (i.e., AB = 3BD)
+        }
+
+        Examples:
+        - AB = 3BD → ratio: [3, 1]
+        - 2BD = 3AB → ratio: [2, 3]
+        """
+        segment1 = data.get("segment1", [])
+        segment2 = data.get("segment2", [])
+        ratio = data.get("ratio", [1, 1])
+        tolerance = data.get("tolerance", self.tolerance)
+
+        if len(segment1) != 2 or len(segment2) != 2:
+            return {"passed": False, "message": "Each segment requires exactly 2 points"}
+
+        if len(ratio) != 2:
+            return {"passed": False, "message": "Ratio must be [numerator, denominator]"}
+
+        element_dict = self.construction.element_dict
+
+        # Check all points exist
+        all_points = segment1 + segment2
+        if not all(p in element_dict for p in all_points):
+            return {"passed": False, "message": "Could not find all points"}
+
+        # Get segment lengths
+        try:
+            pts1 = [element_dict[p].data for p in segment1]
+            pts2 = [element_dict[p].data for p in segment2]
+
+            if not all(isinstance(p, gt.Point) for p in pts1 + pts2):
+                return {"passed": False, "message": "Invalid point types"}
+
+            # Calculate distances
+            dist1 = cmd.distance_pp(pts1[0], pts1[1]).x
+            dist2 = cmd.distance_pp(pts2[0], pts2[1]).x
+
+            # Correct for scaling
+            scale_factor = getattr(self.construction, 'scale_factor', 1.0)
+            dist1_corrected = dist1 / scale_factor
+            dist2_corrected = dist2 / scale_factor
+
+            # Check ratio: dist1/dist2 should equal ratio[0]/ratio[1]
+            # Cross multiply: dist1 * ratio[1] = dist2 * ratio[0]
+            expected_ratio = ratio[0] / ratio[1]
+            actual_ratio = dist1_corrected / dist2_corrected if dist2_corrected != 0 else np.inf
+
+            lhs = dist1_corrected * ratio[1]
+            rhs = dist2_corrected * ratio[0]
+
+            passed = np.abs(lhs - rhs) <= tolerance * max(ratio)
+
+            segment1_name = "".join(segment1)
+            segment2_name = "".join(segment2)
+
+            return {
+                "passed": passed,
+                "message": (
+                    f"Segment ratio: {segment1_name}({dist1_corrected:.2f}) : "
+                    f"{segment2_name}({dist2_corrected:.2f}) = {actual_ratio:.3f} "
+                    f"(expected {expected_ratio:.3f}, from ratio [{ratio[0]}, {ratio[1]}])"
+                )
+            }
+        except Exception as e:
+            return {"passed": False, "message": f"Error calculating segments: {str(e)}"}
+
     def _check_perpendicular_bisector(self, data: Dict) -> Dict[str, Any]:
         """Check if a line is the perpendicular bisector of a segment."""
         line_points = data.get("line", [])
