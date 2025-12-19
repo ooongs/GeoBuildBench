@@ -68,7 +68,12 @@ class MultimodalInterface:
                 self.openrouter_headers["X-Title"] = title
         
         # Determine provider
-        if "claude" in model.lower() or "anthropic" in model.lower():
+        model_l = model.lower()
+        if (not self.is_openrouter) and ("gemini" in model_l or model_l.startswith("models/gemini")):
+            self.provider = "google"
+            if api_key is None:
+                self.api_key = os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
+        elif "claude" in model_l or "anthropic" in model_l:
             self.provider = "anthropic"
             if api_key is None:
                 self.api_key = os.getenv("ANTHROPIC_API_KEY")
@@ -89,7 +94,17 @@ class MultimodalInterface:
         
         if not self.api_key:
             # For vLLM, API key might be optional
-            if self.provider != "vllm":
+            if self.provider == "google":
+                use_vertex = os.getenv("GOOGLE_GENAI_USE_VERTEXAI", "").strip().lower() in (
+                    "1",
+                    "true",
+                    "yes",
+                    "y",
+                    "on",
+                )
+                if not use_vertex:
+                    raise ValueError("API key not found for google (set GOOGLE_API_KEY or GEMINI_API_KEY)")
+            elif self.provider != "vllm":
                 raise ValueError(f"API key not found for {self.provider}")
             else:
                 # Use dummy key for vLLM
@@ -121,6 +136,34 @@ class MultimodalInterface:
                 self.client = Anthropic(api_key=self.api_key)
             except ImportError:
                 raise ImportError("Anthropic package not installed. Run: pip install anthropic")
+        elif self.provider == "google":
+            try:
+                from google import genai
+                from google.genai import types
+            except ImportError:
+                raise ImportError(
+                    "google-genai package not installed. Run: pip install google-genai"
+                )
+
+            self._google_types = types
+
+            use_vertex = os.getenv("GOOGLE_GENAI_USE_VERTEXAI", "").strip().lower() in (
+                "1",
+                "true",
+                "yes",
+                "y",
+                "on",
+            )
+            if use_vertex:
+                project = os.getenv("GOOGLE_CLOUD_PROJECT") or os.getenv("VERTEXAI_PROJECT")
+                location = os.getenv("GOOGLE_CLOUD_LOCATION") or os.getenv("VERTEXAI_LOCATION")
+                if not project or not location:
+                    raise ValueError(
+                        "Vertex AI mode enabled but GOOGLE_CLOUD_PROJECT/GOOGLE_CLOUD_LOCATION not set"
+                    )
+                self.client = genai.Client(vertexai=True, project=project, location=location)
+            else:
+                self.client = genai.Client(api_key=self.api_key)
     
     def send_message(self, message: MultimodalMessage, 
                     system_prompt: Optional[str] = None,
@@ -142,6 +185,8 @@ class MultimodalInterface:
             return self._send_openai(message, system_prompt, temperature, max_tokens)
         elif self.provider == "anthropic":
             return self._send_anthropic(message, system_prompt, temperature, max_tokens)
+        elif self.provider == "google":
+            return self._send_google(message, system_prompt, temperature, max_tokens)
     
     def _send_openai(self, message: MultimodalMessage, system_prompt: Optional[str],
                      temperature: float, max_tokens: int) -> str:
@@ -244,13 +289,71 @@ class MultimodalInterface:
             max_tokens=max_tokens,
             temperature=temperature,
             system=system_prompt or "",
-            messages=[{
-                "role": "user",
-                "content": content
-            }]
+            messages=[{"role": "user", "content": content}],
         )
         
         return response.content[0].text
+
+    def _send_google(self, message: MultimodalMessage, system_prompt: Optional[str],
+                     temperature: float = 1.0, max_tokens: int = 4000) -> str:
+        """Send message to Google Gemini API via google-genai SDK."""
+        if not hasattr(self, "_google_types"):
+            raise RuntimeError("Google client not initialized (provider is not 'google').")
+
+        types = self._google_types
+
+        def _parse_data_url(image_b64_or_data_url: str) -> tuple[str, str]:
+            s = (image_b64_or_data_url or "").strip()
+            if s.startswith("data:") and ";base64," in s:
+                header, payload = s.split(";base64,", 1)
+                mime_type = header[5:] or "image/png"
+                return mime_type, payload
+            return "image/png", s
+
+        parts: List[Any] = []
+
+        for img in message.images:
+            mime_type, payload_b64 = _parse_data_url(img)
+            try:
+                img_bytes = base64.b64decode(payload_b64, validate=True)
+            except Exception:
+                img_bytes = base64.b64decode(payload_b64)
+            parts.append(types.Part.from_bytes(data=img_bytes, mime_type=mime_type))
+
+        if message.text:
+            parts.append(types.Part.from_text(text=message.text))
+
+        config_kwargs: Dict[str, Any] = {
+            "temperature": temperature,
+            "max_output_tokens": max_tokens,
+            "thinking_config": types.ThinkingConfig(thinking_level="low")
+        }
+        if system_prompt:
+            config_kwargs["system_instruction"] = system_prompt
+
+        response = self.client.models.generate_content(
+            model=self.model,
+            contents=[types.Content(role="user", parts=parts)],
+            config=types.GenerateContentConfig(**config_kwargs),
+        )
+        print(response)
+
+        # google-genai returns .text for common text outputs, but fall back to parts
+        text = getattr(response, "text", None)
+        if isinstance(text, str) and text.strip():
+            return text
+
+        candidates = getattr(response, "candidates", None) or []
+        if candidates:
+            content = getattr(candidates[0], "content", None)
+            if content and getattr(content, "parts", None):
+                joined = "".join(
+                    [getattr(p, "text", "") for p in content.parts if getattr(p, "text", None)]
+                ).strip()
+                if joined:
+                    return joined
+
+        raise RuntimeError("Empty response from Gemini API")
     
     def send_conversation(self, messages: List[Dict[str, Any]], 
                          system_prompt: Optional[str] = None,
@@ -289,6 +392,16 @@ class MultimodalInterface:
                 messages=messages
             )
             return response.content[0].text
+        elif self.provider == "google":
+            # Minimal support: concatenate user turns and ignore tool/function calls.
+            text = "\n".join(
+                [
+                    f"{m.get('role','user')}: {m.get('content','')}"
+                    for m in messages
+                    if m.get("content") is not None
+                ]
+            )
+            return self._send_google(MultimodalMessage(text=text), system_prompt, temperature, max_tokens)
     
     def check_connection(self) -> bool:
         """Check if the API connection is working."""

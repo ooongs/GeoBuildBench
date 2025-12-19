@@ -62,11 +62,16 @@ def evaluate_math_expression(expr: str) -> float:
     - Degree notation: ° (e.g., cos(100°))
     - Numbers: integers and floats
 
+    IMPORTANT: Expressions must NOT contain spaces!
+    - ✅ CORRECT: "(100+100*cos(115°))"
+    - ❌ WRONG:   "(100 + 100*cos(115°))"
+
     Examples:
     - "100*cos(100°)" -> -17.36...
     - "100*sin(100°)" -> 98.48...
     - "50+30*cos(45°)" -> 71.21...
     - "2*sin(30°)+3*cos(60°)" -> 2.5
+    - "(100+100*cos(115°))" -> 57.74...
 
     Returns:
         Calculated float value, or None if expression is invalid
@@ -108,7 +113,8 @@ def evaluate_math_expression(expr: str) -> float:
 
         # Evaluate the expression safely
         # Only allow numbers, basic operators, parentheses, and scientific notation (e/E)
-        allowed_chars = set('0123456789.+-*/()eE ')
+        # NOTE: Spaces are NOT allowed - expressions must be written without spaces
+        allowed_chars = set('0123456789.+-*/()eE')
         if not all(c in allowed_chars for c in processed_expr):
             return None
 
@@ -403,6 +409,7 @@ class Construction:
         self.to_prove = None
         self.element_dict = dict()
         self.elements = []
+        self.scale_factor = 1.0  # Track scaling applied by fit_to_window()
 
     def render(self, ax, elements = None, show_labels=True): # default: render all elements
         if elements is None: elements = self.elements
@@ -567,6 +574,7 @@ class Construction:
         dest_size = dest_corners[1] - dest_corners[0]
 
         scale = np.min(dest_size / src_size)
+        self.scale_factor = scale  # Store scale factor for validation
         src_corners *= scale
         shift = np.average(dest_corners, axis = 0) - np.average(src_corners, axis = 0)
         for el in self.elements:
@@ -608,6 +616,11 @@ if __name__ == "__main__":
         if not filename.endswith(".txt"): continue
         construction.load(os.path.join(datadir, filename))
         construction.test()
+
+
+
+
+
 
 
 

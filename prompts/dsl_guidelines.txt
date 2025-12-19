@@ -130,6 +130,11 @@ rotate : P 90 Center -> T        # 90 degrees (default = degree)
 # You can now use mathematical expressions directly in DSL!
 # Supports: +, -, *, /, (), cos(), sin(), tan()
 
+# ⚠️ CRITICAL: NO SPACES IN EXPRESSIONS!
+# ✅ CORRECT: (100+100*cos(115°))
+# ❌ WRONG:   (100 + 100*cos(115°))
+# Expressions are parsed as single tokens - spaces will break them!
+
 # ===== ARITHMETIC EXPRESSIONS =====
 point : 50+30 100-20 -> P          # Simple arithmetic: (80, 80)
 point : 100/2 200*0.5 -> Q         # Division and multiplication: (50, 100)
@@ -176,9 +181,10 @@ point : 80*cos(180°) 80*sin(180°) -> H4    # 180°
 point : 80*cos(240°) 80*sin(240°) -> H5    # 240°
 point : 80*cos(300°) 80*sin(300°) -> H6    # 300°
 
-# Complex expressions
-point : 50+30*cos(45°) 50+30*sin(45°) -> Q    # Offset center at (50,50), radius 30
-point : 2*sin(30°)+3*cos(60°) 10*tan(45°) -> R # Mixed expression
+# Complex expressions with parentheses (NO SPACES!)
+point : (50+30*cos(45°)) (50+30*sin(45°)) -> Q    # Offset center at (50,50), radius 30
+point : (100+100*cos(115°)) (0+100*sin(115°)) -> P # Complex parenthesized expression
+point : (2*sin(30°)+3*cos(60°)) (10*tan(45°)) -> R # Mixed expression with parens
 
 # Circle with calculated radius
 point : 0 0 -> O
@@ -200,10 +206,11 @@ circle : O 100*sin(60°) -> c    # Radius = 100 * sin(60°) ≈ 86.6
 | 300°  | 0.5 | -√3/2 ≈ -0.866 | -√3 ≈ -1.732 |
 
 **Expression Evaluation Rules:**
-1. **Existing objects take priority**: If you defined `point : 0 0 -> 100`, then `100` refers to that point, not the number
-2. **Expressions are evaluated**: `100*cos(45°)` is calculated automatically
-3. **Simple numbers**: `100` without operators is treated as a numeric literal
-4. **Safe evaluation**: Only +, -, *, /, (), and trig functions are allowed
+1. **NO SPACES**: Expressions must not contain spaces! `(100+50)` ✅  `(100 + 50)` ❌
+2. **Existing objects take priority**: If you defined `point : 0 0 -> 100`, then `100` refers to that point, not the number
+3. **Expressions are evaluated**: `100*cos(45°)` is calculated automatically
+4. **Simple numbers**: `100` without operators is treated as a numeric literal
+5. **Safe evaluation**: Only +, -, *, /, (), and trig functions are allowed
 
 **Use cases:**
 - Creating points on circles at specific angles (polar coordinates)

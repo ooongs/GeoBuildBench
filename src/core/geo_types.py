@@ -167,7 +167,16 @@ class Ray(Line):
 class Angle:
     def __init__(self, p, v1, v2):
         self.p = np.array(p)  # Copy to avoid reference sharing
-        self.angle = np.angle(a_to_cpx(v2) / a_to_cpx(v1))
+
+        # Check if vectors are zero (avoid division by zero)
+        v1_cpx = a_to_cpx(v1)
+        v2_cpx = a_to_cpx(v2)
+
+        if np.isclose(abs(v1_cpx), 0) or np.isclose(abs(v2_cpx), 0):
+            # If either vector is zero, angle is undefined - use 0
+            self.angle = 0.0
+        else:
+            self.angle = np.angle(v2_cpx / v1_cpx)
 
         if self.angle < 0:
             self.angle += 2*np.pi
@@ -179,7 +188,12 @@ class Angle:
         self.v1 = np.array(v1)  # Copy to avoid reference sharing
         self.v2 = np.array(v2)  # Copy to avoid reference sharing
         max_r = min(np.linalg.norm(v1), np.linalg.norm(v2))*0.45
-        self.r = min(max_r, 30 / self.angle**0.5)
+
+        # Avoid division by zero when angle is very small
+        if self.angle < 1e-10:  # Angle is essentially 0
+            self.r = max_r
+        else:
+            self.r = min(max_r, 30 / self.angle**0.5)
 
     def translate(self, vec):
         self.p += vec
@@ -355,6 +369,11 @@ class Boolean:
     def equivalent(self, other):
         if not isinstance(other, Boolean): return False
         return self.b == other.b
+
+
+
+
+
 
 
 

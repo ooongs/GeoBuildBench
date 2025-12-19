@@ -1218,22 +1218,26 @@ class DSLValidator:
             dist = cmd.distance_pp(pa, pb)
             distances.append(dist)
             segment_names.append(f"{seg_points[0]}{seg_points[1]}")
-        
+
+        # Correct for scaling applied by fit_to_window()
+        scale_factor = getattr(self.construction, 'scale_factor', 1.0)
+        distances_corrected = [d.x / scale_factor for d in distances]
+
         # Check all pairs of segments for equality
         all_equal = True
         failed_pairs = []
-        
+
         for i in range(len(distances) - 1):
             result = cmd.are_equal_mm(distances[i], distances[i + 1])
             if not result.b:
                 all_equal = False
-                failed_pairs.append((segment_names[i], segment_names[i + 1], distances[i].x, distances[i + 1].x))
-        
+                failed_pairs.append((segment_names[i], segment_names[i + 1], distances_corrected[i], distances_corrected[i + 1]))
+
         # Format message
         if len(segments) == 2:
-            message = f"Segments have lengths {distances[0].x:.2f} and {distances[1].x:.2f}"
+            message = f"Segments have lengths {distances_corrected[0]:.2f} and {distances_corrected[1]:.2f}"
         else:
-            lengths_str = ", ".join([f"{name}={dist.x:.2f}" for name, dist in zip(segment_names, distances)])
+            lengths_str = ", ".join([f"{name}={dist:.2f}" for name, dist in zip(segment_names, distances_corrected)])
             if all_equal:
                 message = f"All segments are equal: {lengths_str}"
             else:
@@ -1564,13 +1568,19 @@ class DSLValidator:
         # Calculate distance
         dist = cmd.distance_pp(p1, p2)
         actual_value = dist.x
-        
+
+        # Correct for scaling applied by fit_to_window()
+        # The coordinates are scaled, so distances are also scaled
+        # Divide by scale_factor to get the original logical distance
+        scale_factor = getattr(self.construction, 'scale_factor', 1.0)
+        actual_value_corrected = actual_value / scale_factor
+
         # Check if distance matches expected value
-        passed = np.abs(actual_value - expected_value) <= tolerance
-        
+        passed = np.abs(actual_value_corrected - expected_value) <= tolerance
+
         return {
             "passed": passed,
-            "message": f"Distance is {actual_value:.2f}, expected {expected_value:.2f} (tolerance {tolerance:.2f})"
+            "message": f"Distance is {actual_value_corrected:.2f}, expected {expected_value:.2f} (tolerance {tolerance:.2f})"
         }
     
     def _check_triangle_valid(self, data: Dict) -> Dict[str, Any]:
@@ -1800,13 +1810,18 @@ class DSLValidator:
         p1, p2 = [element_dict[p].data for p in segment]
         if not all(isinstance(p, gt.Point) for p in [p1, p2]):
             return {"passed": False, "message": "Invalid point types"}
-        
+
         dist = cmd.distance_pp(p1, p2).x
-        passed = np.abs(dist - expected_value) <= tolerance
-        
+
+        # Correct for scaling applied by fit_to_window()
+        scale_factor = getattr(self.construction, 'scale_factor', 1.0)
+        dist_corrected = dist / scale_factor
+
+        passed = np.abs(dist_corrected - expected_value) <= tolerance
+
         return {
             "passed": passed,
-            "message": f"Segment length is {dist:.2f}, expected {expected_value} (tolerance {tolerance})"
+            "message": f"Segment length is {dist_corrected:.2f}, expected {expected_value} (tolerance {tolerance})"
         }
     
     def _check_perpendicular_bisector(self, data: Dict) -> Dict[str, Any]:

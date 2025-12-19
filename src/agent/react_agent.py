@@ -443,7 +443,7 @@ class ReActAgent:
 
         # Get response from LLM
         response = self.multimodal.send_message(
-            message, system_prompt=self.system_prompt, temperature=0, max_tokens=3000
+            message, system_prompt=self.system_prompt, temperature=0, max_tokens=10000
         )
 
         # Normalize response to plain text (handles list/dict from OpenRouter/OpenAI)

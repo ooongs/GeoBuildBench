@@ -2,3 +2,4 @@ numpy>=1.20.0
 matplotlib>=3.5.0
 openai>=2.9.0
 dotenv
+google-genai>=0.8.0

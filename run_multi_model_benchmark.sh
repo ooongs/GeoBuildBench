@@ -25,10 +25,12 @@ API_BASE=""
 # Default models list (customize as needed)
 DEFAULT_MODELS=(
     # "gpt-5-mini"
-    "gpt-4.1"
+    # "gpt-4.1"
     # Add vLLM models here
     # "Qwen/Qwen2.5-VL-7B-Instruct"
     # "meta-llama/Llama-3.2-11B-Vision-Instruct"
+    # "gemini-2.5-pro"
+    "gemini-3-flash-preview"
 )
 
 # Color codes for output

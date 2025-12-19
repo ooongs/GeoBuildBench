@@ -229,7 +229,11 @@ def intersect_lc(line, circle):
     y = line.c - np.dot(line.n, circle.c)
     x_squared = circle.r_squared - y**2
     if np.isclose(x_squared, 0): return gt.Point(y*line.n + circle.c)
-    assert(x_squared > 0)
+
+    # Check for valid x_squared before sqrt
+    if x_squared < 0:
+        # Line doesn't intersect circle - return closest point
+        return gt.Point(y*line.n + circle.c)
 
     x = np.sqrt(x_squared)
     return [
@@ -240,6 +244,17 @@ def intersect_lc(line, circle):
 def intersect_cc(circle1, circle2):
     center_diff = circle2.c - circle1.c
     center_dist_squared = np.dot(center_diff, center_diff)
+
+    # Check if circles are concentric (same center)
+    if np.isclose(center_dist_squared, 0):
+        # Concentric circles - return center point if same radius, else no intersection
+        if np.isclose(circle1.r, circle2.r):
+            # Return a point on the circle
+            return [gt.Point(circle1.c + np.array([circle1.r, 0]))]
+        else:
+            # No intersection for concentric circles with different radii
+            return [gt.Point(circle1.c)]
+
     center_dist = np.sqrt(center_dist_squared)
     relative_center = (circle1.r_squared - circle2.r_squared) / center_dist_squared
     center = (circle1.c + circle2.c)/2 + relative_center*center_diff/2
@@ -248,7 +263,12 @@ def intersect_cc(circle1, circle2):
     rad_diff = circle1.r - circle2.r
     det = (rad_sum**2 - center_dist_squared) * (center_dist_squared - rad_diff**2)
     if np.isclose(det, 0): return [gt.Point(center)]
-    assert(det > 0)
+
+    # Check for valid det before sqrt
+    if det < 0:
+        # Circles don't intersect - return center point
+        return [gt.Point(center)]
+
     center_deviation = np.sqrt(det)
     center_deviation = np.array(((center_deviation,),(-center_deviation,)))
 
@@ -368,7 +388,17 @@ def minus_ss(s1, s2):
 
 def mirror_cc(circle, by_circle):
     center_v = circle.c - by_circle.c
-    denom = gt.square_norm(center_v) - circle.r_squared
+    center_v_norm_squared = gt.square_norm(center_v)
+
+    # Check if circles are concentric
+    if np.isclose(center_v_norm_squared, 0):
+        # Concentric circles - return a circle with inverted radius
+        return gt.Circle(
+            center = by_circle.c,
+            r = by_circle.r_squared / circle.r if circle.r > 0 else by_circle.r
+        )
+
+    denom = center_v_norm_squared - circle.r_squared
     if np.isclose(denom, 0):
         return gt.Line(center_v, circle.r_squared/2 + np.dot(center_v, by_circle.c))
     else:
@@ -398,8 +428,14 @@ def mirror_lp(line, by_point):
 
 def mirror_pc(point, by_circle):
     v = point.a - by_circle.c
-    assert(not np.isclose(v,0).all())
-    return gt.Point(by_circle.c + v * (by_circle.r_squared / gt.square_norm(v)) )
+    v_norm_squared = gt.square_norm(v)
+
+    # Check if point is at circle center
+    if np.isclose(v_norm_squared, 0):
+        # Point at center cannot be mirrored - return a point on the circle
+        return gt.Point(by_circle.c + np.array([by_circle.r, 0]))
+
+    return gt.Point(by_circle.c + v * (by_circle.r_squared / v_norm_squared))
 
 def mirror_pl(point, by_line):
     return gt.Point(point.a + by_line.n*2*(by_line.c - np.dot(point.a, by_line.n)))
@@ -527,29 +563,39 @@ def radius_c(circle):
     return gt.Measure(circle.r, 1)
 
 def ratio_mm(m1, m2):
-    assert(not np.isclose(m1.x, 0))
+    if np.isclose(m2.x, 0):
+        # Return infinity or a large value to indicate division by zero
+        return gt.Measure(np.inf if m1.x >= 0 else -np.inf, m1.dim - m2.dim)
     return gt.Measure(m1.x / m2.x, m1.dim - m2.dim)
 
 def ratio_ms(m, s):
+    if np.isclose(s.length, 0):
+        return gt.Measure(np.inf if m.x >= 0 else -np.inf, m.dim - 1)
     return gt.Measure(m.x / s.length, m.dim - 1)
 
 def ratio_mi(m, i):
-    assert(i != 0)
+    if i == 0 or np.isclose(i, 0):
+        return gt.Measure(np.inf if m.x >= 0 else -np.inf, m.dim)
     return gt.Measure(m.x / i, m.dim)
 
 def ratio_sm(s, m):
-    assert(not np.isclose(m.x, 0))
+    if np.isclose(m.x, 0):
+        return gt.Measure(np.inf if s.length >= 0 else -np.inf, 1 - m.dim)
     return gt.Measure(s.length / m.x, 1 - m.dim)
 
 def ratio_ss(s1, s2):
+    if np.isclose(s2.length, 0):
+        return gt.Measure(np.inf if s1.length >= 0 else -np.inf, 0)
     return gt.Measure(s1.length / s2.length, 0)
 
 def ratio_si(s, i):
-    assert(i != 0)
+    if i == 0 or np.isclose(i, 0):
+        return gt.Measure(np.inf if s.length >= 0 else -np.inf, 1)
     return gt.Measure(s.length / i, 1)
 
 def ratio_ii(i1, i2):
-    assert(i2 != 0)
+    if i2 == 0 or np.isclose(i2, 0):
+        return gt.Measure(np.inf if i1 >= 0 else -np.inf, 0)
     return gt.Measure(i1 / i2, 0)
 
 def ray_pp(p1, p2):
@@ -616,6 +662,11 @@ def translate_pv(point, vector):
 
 def vector_pp(p1, p2):
     return gt.Vector((p1.a, p2.a))
+
+
+
+
+
 
 
 

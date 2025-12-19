@@ -1,0 +1,26 @@
+# Circle O
+point : 0 0 -> O
+const int 100 -> r
+circle : O r -> c
+
+# Tangency points (∠AOB = 140°)
+point : 100 0 -> A
+point : 100*cos(140°) 100*sin(140°) -> B
+
+# Diameter AC (C is opposite A)
+mirror : A O -> C
+segment : A C -> AC
+
+# Tangents at A and B (tangent ⟂ radius)
+line : O A -> _OA
+line : O B -> _OB
+orthogonal_line : A _OA -> tA
+orthogonal_line : B _OB -> tB
+
+# External point P = intersection of tangents
+intersect : tA tB -> P
+segment : P A -> PA
+segment : P B -> PB
+
+# (optional) show angle at P
+angle : A P B -> angP

@@ -3152,7 +3152,7 @@
     },
     {
       "id": "53",
-      "subject": "在⊙O中,∠ABC=50°",
+      "subject": "在⊙O中,A、B、C是⊙O上的三点,∠ABC=50°",
       "required_objects": {
         "points": [
           "A",
@@ -3165,7 +3165,7 @@
         "circles": [
           {
             "center": "O",
-            "radius_point": null
+            "radius_point": "A"
           }
         ],
         "polygons": []
@@ -9317,7 +9317,7 @@
         },
         {
           "type": "point_on_segment",
-          "point": "C",
+          "point": "O",
           "segment": [
             "A",
             "C"
@@ -9328,11 +9328,11 @@
           "segments": [
             [
               "A",
-              "C"
+              "O"
             ],
             [
               "C",
-              "A"
+              "O"
             ]
           ]
         },
@@ -9340,10 +9340,38 @@
           "type": "angle_value",
           "points": [
             [
-              "P"
+              "A",
+              "P",
+              "B"
             ]
           ],
           "value": 40
+        },
+        {
+          "type": "perpendicular",
+          "objects": [
+            [
+              "O",
+              "A"
+            ],
+            [
+              "A",
+              "P"
+            ]
+          ]
+        },
+        {
+          "type": "perpendicular",
+          "objects": [
+            [
+              "O",
+              "B"
+            ],
+            [
+              "B",
+              "P"
+            ]
+          ]
         }
       ],
       "original_text": "如图,PA和PB是⊙O的切线,点A和B是切点,AC是⊙O的直径,已知∠P=40°,则∠ACB的大小是()",
@@ -10622,28 +10650,13 @@
           ]
         },
         {
-          "type": "distance_equals",
-          "segment": [
+          "type": "perimeter",
+          "polygon": [
             "B",
-            "C"
-          ],
-          "value": null
-        },
-        {
-          "type": "distance_equals",
-          "segment": [
             "C",
             "N"
           ],
-          "value": null
-        },
-        {
-          "type": "distance_equals",
-          "segment": [
-            "B",
-            "N"
-          ],
-          "value": null
+          "value": 7
         },
         {
           "type": "triangle_valid",
@@ -18837,28 +18850,6 @@
           ]
         },
         {
-          "type": "angle_value",
-          "points": [
-            [
-              "A",
-              "D",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "A",
-              "C",
-              "D"
-            ]
-          ],
-          "value": null
-        },
-        {
           "type": "angle_sum",
           "angles": [
             {
@@ -19037,28 +19028,6 @@
       },
       "verification_conditions": [
         {
-          "type": "angle_value",
-          "points": [
-            [
-              "A",
-              "B",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "A",
-              "D",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
           "type": "angle_sum",
           "angles": [
             {
@@ -19190,64 +19159,6 @@
       "difficulty": 3,
       "original_text": "如图,△ODC是由△OAB绕点O顺时针旋转30°后得到的图形,若点D恰好落在AB上,且∠AOC的度数为100°,则∠DOB的度数是()",
       "cleaned_text": "△ODC是由△OAB绕点O顺时针旋转30°后得到的图形,点D恰好落在AB上,∠AOC=100°"
-    },
-    {
-      "id": "422",
-      "subject": "甲、乙两盏路灯相距30米, 小刚从路灯甲底部向路灯乙底部直行25米, 小刚的身高为1.5米, 小刚的身影顶部正好接触到路灯乙的底部",
-      "required_objects": {
-        "points": [
-          "甲",
-          "乙",
-          "小刚起点",
-          "小刚当前位置",
-          "小刚影顶点"
-        ],
-        "segments": [
-          [
-            "甲",
-            "乙"
-          ],
-          [
-            "甲",
-            "小刚当前位置"
-          ]
-        ],
-        "lines": [],
-        "circles": [],
-        "polygons": []
-      },
-      "verification_conditions": [
-        {
-          "type": "segment_length",
-          "segment": [
-            "甲",
-            "乙"
-          ],
-          "value": 30
-        },
-        {
-          "type": "segment_length",
-          "segment": [
-            "甲",
-            "小刚当前位置"
-          ],
-          "value": 25
-        },
-        {
-          "type": "point_height",
-          "point": "小刚当前位置",
-          "value": 1.5
-        },
-        {
-          "type": "contact",
-          "point1": "小刚影顶点",
-          "point2": "乙"
-        }
-      ],
-      "category": "Applications of Geometric Theorems",
-      "difficulty": 2,
-      "original_text": "如图,甲、乙两盏路灯相距30米,一天晚上,当小刚从路灯甲底部向路灯乙底部直行25米时,发现自己的身影顶部正好接触到路灯乙的底部,已知小刚的身高为1.5米,那么路灯甲的高为()",
-      "cleaned_text": "甲、乙两盏路灯相距30米, 小刚从路灯甲底部向路灯乙底部直行25米, 小刚的身高为1.5米, 小刚的身影顶部正好接触到路灯乙的底部"
     },
     {
       "id": "423",
@@ -20350,54 +20261,6 @@
       "difficulty": 3,
       "original_text": "如图,Rt△ABC中,∠ACB=90°,过点C的直线DF与∠BAC的平分线AE平行,若∠B=50°,则∠BCF等于()",
       "cleaned_text": "Rt△ABC中,∠ACB=90°,过点C的直线DF与∠BAC的平分线AE平行,∠B=50°"
-    },
-    {
-      "id": "475",
-      "subject": "楼梯高BC=1.5m,斜边AC=2.5m",
-      "required_objects": {
-        "points": [
-          "A",
-          "B",
-          "C"
-        ],
-        "segments": [
-          [
-            "B",
-            "C"
-          ],
-          [
-            "A",
-            "C"
-          ]
-        ],
-        "lines": [],
-        "circles": [],
-        "polygons": []
-      },
-      "verification_conditions": [
-        {
-          "type": "segment_length",
-          "segment": [
-            "B",
-            "C"
-          ],
-          "value": 1.5,
-          "unit": "m"
-        },
-        {
-          "type": "segment_length",
-          "segment": [
-            "A",
-            "C"
-          ],
-          "value": 2.5,
-          "unit": "m"
-        }
-      ],
-      "category": "Measurement & Ratios",
-      "difficulty": 1,
-      "original_text": "如图,是一段楼梯,高BC是1.5m,斜边AC是2.5m,如果在楼梯上铺地毯,那么至少需要地毯()",
-      "cleaned_text": "楼梯高BC=1.5m,斜边AC=2.5m"
     },
     {
       "id": "486",
@@ -22240,7 +22103,7 @@
           ]
         },
         {
-          "type": "equal_length",
+          "type": "length_equal",
           "segments": [
             [
               "A",
@@ -22250,7 +22113,7 @@
           ]
         },
         {
-          "type": "equal_length",
+          "type": "length_equal",
           "segments": [
             [
               "B",
@@ -29681,14 +29544,6 @@
             "B",
             "C"
           ]
-        },
-        {
-          "type": "triangle_valid",
-          "points": [
-            "A",
-            "B'",
-            "C'"
-          ]
         }
       ],
       "original_text": "如图,在△ABC中,∠CAB=80°,在同一平面内,将△ABC绕点A旋转到△AB′C′的位置,使得CC′∥AB,则∠BAB′等于()",
@@ -31738,16 +31593,11 @@
           "value": 4.0
         },
         {
-          "type": "distance_equals",
-          "segment": [
-            [
+          "type": "perimeter",
+          "polygon": [
               "A",
-              "D"
-            ],
-            [
               "D",
               "C"
-            ]
           ],
           "value": 15.0
         },
@@ -37051,706 +36901,26 @@
           ]
         },
         {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "C",
-              "A"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "C",
-              "A"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "C",
-              "A",
-              "B"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "B",
-              "A",
-              "C"
-            ]
+          "type": "angle_sum",
+          "angles": [
+            {
+              "points": [
+                [
+                  "B",
+                  "A",
+                  "C"
+                ]
+              ]
+            },
+            {
+              "points": [
+                [
+                  "A",
+                  "C",
+                  "B"
+                ]
+              ]
+            }
           ],
           "value": 145
         }
@@ -40596,68 +39766,6 @@
       "cleaned_text": "AB是⊙O直径,点C在AB的延长线上,CD与⊙O相切于点D,若∠A=25°",
       "category": "Circle Properties & Constructions",
       "difficulty": 3
-    },
-    {
-      "id": "1125",
-      "subject": "已知1号,4号两个正方形的面积和为7,2号,3号两个正方形的而积和为4",
-      "required_objects": {
-        "points": [],
-        "segments": [],
-        "lines": [],
-        "circles": [],
-        "polygons": [
-          [
-            "1号正方形"
-          ],
-          [
-            "4号正方形"
-          ],
-          [
-            "2号正方形"
-          ],
-          [
-            "3号正方形"
-          ]
-        ]
-      },
-      "verification_conditions": [
-        {
-          "type": "distance_equals",
-          "segment": [
-            "1号正方形边长",
-            "1号正方形边长"
-          ],
-          "value": null
-        },
-        {
-          "type": "distance_equals",
-          "segment": [
-            "4号正方形边长",
-            "4号正方形边长"
-          ],
-          "value": null
-        },
-        {
-          "type": "distance_equals",
-          "segment": [
-            "2号正方形边长",
-            "2号正方形边长"
-          ],
-          "value": null
-        },
-        {
-          "type": "distance_equals",
-          "segment": [
-            "3号正方形边长",
-            "3号正方形边长"
-          ],
-          "value": null
-        }
-      ],
-      "original_text": "如图,已知1号,4号两个正方形的面积和为7,2号,3号两个正方形的而积和为4,则a,b,c三个方形的面积和为()",
-      "cleaned_text": "已知1号,4号两个正方形的面积和为7,2号,3号两个正方形的而积和为4",
-      "category": "Measurement & Ratios",
-      "difficulty": 2
     },
     {
       "id": "1126",

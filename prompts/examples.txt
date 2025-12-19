@@ -123,7 +123,8 @@ prove : expr0 -> result
 ## Example 10: Point with Offset Using Expressions (NEW!)
 ```
 # Create point at (50,50) offset by 30 units at 45°
-point : 50+30*cos(45°) 50+30*sin(45°) -> P
+# NOTE: NO SPACES in expressions!
+point : (50+30*cos(45°)) (50+30*sin(45°)) -> P
 point : 50 50 -> Center
 segment : Center P -> offset_seg
 equality : Center Center -> expr0
@@ -138,12 +139,28 @@ prove : expr0 -> result
 4. Comments (starting with #) are allowed
 5. One object per line
 6. **NEW: You can use math expressions!**
+   - ⚠️ **CRITICAL: NO SPACES in expressions!** `(100+50)` ✅  `(100 + 50)` ❌
    - Arithmetic: `50+30`, `100/2`, `200*0.5`
    - Trigonometric: `cos(45°)`, `sin(60°)`, `tan(30°)`
-   - Combined: `100*cos(120°)`, `50+30*sin(45°)`
+   - Combined: `100*cos(120°)`, `(50+30*sin(45°))`
+   - Complex: `(100+100*cos(115°))`, `(0+100*sin(115°))`
    - Use polar coordinates for precise angle-based positioning
 
-## Example 11: Error Recovery Process (NEW!)
+## Example 11: Complex Expression with Parentheses (NEW!)
+```
+# Creating a point using complex parenthesized expressions
+# This is useful when building on existing points
+point : 0 0 -> A
+point : 100 0 -> C
+# Create point P on ray from C at 115° angle
+point : (100+100*cos(115°)) (0+100*sin(115°)) -> P
+segment : A C -> AC
+segment : C P -> CP
+equality : A A -> expr0
+prove : expr0 -> result
+```
+
+## Example 12: Error Recovery Process (NEW!)
 
 **Scenario**: You got an error and need to fix it.
 
