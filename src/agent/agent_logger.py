@@ -33,44 +33,88 @@ class AgentLogger:
     """
     
     def __init__(self, log_dir: Optional[str] = None, save_images: bool = True,
-                 run_id: Optional[str] = None):
+                 run_id: Optional[str] = None, verbose: bool = False,
+                 resume_mode: bool = False):
         """
         Initialize agent logger.
-        
+
         Args:
             log_dir: Base directory for logs (default: agent_logs in project root)
             save_images: Whether to save images
             run_id: Custom run identifier (default: timestamp)
+            verbose: Print verbose logging
+            resume_mode: Whether this is a resume run (merge results instead of overwrite)
         """
         self.base_log_dir = log_dir or str(get_output_dir("agent_logs"))
         self.save_images = save_images
+        self.verbose = verbose
+        self.resume_mode = resume_mode
         self.session_start = datetime.now()
-        
+
         # Create run-specific folder with timestamp
         if run_id is None:
             run_id = self.session_start.strftime('%Y%m%d_%H%M%S')
         self.run_id = run_id
-        
+
         # Set up run directory structure
         self.run_dir = os.path.join(log_dir, run_id)
         self.images_dir = os.path.join(self.run_dir, "images")
         self.dsl_dir = os.path.join(self.run_dir, "dsl")
         self.sessions_dir = os.path.join(self.run_dir, "sessions")
-        
+
         # Create directories
         os.makedirs(self.run_dir, exist_ok=True)
         os.makedirs(self.images_dir, exist_ok=True)
         os.makedirs(self.dsl_dir, exist_ok=True)
         os.makedirs(self.sessions_dir, exist_ok=True)
-        
+
         # Track problems in this run
         self.problems_logged = []
-        
+
+        # Resume mode: Load existing run_info.json to merge results
+        if self.resume_mode:
+            existing_info_file = os.path.join(self.run_dir, "run_info.json")
+            if os.path.exists(existing_info_file):
+                try:
+                    with open(existing_info_file, 'r', encoding='utf-8') as f:
+                        existing_info = json.load(f)
+                        self.problems_logged = existing_info.get("problems", [])
+                    if self.verbose:
+                        print(f"📂 Loaded existing run_info.json with {len(self.problems_logged)} problems")
+                except Exception as e:
+                    print(f"⚠️  Warning: Could not load existing run_info.json: {e}")
+                    print(f"   Starting with empty problems list")
+            else:
+                print(f"⚠️  Resume mode but run_info.json not found at {existing_info_file}")
+                print(f"   Starting with empty problems list")
+
         # Save run info
         self._save_run_info()
     
+    def _backup_file(self, file_path: str):
+        """Create timestamped backup of existing file.
+
+        Args:
+            file_path: Path to file to backup
+        """
+        if not os.path.exists(file_path):
+            return
+
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        base_name = os.path.basename(file_path)
+        name_without_ext = os.path.splitext(base_name)[0]
+        backup_name = f"{name_without_ext}_backup_{timestamp}.json"
+        backup_path = os.path.join(os.path.dirname(file_path), backup_name)
+
+        try:
+            import shutil
+            shutil.copy2(file_path, backup_path)
+            print(f"📦 Backed up to: {backup_path}")
+        except Exception as e:
+            print(f"⚠️  Warning: Could not create backup: {e}")
+
     def _save_run_info(self):
-        """Save run information to JSON file."""
+        """Save run information to JSON file with backup in resume mode."""
         run_info = {
             "run_id": self.run_id,
             "start_time": self.session_start.isoformat(),
@@ -78,8 +122,13 @@ class AgentLogger:
             "save_images": self.save_images,
             "problems": self.problems_logged
         }
-        
+
         info_file = os.path.join(self.run_dir, "run_info.json")
+
+        # Resume mode: Create backup before overwriting
+        if self.resume_mode and os.path.exists(info_file):
+            self._backup_file(info_file)
+
         with open(info_file, 'w', encoding='utf-8') as f:
             json.dump(run_info, f, indent=2, ensure_ascii=False)
     

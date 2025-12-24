@@ -135,6 +135,8 @@ class ReActAgent:
         verbose: bool = False,
         use_vision: bool = True,
         run_id: Optional[str] = None,
+        resume_mode: bool = False,
+        additional_prompt: Optional[str] = None,
     ):
         """
         Initialize ReAct agent.
@@ -148,6 +150,8 @@ class ReActAgent:
             verbose: Print detailed logs
             use_vision: Whether to send rendered images to LLM (for vision comparison)
             run_id: Custom run identifier for logging (default: timestamp)
+            resume_mode: Whether this is a resume run (merge results instead of overwrite)
+            additional_prompt: Additional prompt text to append to system prompt (optional)
         """
         self.model = model
         self.max_iterations = max_iterations
@@ -166,6 +170,8 @@ class ReActAgent:
             log_dir=log_dir or str(get_output_dir("agent_logs")),
             save_images=save_images,
             run_id=run_id,
+            verbose=verbose,
+            resume_mode=resume_mode,
         )
         self.hint_manager = ErrorHintManager()
 
@@ -176,6 +182,10 @@ class ReActAgent:
         # Load prompts
         self.system_prompt = self._load_prompt("system_prompt.txt")
         self.react_template = self._load_prompt("react_template.txt")
+
+        # Append additional prompt if provided
+        if additional_prompt:
+            self.system_prompt += f"\n\n{additional_prompt}"
 
     def _load_prompt(self, filename: str) -> str:
         """Load prompt from file."""

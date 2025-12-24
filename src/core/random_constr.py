@@ -173,14 +173,13 @@ class Element:
     
     def _draw_label(self, ax, corners):
         """객체 레이블을 그림에 표시 (점에만 표시)"""
-        offset = 3  # 레이블 오프셋
+        offset = 5  # 레이블 오프셋
 
         if isinstance(self.data, Point):
             # 점 레이블: 점 위쪽에 표시
             ax.text(self.data.a[0], self.data.a[1] + offset, self.label,
-                   fontsize=9, ha='center', va='bottom', color='blue',
-                   bbox=dict(boxstyle='round,pad=0.3', facecolor='white',
-                            edgecolor='none', alpha=0.7))
+                   fontsize=12, ha='center', va='bottom', color='black',
+                   fontfamily='serif', fontweight='normal')
     def important_points(self):
         if self.drawable(): return self.data.important_points()
         else: return []
@@ -616,6 +615,8 @@ if __name__ == "__main__":
         if not filename.endswith(".txt"): continue
         construction.load(os.path.join(datadir, filename))
         construction.test()
+
+
 
 
 

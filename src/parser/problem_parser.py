@@ -397,41 +397,44 @@ Return JSON:
         {{"type": "collinear", "points": ["A", "B", "C"]}},
         {{"type": "not_collinear", "points": ["A", "B", "C"]}},
         {{"type": "concurrent", "lines": [["A", "B"], ["C", "D"], ["E", "F"]]}},
-        
+
         // Angle conditions
         {{"type": "angle_value", "points": [["A", "B", "C"]], "value": 90}},
         {{"type": "angle_equality", "points": [["A", "B", "C"], ["D", "E", "F"]]}},
         {{"type": "angle_sum", "angles": [{{"points": ["A", "B", "C"]}}, {{"points": ["D", "E", "F"]}}], "value": 180}},
         {{"type": "angle_bisector", "line": ["E", "G"], "angle_points": ["B", "E", "F"]}},
-        
+        {{"type": "angle_ratio", "angle1": ["A", "B", "C"], "angle2": ["D", "E", "F"], "ratio": [2, 1]}},
+
         // Segment/Length conditions
         {{"type": "segment_equality", "segments": [["A", "B"], ["C", "D"]]}},
         {{"type": "distance_equals", "segment": ["A", "B"], "value": 5}},
         {{"type": "segment_length", "segment": ["A", "B"], "value": 10}},
         {{"type": "perimeter", "polygon": ["A", "B", "C"], "value": 20}},
-        
-        // Sum of segments conditions
+
+        // Sum of segments and ratio conditions
         {{"type": "segments_sum_value", "segments": [["A", "B"], ["B", "C"]], "value": 15}},
         {{"type": "segments_sum_equals", "left_segments": [["A", "B"], ["B", "D"]], "right_segments": [["A", "C"]]}},
-        {{"type": "ratio", "segments": [["A", "E"], ["E", "C"]], "ratio": [1, 2]}},
-        
+        {{"type": "segment_ratio", "segment1": ["A", "B"], "segment2": ["C", "D"], "ratio": [3, 1]}},
+
         // Point position conditions
         {{"type": "point_on_segment", "point": "D", "segment": ["A", "B"]}},
         {{"type": "point_on_line", "point": "D", "line": ["A", "B"]}},
         {{"type": "point_on_line_extension", "point": "E", "line_segment": ["A", "B"]}},
         {{"type": "point_on_segment_extension", "point": "E", "segment": ["A", "B"]}},
         {{"type": "midpoint_of", "point": "M", "segment": ["A", "B"]}},
+        {{"type": "point_between", "point": "D", "endpoints": ["A", "B"]}},
         {{"type": "order_on_line", "points": ["A", "B", "C", "D"]}},
         {{"type": "same_side", "points": ["P", "Q"], "line": ["A", "B"]}},
-        
+
         // Circle conditions
         {{"type": "point_on_circle", "point": "P", "circle_center": "O"}},
         {{"type": "concyclic", "points": ["A", "B", "C", "D"]}},
+        {{"type": "concentric_circles", "centers": ["O1", "O2"]}},
         {{"type": "tangent_line", "line": ["P", "T"], "circle_center": "O"}},
         {{"type": "tangent_at_point", "line": ["P", "T"], "circle_center": "O", "tangent_point": "T"}},
         {{"type": "diameter", "segment": ["A", "B"], "circle_center": "O"}},
         {{"type": "point_inside_circle", "point": "P", "circle_center": "O", "radius": 5}},
-        
+
         // Polygon/Triangle conditions
         {{"type": "triangle_valid", "points": ["A", "B", "C"]}},
         {{"type": "isosceles_triangle", "points": ["A", "B", "C"], "equal_sides": [["A", "B"], ["A", "C"]]}},
@@ -440,8 +443,8 @@ Return JSON:
         {{"type": "polygon_type", "polygon": ["A", "B", "C", "D"], "value": "rhombus"}},
         {{"type": "square", "polygons": [["A", "B", "C", "D"]]}},
         {{"type": "regular_polygon", "polygon_points": ["A", "B", "C", "D", "E", "F"], "sides": 6}},
-        
-        // Special points
+
+        // Special points and constructions
         {{"type": "intersection_point", "point": "P", "lines": [["A", "B"], ["C", "D"]]}},
         {{"type": "point_incenter", "point": "I", "triangle": ["A", "B", "C"]}},
         {{"type": "perpendicular_bisector", "line": ["M", "N"], "segment": ["A", "B"]}}
@@ -452,20 +455,29 @@ Return JSON:
 
 **SUPPORTED CONDITION TYPES**:
 - Basic: parallel, perpendicular, collinear, not_collinear, concurrent
-- Angles: angle_value, angle_equality, angle_sum, angle_bisector
-- Segments: segment_equality, distance_equals, segment_length, perimeter, segments_sum_value, segments_sum_equals, ratio
-- Points: point_on_segment, point_on_line, point_on_line_extension, midpoint_of, order_on_line, same_side
-- Circles: point_on_circle, concyclic, tangent_line, tangent_at_point, diameter, point_inside_circle
+- Angles: angle_value, angle_equality, angle_sum, angle_bisector, angle_ratio
+- Segments: segment_equality, distance_equals, segment_length, perimeter, segments_sum_value, segments_sum_equals, segment_ratio
+- Points: point_on_segment, point_on_line, point_on_line_extension, point_on_segment_extension, midpoint_of, point_between, order_on_line, same_side
+- Circles: point_on_circle, concyclic, concentric_circles, tangent_line, tangent_at_point, diameter, point_inside_circle
 - Polygons: triangle_valid, isosceles_triangle, right_triangle, polygon_property, polygon_type, square, regular_polygon
 - Special: intersection_point, point_incenter, perpendicular_bisector
 
-**LENGTH EXTRACTION RULES**:
+**EXTRACTION RULES**:
+
+**Angle Rules**:
+1. "∠ABC=60°" → {{"type": "angle_value", "points": [["A", "B", "C"]], "value": 60}}
+2. "∠ABC=∠DEF" → {{"type": "angle_equality", "points": [["A", "B", "C"], ["D", "E", "F"]]}}
+3. "∠ABC+∠DEF=180°" → {{"type": "angle_sum", "angles": [{{"points": ["A", "B", "C"]}}, {{"points": ["D", "E", "F"]}}], "value": 180}}
+4. "∠ABC=2∠DEF" or "∠CBD是∠BDC的2倍" → {{"type": "angle_ratio", "angle1": ["A", "B", "C"], "angle2": ["D", "E", "F"], "ratio": [2, 1]}}
+
+**Length Rules**:
 1. "周长为30" or "周长=30" → {{"type": "perimeter", "polygon": [...], "value": 30}}
 2. "AB=5" or "AB=5cm" → {{"type": "segment_length", "segment": ["A", "B"], "value": 5}}
 3. "AB=BC" → {{"type": "segment_equality", "segments": [["A", "B"], ["B", "C"]]}}
 4. "AB+BC=10" → {{"type": "segments_sum_value", "segments": [["A", "B"], ["B", "C"]], "value": 10}}
 5. "AB+BD=AC" → {{"type": "segments_sum_equals", "left_segments": [["A", "B"], ["B", "D"]], "right_segments": [["A", "C"]]}}
-6. "AE:EC=1:2" or "AE是EC的一半" → {{"type": "ratio", "segments": [["A", "E"], ["E", "C"]], "ratio": [1, 2]}}
+6. "AE:EC=1:2" or "AE是EC的一半" → {{"type": "segment_ratio", "segment1": ["A", "E"], "segment2": ["E", "C"], "ratio": [1, 2]}}
+7. "AB=3CD" or "AB是CD的3倍" → {{"type": "segment_ratio", "segment1": ["A", "B"], "segment2": ["C", "D"], "ratio": [3, 1]}}
 
 **CRITICAL RULES**:
 1. angle_value points MUST be nested: [["A", "B", "C"]] with B as vertex
@@ -473,6 +485,16 @@ Return JSON:
 3. All points in conditions must be in required_objects.points
 4. difficulty is INTEGER 1-5 based on CONSTRUCTION complexity
 5. Use ONLY the supported condition types listed above
+6. For ratios:
+   - angle_ratio: Use "angle1", "angle2", "ratio" fields (e.g., ∠ABC=2∠DEF → ratio: [2, 1])
+   - segment_ratio: Use "segment1", "segment2", "ratio" fields (e.g., AB=3CD → ratio: [3, 1])
+   - Ratio format is always [numerator, denominator] where numerator/denominator = first/second
+7. For segment conditions:
+   - Use "segment_length" or "distance_equals" for absolute lengths
+   - Use "segment_equality" for equal lengths without specific values
+   - Use "segments_sum_value" for sum equals a value
+   - Use "segments_sum_equals" for sum equals another segment
+   - Use "segment_ratio" for proportional relationships
 
 Only return JSON, no other text."""
         return prompt
@@ -824,18 +846,19 @@ Only return JSON, no other text."""
                 "right_segments": [target_seg]
             })
         
-        # Pattern: AE:EC=1:2 or AE:EC=m:n (ratio)
+        # Pattern: AE:EC=1:2 or AE:EC=m:n (segment ratio)
         ratio_full_pattern = r'([A-Z]{2})\s*[:：]\s*([A-Z]{2})\s*[=等于]\s*(\d+)\s*[:：]\s*(\d+)'
         matches = re.findall(ratio_full_pattern, text)
-        
+
         for match in matches:
             seg1 = list(match[0])
             seg2 = list(match[1])
             ratio1 = int(match[2])
             ratio2 = int(match[3])
             conditions.append({
-                "type": "ratio",
-                "segments": [seg1, seg2],
+                "type": "segment_ratio",
+                "segment1": seg1,
+                "segment2": seg2,
                 "ratio": [ratio1, ratio2]
             })
         

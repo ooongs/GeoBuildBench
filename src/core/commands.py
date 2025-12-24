@@ -228,14 +228,20 @@ def intersect_lc(line, circle):
     # shift circle to center
     y = line.c - np.dot(line.n, circle.c)
     x_squared = circle.r_squared - y**2
-    if np.isclose(x_squared, 0): return gt.Point(y*line.n + circle.c)
 
-    # Check for valid x_squared before sqrt
-    if x_squared < 0:
-        # Line doesn't intersect circle - return closest point
+    # Check for valid intersection
+    if x_squared < 0 and not np.isclose(x_squared, 0):
+        # Line doesn't intersect circle - raise error
+        raise ValueError(
+            f"Line and circle do not intersect. "
+            f"Distance from circle center to line ({abs(y):.4f}) "
+            f"is greater than circle radius ({circle.r:.4f})"
+        )
+
+    if np.isclose(x_squared, 0):
         return gt.Point(y*line.n + circle.c)
 
-    x = np.sqrt(x_squared)
+    x = np.sqrt(max(0, x_squared))  # Use max to handle numerical errors
     return [
         gt.Point(x*line.v + y*line.n + circle.c),
         gt.Point(-x*line.v + y*line.n + circle.c),
@@ -247,13 +253,14 @@ def intersect_cc(circle1, circle2):
 
     # Check if circles are concentric (same center)
     if np.isclose(center_dist_squared, 0):
-        # Concentric circles - return center point if same radius, else no intersection
-        if np.isclose(circle1.r, circle2.r):
-            # Return a point on the circle
-            return [gt.Point(circle1.c + np.array([circle1.r, 0]))]
-        else:
-            # No intersection for concentric circles with different radii
-            return [gt.Point(circle1.c)]
+        # Concentric circles with different radii don't intersect
+        if not np.isclose(circle1.r, circle2.r):
+            raise ValueError(
+                f"Concentric circles with different radii do not intersect. "
+                f"Circle 1 radius: {circle1.r:.4f}, Circle 2 radius: {circle2.r:.4f}"
+            )
+        # Same circle - return a point on the circle
+        return [gt.Point(circle1.c + np.array([circle1.r, 0]))]
 
     center_dist = np.sqrt(center_dist_squared)
     relative_center = (circle1.r_squared - circle2.r_squared) / center_dist_squared
@@ -262,14 +269,25 @@ def intersect_cc(circle1, circle2):
     rad_sum  = circle1.r + circle2.r
     rad_diff = circle1.r - circle2.r
     det = (rad_sum**2 - center_dist_squared) * (center_dist_squared - rad_diff**2)
-    if np.isclose(det, 0): return [gt.Point(center)]
 
     # Check for valid det before sqrt
-    if det < 0:
-        # Circles don't intersect - return center point
+    if det < 0 and not np.isclose(det, 0):
+        # Circles don't intersect - raise error
+        if center_dist > rad_sum:
+            raise ValueError(
+                f"Circles are too far apart to intersect. "
+                f"Distance between centers ({center_dist:.4f}) > sum of radii ({rad_sum:.4f})"
+            )
+        else:
+            raise ValueError(
+                f"One circle is completely inside the other. "
+                f"Distance between centers ({center_dist:.4f}) < difference of radii ({abs(rad_diff):.4f})"
+            )
+
+    if np.isclose(det, 0):
         return [gt.Point(center)]
 
-    center_deviation = np.sqrt(det)
+    center_deviation = np.sqrt(max(0, det))  # Use max to handle numerical errors
     center_deviation = np.array(((center_deviation,),(-center_deviation,)))
 
     return [
@@ -670,6 +688,8 @@ def translate_pv(point, vector):
 
 def vector_pp(p1, p2):
     return gt.Vector((p1.a, p2.a))
+
+
 
 
 

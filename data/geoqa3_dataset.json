@@ -311,15 +311,15 @@
       },
       "verification_conditions": [
         {
-          "type": "point_on_segment",
+          "type": "point_on_circle",
           "point": "A",
-          "segment": [
-            "O",
-            "A"
-          ]
+          "circle": {
+            "center": "O",
+              "radius_point": "A"
+            }
         },
         {
-          "type": "point_on_segment",
+          "type": "point_on_circle",
           "point": "B",
           "segment": [
             "O",
@@ -327,20 +327,20 @@
           ]
         },
         {
-          "type": "point_on_segment",
+          "type": "point_on_circle",
           "point": "C",
-          "segment": [
-            "O",
-            "C"
-          ]
+          "circle": {
+            "center": "O",
+            "radius_point": "C"
+          }
         },
         {
-          "type": "point_on_segment",
+          "type": "point_on_circle",
           "point": "D",
-          "segment": [
-            "O",
-            "D"
-          ]
+          "circle": { 
+            "center": "O",
+            "radius_point": "D"
+          }
         },
         {
           "type": "angle_value",
@@ -982,7 +982,7 @@
     },
     {
       "id": "0",
-      "subject": "在△ABC中,已知∠A=80°,∠B=60°,D、E 分别在 AB、AC 上,DE∥BC,那么∠CED的大小是()",
+      "subject": "在△ABC中,已知∠A=80°,∠B=60°,D、E 分别在 AB、AC 上,DE∥BC",
       "required_objects": {
         "points": [
           "A",
@@ -6994,19 +6994,6 @@
           "value": 120
         },
         {
-          "type": "concurrent",
-          "lines": [
-            [
-              "B",
-              "O"
-            ],
-            [
-              "C",
-              "O"
-            ]
-          ]
-        },
-        {
           "type": "triangle_valid",
           "points": [
             "A",
@@ -7208,19 +7195,6 @@
           "line": [
             "C",
             "F"
-          ]
-        },
-        {
-          "type": "concurrent",
-          "lines": [
-            [
-              "B",
-              "E"
-            ],
-            [
-              "C",
-              "F"
-            ]
           ]
         },
         {
@@ -7902,7 +7876,7 @@
       "verification_conditions": [],
       "original_text": "如图,C岛在A岛的北偏东45°方向,C岛在B岛的北偏西25°方向,则从C岛看A、B两岛的视角∠ACB的度数是()",
       "cleaned_text": "C岛在A岛的北偏东45°方向,C岛在B岛的北偏西25°方向",
-      "category": "Locus Constructions",
+      "category": "Basic Constructions",
       "difficulty": 2
     },
     {
@@ -15434,23 +15408,6 @@
           ]
         },
         {
-          "type": "concurrent",
-          "lines": [
-            [
-              "A",
-              "D"
-            ],
-            [
-              "A",
-              "E"
-            ],
-            [
-              "C",
-              "F"
-            ]
-          ]
-        },
-        {
           "type": "triangle_valid",
           "points": [
             "A",
@@ -15660,7 +15617,7 @@
     },
     {
       "id": "305",
-      "subject": "∠AOB=30°,∠AOB内有一定点P,且OP=10．在OA上有一点Q,OB上有一点R．若△PQR周长最小",
+      "subject": "∠AOB=30°,∠AOB内有一定点P,且OP=10．在OA上有一点Q,OB上有一点R，构造△PQR",
       "required_objects": {
         "points": [
           "A",
@@ -15762,7 +15719,7 @@
       ],
       "original_text": "如图,∠AOB=30°,∠AOB内有一定点P,且OP=10．在OA上有一点Q,OB上有一点R．若△PQR周长最小,则最小周长是()",
       "cleaned_text": "∠AOB=30°,∠AOB内有一定点P,且OP=10．在OA上有一点Q,OB上有一点R．若△PQR周长最小",
-      "category": "Locus Constructions",
+      "category": "Basic Constructions",
       "difficulty": 3
     },
     {
@@ -15941,7 +15898,7 @@
       ],
       "original_text": "如图是小明设计用手电来测量某古城墙高度的示意图,点P处放一水平的平面镜,光线从点A出发经平面镜反射后刚好射到古城墙CD的顶端C处,已知AB⊥BD,CD⊥BD,且测得AB=1.2米,BP=1.8米,PD=12米,那么该古城墙的高度是()",
       "cleaned_text": "是小明设计用手电来测量某古城墙高度的示意图,点P处放一水平的平面镜,光线从点A出发经平面镜反射后刚好射到古城墙CD的顶端C处,已知AB⊥BD,CD⊥BD,且测得AB=1.2米,BP=1.8米,PD=12米,那么该古城墙的高度是()",
-      "category": "Applications of Geometric Theorems",
+      "category": "Geometric Transformations",
       "difficulty": 3
     },
     {
@@ -21386,60 +21343,6 @@
       "cleaned_text": "四边形ABCD,∠A=110°,点D在AB、AC的垂直平分线上"
     },
     {
-      "id": "523",
-      "subject": "一木杆在离地面3m处折断,木杆顶端落在离木杆底端4m处",
-      "required_objects": {
-        "points": [
-          "P",
-          "Q",
-          "R"
-        ],
-        "segments": [
-          [
-            "P",
-            "Q"
-          ],
-          [
-            "Q",
-            "R"
-          ]
-        ],
-        "lines": [],
-        "circles": [],
-        "polygons": []
-      },
-      "verification_conditions": [
-        {
-          "type": "point_on_segment",
-          "point": "Q",
-          "segment": [
-            "P",
-            "R"
-          ]
-        },
-        {
-          "type": "length",
-          "segment": [
-            "Q",
-            "R"
-          ],
-          "value": 3
-        },
-        {
-          "type": "length",
-          "segment": [
-            "P",
-            "R"
-          ],
-          "value": 4
-        }
-      ],
-      "category": "Measurement & Ratios",
-      "difficulty": 2,
-      "original_text": "一木杆在离地面3m处折断,木杆顶端落在离木杆底端4m处,木杆折断之前有多高()",
-      "cleaned_text": "一木杆在离地面3m处折断,木杆顶端落在离木杆底端4m处"
-    },
-    {
       "id": "525",
       "subject": "在△ABC中,∠ACB=90°,∠A=30°,BC=4cm,点D为AB的中点",
       "required_objects": {
@@ -26824,19 +26727,6 @@
             "B",
             "C"
           ]
-        },
-        {
-          "type": "concurrent",
-          "lines": [
-            [
-              "B",
-              "E"
-            ],
-            [
-              "C",
-              "F"
-            ]
-          ]
         }
       ],
       "original_text": "如图,在△ABC中,已知∠ABC=70°,∠ACB=60°,BE⊥AC于E,CF⊥AB于F,H是BE和CF的交点,则∠EHF=()",
@@ -28380,7 +28270,7 @@
         "circles": [
           {
             "center": "O",
-            "radius_point": null
+            "radius_point": "A"
           }
         ],
         "polygons": []
@@ -28429,7 +28319,7 @@
           "type": "distance_equals",
           "segment": [
             "O",
-            "O"
+            "A"
           ],
           "value": 5.0
         }
@@ -30500,7 +30390,7 @@
         "circles": [
           {
             "center": "O",
-            "radius_point": null
+            "radius_point": "A"
           }
         ],
         "polygons": []
@@ -30540,7 +30430,7 @@
     },
     {
       "id": "896",
-      "subject": "在⊙O中,∠ABC=51°",
+      "subject": "在⊙O中,点 A,B,C 在圆上,∠ABC=51°",
       "required_objects": {
         "points": [
           "A",
@@ -30562,7 +30452,7 @@
         "circles": [
           {
             "center": "O",
-            "radius_point": null
+            "radius_point": "A"
           }
         ],
         "polygons": []
@@ -32311,7 +32201,7 @@
         "circles": [
           {
             "center": "O",
-            "radius_point": null
+            "radius_point": "A"
           }
         ],
         "polygons": [
@@ -32341,11 +32231,6 @@
             ]
           ],
           "value": 90
-        },
-        {
-          "type": "point_on_circle",
-          "point": "O",
-          "circle_center": "O"
         },
         {
           "type": "angle_value",
@@ -32405,228 +32290,6 @@
       "original_text": "如图,∠A是⊙O的圆周角,∠OBC=55°,则∠A=()",
       "cleaned_text": "∠A是⊙O的圆周角,∠OBC=55°",
       "category": "Circle Properties & Constructions",
-      "difficulty": 1
-    },
-    {
-      "id": "952",
-      "subject": "如果五边形ABCDE∽五边形POGMN且对应高之比为3:2,那么五边形ABCDE和五边形POGMN的面积之比是()",
-      "required_objects": {
-        "points": [
-          "A",
-          "B",
-          "C",
-          "D",
-          "E",
-          "P",
-          "O",
-          "G",
-          "M",
-          "N"
-        ],
-        "segments": [
-          [
-            "A",
-            "B"
-          ],
-          [
-            "B",
-            "C"
-          ],
-          [
-            "C",
-            "D"
-          ],
-          [
-            "D",
-            "E"
-          ],
-          [
-            "E",
-            "A"
-          ],
-          [
-            "P",
-            "O"
-          ],
-          [
-            "O",
-            "G"
-          ],
-          [
-            "G",
-            "M"
-          ],
-          [
-            "M",
-            "N"
-          ],
-          [
-            "N",
-            "P"
-          ]
-        ],
-        "lines": [],
-        "circles": [],
-        "polygons": [
-          [
-            "A",
-            "B",
-            "C",
-            "D",
-            "E"
-          ],
-          [
-            "P",
-            "O",
-            "G",
-            "M",
-            "N"
-          ]
-        ]
-      },
-      "verification_conditions": [
-        {
-          "type": "triangle_valid",
-          "points": [
-            "A",
-            "B",
-            "C"
-          ]
-        },
-        {
-          "type": "triangle_valid",
-          "points": [
-            "B",
-            "C",
-            "D"
-          ]
-        },
-        {
-          "type": "triangle_valid",
-          "points": [
-            "C",
-            "D",
-            "E"
-          ]
-        },
-        {
-          "type": "triangle_valid",
-          "points": [
-            "D",
-            "E",
-            "A"
-          ]
-        },
-        {
-          "type": "triangle_valid",
-          "points": [
-            "E",
-            "A",
-            "B"
-          ]
-        },
-        {
-          "type": "triangle_valid",
-          "points": [
-            "P",
-            "O",
-            "G"
-          ]
-        },
-        {
-          "type": "triangle_valid",
-          "points": [
-            "O",
-            "G",
-            "M"
-          ]
-        },
-        {
-          "type": "triangle_valid",
-          "points": [
-            "G",
-            "M",
-            "N"
-          ]
-        },
-        {
-          "type": "triangle_valid",
-          "points": [
-            "M",
-            "N",
-            "P"
-          ]
-        },
-        {
-          "type": "triangle_valid",
-          "points": [
-            "N",
-            "P",
-            "O"
-          ]
-        }
-      ],
-      "original_text": "如果五边形ABCDE∽五边形POGMN且对应高之比为3:2,那么五边形ABCDE和五边形POGMN的面积之比是()",
-      "cleaned_text": "如果五边形ABCDE∽五边形POGMN且对应高之比为3:2,那么五边形ABCDE和五边形POGMN的面积之比是()",
-      "category": "Measurement & Ratios",
-      "difficulty": 2
-    },
-    {
-      "id": "956",
-      "subject": "身高1.8m的小超站在某路灯下,发现自己的影长恰好是3m,经测量,此时小超离路灯底部的距离是9m",
-      "required_objects": {
-        "points": [
-          "L",
-          "C",
-          "S"
-        ],
-        "segments": [
-          [
-            "L",
-            "C"
-          ],
-          [
-            "C",
-            "S"
-          ],
-          [
-            "L",
-            "S"
-          ]
-        ],
-        "lines": [],
-        "circles": [],
-        "polygons": []
-      },
-      "verification_conditions": [
-        {
-          "type": "distance_equals",
-          "segment": [
-            "C",
-            "S"
-          ],
-          "value": 3.0
-        },
-        {
-          "type": "distance_equals",
-          "segment": [
-            "L",
-            "S"
-          ],
-          "value": 9.0
-        },
-        {
-          "type": "distance_equals",
-          "segment": [
-            "C",
-            "L"
-          ],
-          "value": 1.8
-        }
-      ],
-      "original_text": "如图,身高1.8m的小超站在某路灯下,发现自己的影长恰好是3m,经测量,此时小超离路灯底部的距离是9m,则路灯离地面的高度是()",
-      "cleaned_text": "身高1.8m的小超站在某路灯下,发现自己的影长恰好是3m,经测量,此时小超离路灯底部的距离是9m",
-      "category": "Measurement & Ratios",
       "difficulty": 1
     },
     {
@@ -33067,19 +32730,6 @@
         "polygons": []
       },
       "verification_conditions": [
-        {
-          "type": "concurrent",
-          "lines": [
-            [
-              "A",
-              "B"
-            ],
-            [
-              "C",
-              "D"
-            ]
-          ]
-        },
         {
           "type": "angle_value",
           "points": [
@@ -35140,101 +34790,6 @@
       "original_text": "如图,AB是⊙O的弦,AC是⊙O的切线,A为切点,BC经过圆心,若∠B=25°,则∠C的大小等于()",
       "cleaned_text": "AB是⊙O的弦,AC是⊙O的切线,A为切点,BC经过圆心,若∠B=25°",
       "category": "Circle Properties & Constructions",
-      "difficulty": 2
-    },
-    {
-      "id": "1009",
-      "subject": "在综合实践活动课上,小明同学用纸板制作了一个圆锥形漏斗模型．它的底面半径OB=6cm,高OC=8cm",
-      "required_objects": {
-        "points": [
-          "O",
-          "B",
-          "C"
-        ],
-        "segments": [
-          [
-            "O",
-            "B"
-          ],
-          [
-            "O",
-            "C"
-          ]
-        ],
-        "lines": [],
-        "circles": [
-          {
-            "center": "O",
-            "radius_point": "B"
-          }
-        ],
-        "polygons": []
-      },
-      "verification_conditions": [
-        {
-          "type": "distance_equals",
-          "segment": [
-            "O",
-            "B"
-          ],
-          "value": 6.0
-        },
-        {
-          "type": "distance_equals",
-          "segment": [
-            "O",
-            "C"
-          ],
-          "value": 8.0
-        }
-      ],
-      "original_text": "在综合实践活动课上,小明同学用纸板制作了一个圆锥形漏斗模型．如图所示,它的底面半径OB=6cm,高OC=8cm则这个圆锥漏斗的侧面积是()",
-      "cleaned_text": "在综合实践活动课上,小明同学用纸板制作了一个圆锥形漏斗模型．它的底面半径OB=6cm,高OC=8cm",
-      "category": "Measurement & Ratios",
-      "difficulty": 1
-    },
-    {
-      "id": "1010",
-      "subject": "某宾馆大厅要铺圆环形的地毯,工人师傅只测量了与小圆相切的大圆的弦AB的长,就计算出了圆环的面积,若测量得AB的长为20米",
-      "required_objects": {
-        "points": [
-          "A",
-          "B"
-        ],
-        "segments": [
-          [
-            "A",
-            "B"
-          ]
-        ],
-        "lines": [],
-        "circles": [
-          {
-            "center": "O",
-            "radius_point": null
-          },
-          {
-            "center": null,
-            "radius_point": null
-          }
-        ],
-        "polygons": []
-      },
-      "verification_conditions": [
-        {
-          "type": "point_on_circle",
-          "point": "A",
-          "circle_center": null
-        },
-        {
-          "type": "point_on_circle",
-          "point": "B",
-          "circle_center": null
-        }
-      ],
-      "original_text": "如图所示,某宾馆大厅要铺圆环形的地毯,工人师傅只测量了与小圆相切的大圆的弦AB的长,就计算出了圆环的面积,若测量得AB的长为20米,则圆环的面积为()",
-      "cleaned_text": "某宾馆大厅要铺圆环形的地毯,工人师傅只测量了与小圆相切的大圆的弦AB的长,就计算出了圆环的面积,若测量得AB的长为20米",
-      "category": "Measurement & Ratios",
       "difficulty": 2
     },
     {
@@ -38512,41 +38067,28 @@
           ]
         },
         {
-          "type": "angle_value",
-          "points": [
-            [
-              "A",
-              "B",
-              "D"
-            ]
+          "type": "angle_sum", 
+          "angles": [
+            {
+              "points": [
+                [
+                  "A",
+                  "B",
+                  "D"
+                ]
+              ]
+            },
+            {
+              "points": [
+                [
+                  "A",
+                  "C",
+                  "E"
+                ]
+              ]
+            }
           ],
-          "value": null
-        },
-        {
-          "type": "angle_value",
-          "points": [
-            [
-              "A",
-              "C",
-              "E"
-            ]
-          ],
-          "value": null
-        },
-        {
-          "type": "angle_equality",
-          "points": [
-            [
-              "A",
-              "B",
-              "D"
-            ],
-            [
-              "A",
-              "C",
-              "E"
-            ]
-          ]
+          "value": 230
         }
       ],
       "original_text": "已知,如图,D、B、C、E四点共线,∠ABD+∠ACE=230°,则∠A的度数为()",
@@ -40822,23 +40364,6 @@
             "A",
             "B",
             "C"
-          ]
-        },
-        {
-          "type": "concurrent",
-          "lines": [
-            [
-              "B",
-              "E"
-            ],
-            [
-              "C",
-              "D"
-            ],
-            [
-              "F",
-              "F"
-            ]
           ]
         },
         {

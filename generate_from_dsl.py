@@ -52,7 +52,7 @@ def generate_from_dsl(dsl_file: str, output_file: str = None, display_size=(400,
 
         # 기하학적 구조 생성
         print(f"🔨 기하학적 구조 생성 중...")
-        construction.generate(require_theorem=False, max_attempts=0)
+        construction.generate(require_theorem=False, max_attempts=1)
         print(f"✅ 구조 생성 완료")
 
         # 이미지 렌더링

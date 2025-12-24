@@ -1,0 +1,37 @@
+{
+    "problems": [
+        {
+            "id": "1",
+            "subject": "直角三角形ABC，在斜边AB上有一点P，令AB长3，CP长1",
+            "required_objects": {
+                "points": ["A", "B", "C", "P"],
+                "segments": [["A", "B"], ["A", "C"], ["B", "C"], ["C", "P"]],
+                "lines": [],
+                "circles": [],
+                "polygons": [["A", "B", "C"]]
+            },
+            "verification_conditions": [
+                {
+                    "type": "angle_value",
+                    "points": [["A", "C", "B"]],
+                    "value": 90
+                },
+                {
+                    "type": "segment_length",
+                    "segment": ["C", "P"],
+                    "value": 1
+                },
+                {
+                    "type": "segment_length",
+                    "segment": ["A", "B"],
+                    "value": 3
+                },
+                {
+                    "type": "point_on_segment",
+                    "point": "P",
+                    "segment": ["A", "B"]
+                }
+            ]
+        }
+    ]
+}

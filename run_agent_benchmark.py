@@ -347,7 +347,7 @@ class AgentBenchmarkRunner:
     def __init__(self, model: str = "gpt-4o", max_iterations: int = 10,
                  save_images: bool = True, verbose: bool = False,
                  use_vision: bool = True, run_id: Optional[str] = None,
-                 resume_dir: Optional[str] = None):
+                 resume_dir: Optional[str] = None, additional_prompt: Optional[str] = None):
         """
         Initialize benchmark runner.
 
@@ -359,6 +359,7 @@ class AgentBenchmarkRunner:
             use_vision: Whether to send rendered images to LLM
             run_id: Custom run identifier for logging
             resume_dir: Existing log directory to resume from (reuses run_id)
+            additional_prompt: Additional prompt text to append to system prompt (optional)
         """
         self.model = model
         self.max_iterations = max_iterations
@@ -368,7 +369,6 @@ class AgentBenchmarkRunner:
 
         # If resuming, extract run_id from directory path
         if resume_dir:
-            import os.path
             run_id = os.path.basename(resume_dir.rstrip('/'))
 
         # Generate run_id if not provided
@@ -387,7 +387,9 @@ class AgentBenchmarkRunner:
             log_dir="agent_logs",
             verbose=verbose,
             use_vision=use_vision,
-            run_id=run_id
+            run_id=run_id,
+            resume_mode=self.resume_mode,
+            additional_prompt=additional_prompt
         )
 
         # Store run directory for reference
@@ -623,6 +625,14 @@ class AgentBenchmarkRunner:
         
         # Save report (convert to JSON-serializable format)
         report = _convert_to_json_serializable(report)
+
+        # Resume mode: Backup and merge with existing results
+        if self.resume_mode and os.path.exists(output_file):
+            self._backup_file(output_file)
+            # Use problems_filter if provided (retried problems), otherwise use problems list
+            retried_problems = problems_filter if problems_filter is not None else problems
+            report = self._merge_results(output_file, report, retried_problems)
+
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(report, f, ensure_ascii=False, indent=2)
         
@@ -630,7 +640,191 @@ class AgentBenchmarkRunner:
         self._print_summary(metrics_summary, output_file)
         
         return report
-    
+
+    def _backup_file(self, file_path: str):
+        """Create timestamped backup of existing file.
+
+        Args:
+            file_path: Path to file to backup
+        """
+        if not os.path.exists(file_path):
+            return
+
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        base_name = os.path.basename(file_path)
+        name_without_ext = os.path.splitext(base_name)[0]
+        backup_name = f"{name_without_ext}_backup_{timestamp}.json"
+        backup_path = os.path.join(os.path.dirname(file_path), backup_name)
+
+        try:
+            import shutil
+            shutil.copy2(file_path, backup_path)
+            print(f"📦 Backed up to: {backup_path}")
+        except Exception as e:
+            print(f"⚠️  Warning: Could not create backup: {e}")
+
+    def _merge_results(self, existing_file: str, new_report: Dict, retried_problems: List) -> Dict:
+        """Merge new results with existing results file.
+
+        Args:
+            existing_file: Path to existing result.json
+            new_report: New report dictionary from current run
+            retried_problems: List of BenchmarkProblem objects that were retried
+
+        Returns:
+            Merged report dictionary
+        """
+        # 1. Load existing file
+        try:
+            with open(existing_file, 'r', encoding='utf-8') as f:
+                existing_report = json.load(f)
+        except Exception as e:
+            print(f"⚠️  Warning: Could not load existing result.json: {e}")
+            print(f"   Returning new report without merge")
+            return new_report
+
+        # 2. Get set of retried problem IDs
+        retried_ids = {p.id for p in retried_problems}
+        if self.verbose:
+            print(f"🔄 Merging results for {len(retried_ids)} retried problems: {retried_ids}")
+
+        # 3. Merge results array (problem_id as key)
+        result_dict = {}
+
+        # Load existing results (keep non-retried)
+        for result in existing_report.get("results", []):
+            pid = result.get("problem_id")
+            if pid and pid not in retried_ids:
+                result_dict[pid] = result
+
+        # Add/overwrite new results
+        for result in new_report.get("results", []):
+            pid = result.get("problem_id")
+            if pid:
+                result_dict[pid] = result
+
+        # 4. Merge problem_details (same approach)
+        details_dict = {}
+
+        for detail in existing_report.get("problem_details", []):
+            pid = detail.get("problem_id")
+            if pid and pid not in retried_ids:
+                details_dict[pid] = detail
+
+        for detail in new_report.get("problem_details", []):
+            pid = detail.get("problem_id")
+            if pid:
+                details_dict[pid] = detail
+
+        # 5. Merge validation_errors
+        validation_errors_dict = {}
+
+        for err in existing_report.get("validation_errors", {}).get("errors", []):
+            pid = err.get("problem_id")
+            if pid and pid not in retried_ids:
+                if pid not in validation_errors_dict:
+                    validation_errors_dict[pid] = []
+                validation_errors_dict[pid].append(err)
+
+        for err in new_report.get("validation_errors", {}).get("errors", []):
+            pid = err.get("problem_id")
+            if pid:
+                if pid not in validation_errors_dict:
+                    validation_errors_dict[pid] = []
+                validation_errors_dict[pid].append(err)
+
+        # 6. Recalculate metrics from merged data
+        merged_results = list(result_dict.values())
+        merged_details = list(details_dict.values())
+        merged_val_errors = [err for errs in validation_errors_dict.values() for err in errs]
+
+        if self.verbose:
+            print(f"📊 Merged {len(merged_results)} total results ({len(retried_ids)} new, {len(merged_results)-len(retried_ids)} preserved)")
+
+        # Recreate DetailedMetrics for recalculation
+        merged_metrics = DetailedMetrics()
+        for result in merged_results:
+            # Try to load memory_data if available
+            memory_data = None
+            if result.get("memory_path") and os.path.exists(result["memory_path"]):
+                try:
+                    with open(result["memory_path"], 'r', encoding='utf-8') as f:
+                        memory_data = json.load(f)
+                except:
+                    pass
+
+            # Handle skipped problems
+            if result.get("skipped"):
+                merged_metrics.add_skipped_problem(
+                    problem_id=result["problem_id"],
+                    reason=result.get("skip_reason", "Unknown"),
+                    error_types=result.get("validation_result", {}).get("dataset_error_types", [])
+                )
+            else:
+                merged_metrics.add_problem_result(result, memory_data)
+
+        # 7. Build final merged report
+        merged_summary = merged_metrics.get_summary()
+
+        merged_report = {
+            "metadata": {
+                **existing_report.get("metadata", {}),
+                "last_updated": datetime.now().isoformat(),
+                "retried_problems": sorted(list(retried_ids)),
+                "total_problems_evaluated": len(merged_results),
+            },
+            "metrics": merged_summary,
+            "detailed_analysis": {
+                "success_rate": {
+                    "value": merged_summary["success_rate"],
+                    "successful": merged_summary["successful_problems"],
+                    "failed": merged_summary["failed_problems"],
+                    "skipped": merged_summary["skipped_problems"],
+                    "total": merged_summary["total_problems"],
+                    "note": "Success rate is calculated excluding skipped problems"
+                },
+                "step_analysis": {
+                    "average_steps_to_success": merged_summary["average_success_steps"],
+                    "min_steps_to_success": merged_summary["min_success_steps"],
+                    "max_steps_to_success": merged_summary["max_success_steps"],
+                    "step_distribution": merged_summary["success_step_distribution"]
+                },
+                "hallucination_analysis": {
+                    "total_hallucinations": merged_summary["total_hallucinations"],
+                    "average_per_problem": merged_summary["average_hallucinations_per_problem"],
+                    "average_recovery_steps": merged_summary["average_hallucination_recovery_steps"],
+                    "error_type_distribution": merged_summary["hallucination_error_types"]
+                },
+                "object_analysis": {
+                    "total_missing_objects": merged_summary["total_missing_objects"],
+                    "missing_by_type": merged_summary["missing_objects_by_type"]
+                },
+                "condition_analysis": {
+                    "total_failed_conditions": merged_summary["total_failed_conditions"],
+                    "failed_by_type": merged_summary["failed_conditions_by_type"]
+                },
+                "validation_error_analysis": {
+                    "total_errors": merged_summary["validation_errors_count"],
+                    "errors_by_type": merged_summary["validation_errors_by_type"],
+                    "unknown_condition_types": merged_summary["unknown_condition_types"]
+                }
+            },
+            "results": merged_results,
+            "problem_details": merged_details,
+            "validation_errors": {
+                "summary": new_report.get("validation_errors", {}).get("summary", {}),
+                "errors": merged_val_errors
+            }
+        }
+
+        # Preserve validation_error_log_file if it exists
+        if "validation_error_log_file" in existing_report:
+            merged_report["validation_error_log_file"] = existing_report["validation_error_log_file"]
+        if "validation_error_log_file" in new_report:
+            merged_report["validation_error_log_file"] = new_report["validation_error_log_file"]
+
+        return merged_report
+
     def _print_summary(self, metrics: Dict[str, Any], output_file: str):
         """Print formatted summary."""
         print("\n" + "="*70)
@@ -795,7 +989,14 @@ def main():
         action="store_true",
         help="Disable vision - don't send rendered images to LLM (for comparison)"
     )
-    
+
+    parser.add_argument(
+        "--additional-prompt",
+        type=str,
+        default=None,
+        help="Path to text file containing additional prompt (hints/tips) to append to system prompt"
+    )
+
     args = parser.parse_args()
     
     # Debug mode settings
@@ -824,18 +1025,36 @@ def main():
     # Determine vision mode
     use_vision = not args.no_vision
     vision_mode = "with_vision" if use_vision else "no_vision"
-    
+
+    # Load additional prompt from file if provided
+    additional_prompt = None
+    if args.additional_prompt:
+        try:
+            with open(args.additional_prompt, 'r', encoding='utf-8') as f:
+                additional_prompt = f.read()
+                print(f"\n{'='*70}")
+                print(f"✓ Loaded additional prompt from: {args.additional_prompt}")
+                print(f"  ({len(additional_prompt)} characters)")
+                print(f"{'='*70}\n")
+        except FileNotFoundError:
+            print(f"ERROR: Additional prompt file not found: {args.additional_prompt}")
+            return 1
+        except Exception as e:
+            print(f"ERROR: Failed to read additional prompt file: {e}")
+            return 1
+
     print(f"\n{'='*70}")
     print(f"Vision Mode: {'✓ Enabled' if use_vision else '✗ Disabled'}")
     print(f"{'='*70}\n")
-    
+
     # Initialize runner
     runner = AgentBenchmarkRunner(
         model=args.model,
         max_iterations=args.max_iter,
         save_images=not args.no_save_images,
         verbose=args.verbose,
-        use_vision=use_vision
+        use_vision=use_vision,
+        additional_prompt=additional_prompt
     )
     
     # Run
